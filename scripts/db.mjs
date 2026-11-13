@@ -20,7 +20,7 @@ function inUse(port) {
 
 if (await inUse(5432)) {
   console.error(
-    'Something is already using port 5432, usually an old Postgres. Stop it with `pkill -f postgres` and run `pnpm db` again.',
+    'Something is already using port 5432, usually an old Postgres. Stop it with `pkill -f postgres` and run `npm run db` again.',
   );
   process.exit(1);
 }
@@ -40,7 +40,7 @@ try {
   await postgres.start();
 } catch {
   console.error(
-    'Postgres could not start. If .data/postgres is left from an older setup, move it aside with `mv .data/postgres .data/postgres-old` and run `pnpm db` again.',
+    'Postgres could not start. If .data/postgres is left from an older setup, move it aside with `mv .data/postgres .data/postgres-old` and run `npm run db` again.',
   );
   process.exit(1);
 }

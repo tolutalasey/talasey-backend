@@ -28,5 +28,5 @@ Staff guides (the admin, the content editor, colour sets) and the design system 
 ## How we work
 
 - Small pull requests into `main`, one review, CI green.
-- A change to an endpoint, the database schema or an env file needs a matching docs or README change. A changed endpoint also needs `pnpm openapi` here and `pnpm api:types` in the frontend.
+- A change to an endpoint, the database schema or an env file needs a matching docs or README change. A changed endpoint also needs `npm run openapi` here and `npm run api:types` in the frontend.
 - Big decisions get a short decision record. We don't rewrite old ones; a new one replaces it.

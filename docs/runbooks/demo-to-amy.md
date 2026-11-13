@@ -3,9 +3,9 @@
 About twenty minutes, on my Mac, with nothing online. Do the [first-run steps](local-setup.md) the day before, then on the day:
 
 ```sh
-cd ~/Downloads/AppDesign/talasey-backend && pnpm db    # terminal 1
-cd ~/Downloads/AppDesign/talasey-backend && pnpm dev   # terminal 2
-cd ~/Downloads/AppDesign/talasey-frontend && pnpm dev  # terminal 3, then open http://localhost:3000
+cd ~/Downloads/AppDesign/talasey-backend && npm run db    # terminal 1
+cd ~/Downloads/AppDesign/talasey-backend && npm run dev   # terminal 2
+cd ~/Downloads/AppDesign/talasey-frontend && npm run dev  # terminal 3, then open http://localhost:3000
 ```
 
 ## 1. Finding things (3 minutes)

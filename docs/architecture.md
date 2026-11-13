@@ -45,11 +45,11 @@ Browser ───────► │  public site      /admin (staff)    /conten
 
 ## Environments
 
-| Environment  | Site             | API                                      | Indexed |
-| ------------ | ---------------- | ---------------------------------------- | ------- |
-| Local        | `pnpm dev`       | `pnpm db` (embedded Postgres and Valkey) | No      |
-| Pull request | Vercel preview   | Railway PR environment                   | No      |
-| Staging      | Vercel, `main`   | Railway staging                          | No      |
-| Production   | Vercel, releases | Railway production                       | Yes     |
+| Environment  | Site             | API                                         | Indexed |
+| ------------ | ---------------- | ------------------------------------------- | ------- |
+| Local        | `npm run dev`    | `npm run db` (embedded Postgres and Valkey) | No      |
+| Pull request | Vercel preview   | Railway PR environment                      | No      |
+| Staging      | Vercel, `main`   | Railway staging                             | No      |
+| Production   | Vercel, releases | Railway production                          | Yes     |
 
 Only `APP_ENV=production` is indexable. Everywhere else sends `X-Robots-Tag: noindex` and a blocking `robots.txt`.

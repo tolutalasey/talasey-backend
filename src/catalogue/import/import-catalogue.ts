@@ -8,7 +8,7 @@ import { importReport } from './import-report.js';
 import { MasterSheetPimSource } from './master-sheet.js';
 import { summarise } from './pim-source.js';
 
-// pnpm catalogue:import [--dry-run] [path to the master sheet]
+// npm run catalogue:import -- [--dry-run] [path to the master sheet]
 const DEFAULT_SHEET = '.data/pim/Talasey_Product_Master_Sheet_filled.xlsx';
 const DRY_RUN = '--dry-run';
 

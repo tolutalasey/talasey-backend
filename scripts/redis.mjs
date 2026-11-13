@@ -4,7 +4,7 @@ import { cpus } from 'node:os';
 import { join, resolve } from 'node:path';
 
 // Valkey is the open-source fork of Redis and speaks the same protocol. It has no ready-made
-// macOS download, so the first `pnpm db` builds it from source into .data/redis (about a minute;
+// macOS download, so the first `npm run db` builds it from source into .data/redis (about a minute;
 // needs the Xcode command line tools, which git on a Mac already uses). No admin rights needed.
 const VERSION = '9.0.7';
 const SOURCE_URL = `https://codeload.github.com/valkey-io/valkey/tar.gz/refs/tags/${VERSION}`;

@@ -31,7 +31,7 @@ if (nodeMajor < MIN_NODE_MAJOR)
   fail(`Node ${MIN_NODE_MAJOR}+ is required (24 recommended); you have ${process.version}.`);
 if (!(await reachable(5432)))
   fail(
-    'Postgres is not running. Start it in another terminal with `pnpm db`, then run `pnpm setup` again.',
+    'Postgres is not running. Start it in another terminal with `npm run db`, then run `npm run setup` again.',
   );
 
 const redisRunning = await reachable(6379);
@@ -48,16 +48,16 @@ if (!existsSync('.env')) {
   console.log('Created .env');
 }
 
-run('pnpm build');
-run('pnpm db:migrate');
-run('pnpm db:seed');
+run('npm run build');
+run('npm run db:migrate');
+run('npm run db:seed');
 
 console.log(
   [
     '',
-    'Done. Keep `pnpm db` running and start the API with `pnpm dev`:',
+    'Done. Keep `npm run db` running and start the API with `npm run dev`:',
     '  API       http://localhost:4000',
     '  API docs  http://localhost:4000/docs',
-    'To load the full catalogue: pnpm catalogue:import',
+    'To load the full catalogue: npm run catalogue:import',
   ].join('\n'),
 );

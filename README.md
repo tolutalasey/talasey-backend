@@ -5,10 +5,10 @@ The NestJS API behind the consumer site. It owns the data: catalogue, prices, ba
 ## Run
 
 ```sh
-pnpm install
-pnpm db       # Postgres and Redis, leave running
-pnpm setup    # .env, migrations, demo staff and products
-pnpm dev      # http://localhost:4000, API docs at /docs
+npm install
+npm run db       # Postgres and Redis, leave running
+npm run setup    # .env, migrations, demo staff and products
+npm run dev      # http://localhost:4000, API docs at /docs
 ```
 
 The site is the separate `talasey-frontend` project, kept next to this one. Full steps for both: [docs/runbooks/local-setup.md](docs/runbooks/local-setup.md). All the project docs are in [docs](docs/README.md).
@@ -56,8 +56,8 @@ A save is checked as a whole (`rules/product-problems.ts`) and refused with a li
 
 ```sh
 cp ~/Downloads/Talasey_Product_Master_Sheet_filled.xlsx .data/pim/   # once; .data is not in git
-pnpm catalogue:import --dry-run                  # what would change
-pnpm catalogue:import
+npm run catalogue:import -- --dry-run               # what would change
+npm run catalogue:import
 ```
 
 The importer reads the sheet behind the `PimSource` port, so a PIM can replace it later. Products are matched by handle, then by any of their SKUs; a match keeps its handle (and URL). A price left blank in the sheet never clears a price set in the admin. Running it twice changes nothing the second time. Today's sheet: 590 rows, 171 products (54 with options, 117 single), 437 SKUs, 153 held back, 301 without a price; 20 products get a colour set (page type 1B).
@@ -123,18 +123,18 @@ Every change to an audited thing records its whole state before and after. `POST
 
 ## Test
 
-Integration tests empty the catalogue of the database they run on, so they only run against a database whose name ends in `_test` (`pnpm db` creates `api_test`).
+Integration tests empty the catalogue of the database they run on, so they only run against a database whose name ends in `_test` (`npm run db` creates `api_test`).
 
 ```sh
-pnpm test                                   # unit and HTTP tests, no database
-pnpm test:int                               # against api_test from `pnpm db`
-REDIS_URL=redis://localhost:6379 pnpm test:int   # and Redis too
+npm run test                                   # unit and HTTP tests, no database
+npm run test:int                               # against api_test from `npm run db`
+REDIS_URL=redis://localhost:6379 npm run test:int   # and Redis too
 ```
 
 ## API contract
 
-Requests and responses are zod schemas (`src/**/*.schemas.ts`); `src/common/contract.ts` validates with them and writes them into the OpenAPI document. `openapi.json` is committed. After changing an endpoint run `pnpm openapi` here, commit `openapi.json`, then `pnpm api:types` in the frontend.
+Requests and responses are zod schemas (`src/**/*.schemas.ts`); `src/common/contract.ts` validates with them and writes them into the OpenAPI document. `openapi.json` is committed. After changing an endpoint run `npm run openapi` here, commit `openapi.json`, then `npm run api:types` in the frontend.
 
 ## Database
 
-Schema in `src/database/schema/`. After a change run `pnpm db:generate` and commit the new file in `drizzle/`.
+Schema in `src/database/schema/`. After a change run `npm run db:generate` and commit the new file in `drizzle/`.

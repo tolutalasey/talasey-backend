@@ -13,10 +13,10 @@ Two separate projects, each with its own Git repository, install, scripts, CI an
 - `talasey-frontend`: the Next.js site, `/admin` and `/content`. The design tokens, components, analytics and API client that were packages are now folders in `src`.
 - `talasey-backend`: the NestJS API, Postgres and Redis. It keeps the docs that cover both.
 
-The contract between them is the backend's committed `openapi.json`. After an endpoint changes, `pnpm openapi` in the backend writes it, and `pnpm api:types` in the frontend regenerates the client types from it. The frontend's Playwright tests run against the backend checked out next to it (`../talasey-backend`, or `BACKEND_DIR`).
+The contract between them is the backend's committed `openapi.json`. After an endpoint changes, `npm run openapi` in the backend writes it, and `npm run api:types` in the frontend regenerates the client types from it. The frontend's Playwright tests run against the backend checked out next to it (`../talasey-backend`, or `BACKEND_DIR`).
 
 ## Consequences
 
-- Each project installs, builds and tests on its own with plain `pnpm` commands; no workspaces or Turborepo.
+- Each project installs, builds and tests on its own with plain npm commands; no workspaces or Turborepo. npm, not pnpm, because it is what the team already knows. `package-lock.json` is committed and CI installs with `npm ci`.
 - A change that touches both sides is two pull requests, backend first.
 - The old monorepo history stays in the `talasey-consumer` repository.
