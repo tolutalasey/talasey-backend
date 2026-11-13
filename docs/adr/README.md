@@ -44,3 +44,4 @@ One short record per decision. We never rewrite one; a new record replaces it, a
 | [0038 Docs as Markdown in the repo](0038-docs-in-the-repo.md)                             | Accepted                                                  |
 | [0039 Frontend and backend as two projects](0039-two-projects.md)                         | Accepted                                                  |
 | [0040 Content releases](0040-content-releases.md)                                         | Accepted                                                  |
+| [0041 A JavaScript budget we can keep](0041-javascript-budget.md)                         | Accepted                                                  |
