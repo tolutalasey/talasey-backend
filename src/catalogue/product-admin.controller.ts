@@ -28,6 +28,8 @@ import { DATABASE } from '../database/database.module.js';
 import { categories } from '../database/schema/index.js';
 import {
   adminProductSchema,
+  bespokeTrialResultSchema,
+  bespokeTrialSchema,
   categorySchema,
   newProductSchema,
   productInputSchema,
@@ -38,6 +40,7 @@ import {
   type NewProduct,
   type ProductInput,
 } from './catalogue.schemas.js';
+import { checkBespokeConfig, priceBespoke } from './bespoke/pricing.js';
 import type { CatalogueProduct } from './product.js';
 import { ProductAdminService, type ProductResult } from './product-admin.service.js';
 
@@ -116,6 +119,24 @@ export class ProductAdminController {
   @Fails([404, 'No such product'])
   async remove(@ValidParam('id', z.uuid()) id: string, @CurrentStaff() actor: StaffUser) {
     if (!(await this.products.remove(id, actor))) throw new NotFoundException('No such product');
+  }
+
+  // The test calculator in the admin: a price for any size and choices, from a set-up that may
+  // not be saved yet, worked out exactly as the shop and the basket do.
+  @Post('catalogue/bespoke/price')
+  @HttpCode(200)
+  @Accepts(bespokeTrialSchema)
+  @Returns(bespokeTrialResultSchema)
+  tryBespoke(
+    @ValidBody(bespokeTrialSchema) body: z.infer<typeof bespokeTrialSchema>,
+  ): z.infer<typeof bespokeTrialResultSchema> {
+    const check = checkBespokeConfig(body.config);
+    if (!check.ok) return check;
+    const result = priceBespoke(check.config, {
+      dimensions: body.dimensions,
+      choices: body.choices,
+    });
+    return result.ok ? { ok: true, pricePence: Math.round(result.price * 100) } : result;
   }
 
   @Get('catalogue/sku-checks')

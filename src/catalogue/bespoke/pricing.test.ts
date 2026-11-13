@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { bespokeConfigSchema, priceBespoke, readBespokeConfig } from './pricing.js';
+import {
+  bespokeConfigSchema,
+  checkBespokeConfig,
+  priceBespoke,
+  readBespokeConfig,
+} from './pricing.js';
 import { linea, sienna } from './planters.js';
 
 describe('priceBespoke', () => {
@@ -72,5 +77,53 @@ describe('readBespokeConfig', () => {
     expect(readBespokeConfig({ bespoke: sienna })).toMatchObject({ unit: 'mm' });
     expect(readBespokeConfig({ bespoke: { unit: 'inches' } })).toBeNull();
     expect(readBespokeConfig(null)).toBeNull();
+  });
+});
+
+describe('checkBespokeConfig', () => {
+  const simple = {
+    unit: 'mm',
+    formula: 'W * 0.1 + COAT',
+    dimensions: { W: { label: 'Width', min: 400, max: 2400, step: 1 } },
+    choices: [
+      {
+        label: 'Coating',
+        name: 'COAT',
+        answers: [
+          { label: 'None', value: 0 },
+          { label: 'Powder coated', value: 40 },
+        ],
+      },
+    ],
+  };
+
+  it('accepts the planter set-ups and a simple one', () => {
+    expect(checkBespokeConfig(sienna).ok).toBe(true);
+    expect(checkBespokeConfig(linea).ok).toBe(true);
+    expect(checkBespokeConfig(simple).ok).toBe(true);
+  });
+
+  it('explains a formula that uses a name it does not know, or does not parse', () => {
+    expect(checkBespokeConfig({ ...simple, formula: 'W * RATE' })).toEqual({
+      ok: false,
+      problems: [expect.stringContaining('RATE')],
+    });
+    expect(checkBespokeConfig({ ...simple, formula: 'W * (2' }).ok).toBe(false);
+  });
+
+  it('explains sizes that do not make sense', () => {
+    const backwards = {
+      ...simple,
+      dimensions: { W: { label: 'Width', min: 2400, max: 400, step: 1 } },
+    };
+    expect(checkBespokeConfig(backwards)).toEqual({
+      ok: false,
+      problems: ['Width (W): the smallest is bigger than the largest'],
+    });
+    expect(checkBespokeConfig({ ...simple, dimensions: {} }).ok).toBe(false);
+  });
+
+  it('refuses a formula that prices the smallest size at nothing', () => {
+    expect(checkBespokeConfig({ ...simple, formula: 'COAT' }).ok).toBe(false);
   });
 });

@@ -136,6 +136,17 @@ export const productSummarySchema = z.object({
   updatedAt: z.iso.datetime(),
 });
 
+export const bespokeTrialSchema = z.object({
+  config: z.unknown().describe('The made-to-measure set-up being tried, saved or not'),
+  dimensions: z.record(z.string(), z.number()),
+  choices: z.record(z.string(), z.string()).describe('Choice short name → answer label'),
+});
+
+export const bespokeTrialResultSchema = z.discriminatedUnion('ok', [
+  z.object({ ok: z.literal(true), pricePence: z.number().int() }),
+  z.object({ ok: z.literal(false), problems: z.array(z.string()) }),
+]);
+
 export const productSearchSchema = z.object({ search: z.string().optional() });
 
 export const categorySchema = z.object({

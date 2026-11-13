@@ -98,3 +98,53 @@ export function readBespokeConfig(metadata?: Record<string, unknown> | null): Be
   const parsed = bespokeConfigSchema.safeParse(metadata?.bespoke);
   return parsed.success ? parsed.data : null;
 }
+
+export type BespokeCheck = { ok: true; config: BespokeConfig } | { ok: false; problems: string[] };
+
+const FIELD_NAMES: Record<string, string> = {
+  unit: 'The unit',
+  formula: 'The formula',
+  rounding: 'The rounding',
+  min_price: 'The minimum price',
+  dimensions: 'The sizes',
+  choices: 'The choices',
+};
+
+// Checks a formula set up in the admin before it is saved: the shape, every size's limits, and
+// a trial price at the smallest size with the first answer to each choice.
+export function checkBespokeConfig(raw: unknown): BespokeCheck {
+  const parsed = bespokeConfigSchema.safeParse(raw);
+  if (!parsed.success) {
+    return {
+      ok: false,
+      problems: parsed.error.issues.map((issue) => {
+        const field = FIELD_NAMES[String(issue.path[0])] ?? 'The price set-up';
+        const where = issue.path.slice(1).join(' ');
+        return `${field}${where ? ` (${where})` : ''}: ${issue.message}`;
+      }),
+    };
+  }
+  const config = parsed.data;
+  const problems: string[] = [];
+  if (Object.keys(config.dimensions).length === 0) problems.push('Add at least one size');
+  for (const [name, limits] of Object.entries(config.dimensions)) {
+    if (limits.min > limits.max)
+      problems.push(`${limits.label} (${name}): the smallest is bigger than the largest`);
+  }
+  const names = new Set(config.choices.map((choice) => choice.name));
+  if (names.size < config.choices.length) problems.push('Two choices have the same short name');
+  if (problems.length) return { ok: false, problems };
+
+  const trial = priceBespoke(config, {
+    dimensions: Object.fromEntries(
+      Object.entries(config.dimensions).map(([name, limits]) => [name, limits.min]),
+    ),
+    choices: Object.fromEntries(
+      config.choices.map((choice) => [choice.name, choice.answers[0]?.label ?? '']),
+    ),
+  });
+  if (!trial.ok) return { ok: false, problems: trial.problems.map((p) => `The formula: ${p}`) };
+  if (!(trial.price > 0))
+    return { ok: false, problems: ['The formula gives no price at the smallest size'] };
+  return { ok: true, config };
+}

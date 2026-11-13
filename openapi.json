@@ -4420,6 +4420,115 @@
         ]
       }
     },
+    "/admin/catalogue/bespoke/price": {
+      "post": {
+        "operationId": "ProductAdminController_tryBespoke",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "config": {
+                    "description": "The made-to-measure set-up being tried, saved or not"
+                  },
+                  "dimensions": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "number"
+                    }
+                  },
+                  "choices": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "string"
+                    },
+                    "description": "Choice short name → answer label"
+                  }
+                },
+                "required": [
+                  "config",
+                  "dimensions",
+                  "choices"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "ok": {
+                          "type": "boolean",
+                          "enum": [
+                            true
+                          ]
+                        },
+                        "pricePence": {
+                          "type": "integer",
+                          "minimum": -9007199254740991,
+                          "maximum": 9007199254740991
+                        }
+                      },
+                      "required": [
+                        "ok",
+                        "pricePence"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "ok": {
+                          "type": "boolean",
+                          "enum": [
+                            false
+                          ]
+                        },
+                        "problems": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "required": [
+                        "ok",
+                        "problems"
+                      ],
+                      "additionalProperties": false
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not signed in"
+          },
+          "403": {
+            "description": "The role does not allow this"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "admin: catalogue"
+        ]
+      }
+    },
     "/admin/catalogue/sku-checks": {
       "get": {
         "operationId": "ProductAdminController_skuChecks",

@@ -1,4 +1,4 @@
-import { bespokeConfigSchema } from '../bespoke/pricing.js';
+import { checkBespokeConfig } from '../bespoke/pricing.js';
 import type { ProductState } from '../product.js';
 import { productCatalogueProblems } from './snapshot-checks.js';
 
@@ -40,8 +40,13 @@ export function productProblems(product: ProductState, colourIds: Set<string>): 
     ),
   );
 
-  if (product.pageType === '2' && !bespokeConfigSchema.safeParse(product.bespoke).success) {
-    problems.push('Made-to-measure products need their sizes and price formula');
+  if (product.pageType === '2') {
+    if (!product.bespoke)
+      problems.push('Made-to-measure products need their sizes and price formula');
+    else {
+      const check = checkBespokeConfig(product.bespoke);
+      if (!check.ok) problems.push(...check.problems);
+    }
   }
   if (product.pageType !== '2' && product.bespoke) {
     problems.push('Only made-to-measure products (page type 2) have a price formula');
