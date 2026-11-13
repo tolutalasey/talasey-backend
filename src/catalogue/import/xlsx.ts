@@ -43,8 +43,16 @@ function cellValue(type: string | undefined, body: string, shared: string[]): st
 
 // Reads cell values (not formulas or formatting) from an .xlsx file: enough for a product sheet
 // without pulling in a full spreadsheet library.
+function unzip(file: Uint8Array) {
+  try {
+    return unzipSync(file);
+  } catch {
+    throw new WorkbookError('This is not an .xlsx workbook.');
+  }
+}
+
 export function readWorkbook(file: Uint8Array) {
-  const entries = unzipSync(file);
+  const entries = unzip(file);
   const read = (path: string) => (entries[path] ? strFromU8(entries[path]) : undefined);
 
   const workbook = read('xl/workbook.xml');

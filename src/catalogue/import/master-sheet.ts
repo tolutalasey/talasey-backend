@@ -199,10 +199,12 @@ export function toSnapshot(
 export class MasterSheetPimSource implements PimSource {
   readonly name = 'Product master sheet';
 
-  constructor(private readonly path: string) {}
+  // A path on disk (the command line) or the bytes of an uploaded file (the admin).
+  constructor(private readonly source: string | Buffer) {}
 
   async snapshot(): Promise<CatalogueSnapshot> {
-    const workbook = readWorkbook(await readFile(this.path));
+    const bytes = typeof this.source === 'string' ? await readFile(this.source) : this.source;
+    const workbook = readWorkbook(bytes);
     const notImported = workbook.sheetNames.includes(NOT_IMPORTED)
       ? records(workbook.rows(NOT_IMPORTED))
       : [];

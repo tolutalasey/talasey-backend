@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { CatalogueChanges } from './catalogue-changes.service.js';
+import { CatalogueTransferController } from './catalogue-transfer.controller.js';
 import { ColourSetAdminController } from './colour-sets/colour-set-admin.controller.js';
 import { ColourSetRepository } from './colour-sets/colour-set.repository.js';
 import { ColourSetService } from './colour-sets/colour-set.service.js';
@@ -11,7 +12,12 @@ import { StoreCatalogueController } from './store-catalogue.controller.js';
 import { StoreCatalogueService } from './store-catalogue.service.js';
 
 @Module({
-  controllers: [StoreCatalogueController, ProductAdminController, ColourSetAdminController],
+  controllers: [
+    StoreCatalogueController,
+    ProductAdminController,
+    ColourSetAdminController,
+    CatalogueTransferController,
+  ],
   providers: [
     ProductRepository,
     ColourSetRepository,

@@ -60,6 +60,8 @@ npm run catalogue:import -- --dry-run               # what would change
 npm run catalogue:import
 ```
 
+Staff can do the same from `/admin/catalogue`: `POST /admin/catalogue/import` takes the sheet as an upload (`?apply=true` to make the changes; without it, only the report). `GET /admin/catalogue/export` downloads every product option as an .xlsx workbook.
+
 The importer reads the sheet behind the `PimSource` port, so a PIM can replace it later. Products are matched by handle, then by any of their SKUs; a match keeps its handle (and URL). A price left blank in the sheet never clears a price set in the admin. Running it twice changes nothing the second time. Today's sheet: 590 rows, 171 products (54 with options, 117 single), 437 SKUs, 153 held back, 301 without a price; 20 products get a colour set (page type 1B).
 
 ## Basket, checkout and orders

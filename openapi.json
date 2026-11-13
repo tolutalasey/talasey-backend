@@ -5156,6 +5156,117 @@
         ]
       }
     },
+    "/admin/catalogue/import": {
+      "post": {
+        "operationId": "CatalogueTransferController_import",
+        "parameters": [
+          {
+            "name": "apply",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "default": "false",
+              "description": "false only reports what would change; true makes the changes",
+              "type": "string",
+              "enum": [
+                "true",
+                "false"
+              ]
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "applied": {
+                      "type": "boolean"
+                    },
+                    "report": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "description": "The same report the command-line import prints"
+                    }
+                  },
+                  "required": [
+                    "applied",
+                    "report"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not signed in"
+          },
+          "403": {
+            "description": "The role does not allow this"
+          },
+          "413": {
+            "description": "Bigger than 20 MB"
+          },
+          "422": {
+            "description": "Not the product master sheet"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "admin: catalogue"
+        ]
+      }
+    },
+    "/admin/catalogue/export": {
+      "get": {
+        "operationId": "CatalogueTransferController_export",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          },
+          "401": {
+            "description": "Not signed in"
+          },
+          "403": {
+            "description": "The role does not allow this"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "admin: catalogue"
+        ]
+      }
+    },
     "/store/baskets": {
       "post": {
         "operationId": "StoreBasketController_create",
