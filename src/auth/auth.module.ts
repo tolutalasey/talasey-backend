@@ -20,6 +20,6 @@ import { UsersService } from './users.service.js';
     StaffGuard,
     UsersService,
   ],
-  exports: [AuthService, StaffGuard],
+  exports: [AuthService, StaffGuard, STAFF_USER_REPOSITORY],
 })
 export class AuthModule {}

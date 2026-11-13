@@ -109,24 +109,31 @@ export class ContentService implements OnModuleInit {
     });
   }
 
-  async publish(id: string, editor: Editor): Promise<ContentResult> {
-    return this.change(id, editor, (current, definition) => {
-      if (!canPublish(definition, editor.role)) {
-        return definition.locked
-          ? 'Only the owner publishes legal and finance wording'
-          : 'Contributors save drafts; an editor publishes them';
-      }
-      const parsed = definition.schema.safeParse(current.draft);
-      if (!parsed.success) return problemsOf(definition, current.draft);
-      return {
-        state: {
-          ...this.stateOf(current),
-          published: parsed.data as Record<string, unknown>,
-          status: 'published',
-        },
-        published: true,
-      };
-    });
+  // With `within`, the publish joins a bigger transaction (a release) and the caller refreshes
+  // the site once everything in it is live.
+  async publish(id: string, editor: Editor, within?: Executor): Promise<ContentResult> {
+    return this.change(
+      id,
+      editor,
+      (current, definition) => {
+        if (!canPublish(definition, editor.role)) {
+          return definition.locked
+            ? 'Only the owner publishes legal and finance wording'
+            : 'Contributors save drafts; an editor publishes them';
+        }
+        const parsed = definition.schema.safeParse(current.draft);
+        if (!parsed.success) return problemsOf(definition, current.draft);
+        return {
+          state: {
+            ...this.stateOf(current),
+            published: parsed.data as Record<string, unknown>,
+            status: 'published',
+          },
+          published: true,
+        };
+      },
+      { within },
+    );
   }
 
   async unpublish(id: string, editor: Editor): Promise<ContentResult> {
@@ -156,9 +163,9 @@ export class ContentService implements OnModuleInit {
       | string
       | string[]
       | Promise<{ state: ContentState | null; published?: boolean } | string | string[]>,
-    { isNew = false } = {},
+    { isNew = false, within }: { isNew?: boolean; within?: Executor } = {},
   ): Promise<ContentResult> {
-    const result = await this.db.transaction(async (tx): Promise<ContentResult> => {
+    const run = async (tx: Executor): Promise<ContentResult> => {
       const existing = await this.documents.find(id, tx);
       const definition = contentType(existing?.type ?? '');
       if (!isNew && (!existing || !definition)) return { status: 'not-found' };
@@ -193,8 +200,10 @@ export class ContentService implements OnModuleInit {
         document,
         problems: saved ? problemsOf(saved, document.draft) : [],
       };
-    });
-    if (result.status === 'saved') await this.site.refresh([`content:${result.document.type}`]);
+    };
+    const result = await (within ?? this.db).transaction(run);
+    if (result.status === 'saved' && !within)
+      await this.site.refresh([`content:${result.document.type}`]);
     return result;
   }
 

@@ -99,6 +99,7 @@ Pages, the homepage, guides, FAQs, inspiration photos, navigation, site settings
 - Every document has a **draft** and a **published** copy. Saving changes only the draft; the site shows the published copy until an editor publishes again.
 - Contributors write and save drafts. Editors (and the owner) publish, unpublish and delete. Only the owner publishes legal and finance wording.
 - Drafts save even when unfinished and come back with a list of what to fix; publishing refuses until the list is empty.
+- **Releases** (`/content/releases`) group drafts that must go live together. Publishing a release publishes the current draft of each document in one transaction: all or nothing. A release can be scheduled; `ReleaseScheduler` checks every 30 seconds (behind a lock, so only one API instance publishes) and publishes as the person who scheduled it. Any change to a scheduled release puts it back to unscheduled.
 - Every save and publish is in the audit log and can be restored.
 - `GET /store/content/:type` gives the site what is published, nothing else.
 

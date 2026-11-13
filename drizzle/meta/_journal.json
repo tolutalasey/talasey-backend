@@ -50,6 +50,13 @@
       "when": 1794582426936,
       "tag": "0006_staff_two_factor",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1794583052095,
+      "tag": "0007_content_releases",
+      "breakpoints": true
     }
   ]
 }
