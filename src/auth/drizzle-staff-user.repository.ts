@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { asc, eq, sql } from 'drizzle-orm';
+import { asc, eq, isNotNull, sql } from 'drizzle-orm';
 import type { Database } from '../database/client.js';
 import { DATABASE } from '../database/database.module.js';
 import { staffUsers } from '../database/schema/index.js';
@@ -17,6 +17,7 @@ const publicColumns = {
   name: staffUsers.name,
   role: staffUsers.role,
   active: staffUsers.active,
+  twoFactor: isNotNull(staffUsers.twoFactorSecret).mapWith(Boolean),
 };
 
 const normalise = (email: string) => email.trim().toLowerCase();
@@ -27,7 +28,11 @@ export class DrizzleStaffUserRepository implements StaffUserRepository {
 
   async findByEmail(email: string): Promise<StaffUserWithPassword | null> {
     const [user] = await this.db
-      .select({ ...publicColumns, passwordHash: staffUsers.passwordHash })
+      .select({
+        ...publicColumns,
+        passwordHash: staffUsers.passwordHash,
+        twoFactorSecret: staffUsers.twoFactorSecret,
+      })
       .from(staffUsers)
       .where(eq(staffUsers.email, normalise(email)));
     return user ?? null;
@@ -39,6 +44,14 @@ export class DrizzleStaffUserRepository implements StaffUserRepository {
       .from(staffUsers)
       .where(eq(staffUsers.id, id));
     return user ?? null;
+  }
+
+  async twoFactorSecretOf(id: string): Promise<string | null> {
+    const [user] = await this.db
+      .select({ secret: staffUsers.twoFactorSecret })
+      .from(staffUsers)
+      .where(eq(staffUsers.id, id));
+    return user?.secret ?? null;
   }
 
   list(): Promise<StaffUser[]> {

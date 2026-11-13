@@ -8,6 +8,7 @@ export const staffUsers = pgTable('staff_user', {
   name: text('name').notNull(),
   role: staffRole('role').notNull(),
   passwordHash: text('password_hash').notNull(),
+  twoFactorSecret: text('two_factor_secret'),
   active: boolean('active').notNull().default(true),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),

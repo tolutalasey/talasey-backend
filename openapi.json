@@ -240,8 +240,162 @@
             "content": {
               "application/json": {
                 "schema": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "signed-in"
+                          ]
+                        },
+                        "token": {
+                          "type": "string"
+                        },
+                        "user": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string",
+                              "format": "uuid",
+                              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                            },
+                            "email": {
+                              "type": "string"
+                            },
+                            "name": {
+                              "type": "string"
+                            },
+                            "role": {
+                              "type": "string",
+                              "enum": [
+                                "owner",
+                                "editor",
+                                "contributor",
+                                "catalogue"
+                              ]
+                            },
+                            "active": {
+                              "type": "boolean"
+                            },
+                            "twoFactor": {
+                              "type": "boolean"
+                            },
+                            "permissions": {
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "enum": [
+                                  "catalogue",
+                                  "orders",
+                                  "delivery",
+                                  "content.edit",
+                                  "content.publish",
+                                  "uploads",
+                                  "audit",
+                                  "users"
+                                ]
+                              }
+                            }
+                          },
+                          "required": [
+                            "id",
+                            "email",
+                            "name",
+                            "role",
+                            "active",
+                            "twoFactor",
+                            "permissions"
+                          ],
+                          "additionalProperties": false
+                        }
+                      },
+                      "required": [
+                        "status",
+                        "token",
+                        "user"
+                      ],
+                      "additionalProperties": false
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "code-needed"
+                          ]
+                        },
+                        "challenge": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "status",
+                        "challenge"
+                      ],
+                      "additionalProperties": false
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Wrong email or password"
+          },
+          "429": {
+            "description": "Too many failed attempts"
+          }
+        },
+        "tags": [
+          "staff sign-in"
+        ]
+      }
+    },
+    "/auth/sign-in/code": {
+      "post": {
+        "operationId": "AuthController_signInCode",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "challenge": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "code": {
+                    "type": "string",
+                    "pattern": "^\\d{3} ?\\d{3}$"
+                  }
+                },
+                "required": [
+                  "challenge",
+                  "code"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
                   "type": "object",
                   "properties": {
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "signed-in"
+                      ]
+                    },
                     "token": {
                       "type": "string"
                     },
@@ -271,6 +425,9 @@
                         "active": {
                           "type": "boolean"
                         },
+                        "twoFactor": {
+                          "type": "boolean"
+                        },
                         "permissions": {
                           "type": "array",
                           "items": {
@@ -294,12 +451,14 @@
                         "name",
                         "role",
                         "active",
+                        "twoFactor",
                         "permissions"
                       ],
                       "additionalProperties": false
                     }
                   },
                   "required": [
+                    "status",
                     "token",
                     "user"
                   ],
@@ -309,7 +468,7 @@
             }
           },
           "401": {
-            "description": "Wrong email or password"
+            "description": "Wrong code, or the sign-in expired"
           },
           "429": {
             "description": "Too many failed attempts"
@@ -355,6 +514,9 @@
                     "active": {
                       "type": "boolean"
                     },
+                    "twoFactor": {
+                      "type": "boolean"
+                    },
                     "permissions": {
                       "type": "array",
                       "items": {
@@ -378,6 +540,7 @@
                     "name",
                     "role",
                     "active",
+                    "twoFactor",
                     "permissions"
                   ],
                   "additionalProperties": false
@@ -390,6 +553,319 @@
           },
           "403": {
             "description": "The role does not allow this"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "staff sign-in"
+        ]
+      }
+    },
+    "/auth/password": {
+      "post": {
+        "operationId": "AuthController_changePassword",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "currentPassword": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "newPassword": {
+                    "type": "string",
+                    "minLength": 10
+                  }
+                },
+                "required": [
+                  "currentPassword",
+                  "newPassword"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "401": {
+            "description": "Not signed in"
+          },
+          "403": {
+            "description": "The role does not allow this"
+          },
+          "422": {
+            "description": "Current password is wrong"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "staff sign-in"
+        ]
+      }
+    },
+    "/auth/two-factor/setup": {
+      "post": {
+        "operationId": "AuthController_setUpTwoFactor",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "secret": {
+                      "type": "string"
+                    },
+                    "uri": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "secret",
+                    "uri"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not signed in"
+          },
+          "403": {
+            "description": "The role does not allow this"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "staff sign-in"
+        ]
+      }
+    },
+    "/auth/two-factor/on": {
+      "post": {
+        "operationId": "AuthController_turnOnTwoFactor",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "code": {
+                    "type": "string",
+                    "pattern": "^\\d{3} ?\\d{3}$"
+                  }
+                },
+                "required": [
+                  "code"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    },
+                    "email": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "role": {
+                      "type": "string",
+                      "enum": [
+                        "owner",
+                        "editor",
+                        "contributor",
+                        "catalogue"
+                      ]
+                    },
+                    "active": {
+                      "type": "boolean"
+                    },
+                    "twoFactor": {
+                      "type": "boolean"
+                    },
+                    "permissions": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "enum": [
+                          "catalogue",
+                          "orders",
+                          "delivery",
+                          "content.edit",
+                          "content.publish",
+                          "uploads",
+                          "audit",
+                          "users"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "email",
+                    "name",
+                    "role",
+                    "active",
+                    "twoFactor",
+                    "permissions"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not signed in"
+          },
+          "403": {
+            "description": "The role does not allow this"
+          },
+          "410": {
+            "description": "The set-up expired"
+          },
+          "422": {
+            "description": "Wrong code"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "staff sign-in"
+        ]
+      }
+    },
+    "/auth/two-factor/off": {
+      "post": {
+        "operationId": "AuthController_turnOffTwoFactor",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "code": {
+                    "type": "string",
+                    "pattern": "^\\d{3} ?\\d{3}$"
+                  }
+                },
+                "required": [
+                  "code"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    },
+                    "email": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "role": {
+                      "type": "string",
+                      "enum": [
+                        "owner",
+                        "editor",
+                        "contributor",
+                        "catalogue"
+                      ]
+                    },
+                    "active": {
+                      "type": "boolean"
+                    },
+                    "twoFactor": {
+                      "type": "boolean"
+                    },
+                    "permissions": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "enum": [
+                          "catalogue",
+                          "orders",
+                          "delivery",
+                          "content.edit",
+                          "content.publish",
+                          "uploads",
+                          "audit",
+                          "users"
+                        ]
+                      }
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "email",
+                    "name",
+                    "role",
+                    "active",
+                    "twoFactor",
+                    "permissions"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not signed in"
+          },
+          "403": {
+            "description": "The role does not allow this"
+          },
+          "422": {
+            "description": "Wrong code"
           }
         },
         "security": [
@@ -460,6 +936,9 @@
                       },
                       "active": {
                         "type": "boolean"
+                      },
+                      "twoFactor": {
+                        "type": "boolean"
                       }
                     },
                     "required": [
@@ -467,7 +946,8 @@
                       "email",
                       "name",
                       "role",
-                      "active"
+                      "active",
+                      "twoFactor"
                     ],
                     "additionalProperties": false
                   }
@@ -564,6 +1044,9 @@
                     },
                     "active": {
                       "type": "boolean"
+                    },
+                    "twoFactor": {
+                      "type": "boolean"
                     }
                   },
                   "required": [
@@ -571,7 +1054,8 @@
                     "email",
                     "name",
                     "role",
-                    "active"
+                    "active",
+                    "twoFactor"
                   ],
                   "additionalProperties": false
                 }
@@ -637,6 +1121,12 @@
                   "password": {
                     "type": "string",
                     "minLength": 10
+                  },
+                  "twoFactor": {
+                    "type": "boolean",
+                    "enum": [
+                      false
+                    ]
                   }
                 }
               }
@@ -673,6 +1163,9 @@
                     },
                     "active": {
                       "type": "boolean"
+                    },
+                    "twoFactor": {
+                      "type": "boolean"
                     }
                   },
                   "required": [
@@ -680,7 +1173,8 @@
                     "email",
                     "name",
                     "role",
-                    "active"
+                    "active",
+                    "twoFactor"
                   ],
                   "additionalProperties": false
                 }

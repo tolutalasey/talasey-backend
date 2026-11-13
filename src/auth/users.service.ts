@@ -88,10 +88,11 @@ export class UsersService implements OnModuleInit {
       ((input.role !== undefined && input.role !== 'owner') || input.active === false);
     if (losesOwner && (await this.activeOwners()) <= 1) return { status: 'last-owner' };
 
-    const { password, ...changes } = input;
+    const { password, twoFactor, ...changes } = input;
     const user = await this.users.update(id, {
       ...changes,
       ...(password && { passwordHash: await hashPassword(password) }),
+      ...(twoFactor === false && { twoFactorSecret: null }),
     });
     if (!user) return { status: 'not-found' };
     await this.log(this.db, actor, user, snapshot(current), snapshot(user));

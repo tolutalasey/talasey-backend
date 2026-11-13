@@ -1,0 +1,1 @@
+ALTER TABLE "staff_user" ADD COLUMN "two_factor_secret" text;

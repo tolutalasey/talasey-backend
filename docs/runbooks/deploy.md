@@ -23,7 +23,13 @@ Each project deploys from its own repo. Release the backend first when both chan
 - GitHub (Settings → Environments): `RAILWAY_TOKEN` on the backend repo; `VERCEL_TOKEN`, `VERCEL_ORG_ID` and `VERCEL_PROJECT_ID` on the frontend repo. Without them the deploy steps skip and say so.
 - The frontend's CI checks out the backend to run the end-to-end tests: set the `BACKEND_REPO` variable if it isn't `tolutalasey/talasey-backend`, and a `BACKEND_REPO_TOKEN` secret with read access if the backend repo is private.
 
-Production gets no demo accounts. A script to create the first owner there is still to write; staging can use the demo accounts.
+Production gets no demo accounts. Create the first owner once, from a shell on the API service:
+
+```sh
+npm run staff:create-owner -- amy@talasey.co.uk "Amy Surname"
+```
+
+It prints a one-off password. The owner signs in, changes it under **Your account**, turns on two-factor, then adds everyone else in **Staff**. Staging can use the demo accounts.
 
 ## Before a release
 

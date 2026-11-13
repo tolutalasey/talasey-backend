@@ -117,6 +117,10 @@ Emails go through the `Mailer` port. Locally they are written to `.data/outbox` 
 
 `POST /auth/sign-in` returns a session token; send it as `Authorization: Bearer …`. Sessions last `SESSION_DAYS` from last use. Five wrong passwords lock an email for 15 minutes.
 
+With two-factor on (`POST /auth/two-factor/setup`, then `/auth/two-factor/on` with a code from the app), sign-in returns `{ status: 'code-needed', challenge }` instead of a token; `POST /auth/sign-in/code` with the challenge and a 6-digit code finishes it. Codes are standard time-based codes (RFC 6238, 30 seconds), each accepted once, and wrong codes count towards the same lockout. An owner can switch two-factor off for someone who lost their phone (`PATCH /admin/users/:id` with `twoFactor: false`). `POST /auth/password` changes your own password.
+
+The first owner of a real setup: `npm run staff:create-owner -- <email> "<name>"`.
+
 ## Audit log
 
 Every change to an audited thing records its whole state before and after. `POST /admin/audit/:id/restore` puts back the state from before that change and logs the restore as a change of its own. Each module registers a `Restorer` for its things.

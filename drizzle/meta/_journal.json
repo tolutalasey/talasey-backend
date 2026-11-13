@@ -43,6 +43,13 @@
       "when": 1794572287482,
       "tag": "0005_image_sizes",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1794582426936,
+      "tag": "0006_staff_two_factor",
+      "breakpoints": true
     }
   ]
 }
