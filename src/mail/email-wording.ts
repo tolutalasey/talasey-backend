@@ -1,0 +1,36 @@
+import { Injectable } from '@nestjs/common';
+import { ContentService } from '../content/content.service.js';
+
+export type EmailName = 'order-confirmation' | 'delivery-day-booked' | 'enquiry-received';
+
+const FALLBACK: Record<EmailName, { subject: string; body: string }> = {
+  'order-confirmation': {
+    subject: 'Your Talasey order {orderNumber}',
+    body: 'Hello {name},\n\nThank you for your order {orderNumber}. {deliveryDay}\n\nThe Talasey team',
+  },
+  'delivery-day-booked': {
+    subject: 'Your delivery day is booked',
+    body: 'Hello {name},\n\n{deliveryDay}\n\nThe Talasey team',
+  },
+  'enquiry-received': {
+    subject: 'We have your enquiry',
+    body: 'Hello {name},\n\nThank you. We will reply within one working day.\n\nThe Talasey team',
+  },
+};
+
+// The wording editors publish in /content, with {placeholders} filled in.
+@Injectable()
+export class EmailWording {
+  constructor(private readonly content: ContentService) {}
+
+  async render(name: EmailName, values: Record<string, string>) {
+    const published = (await this.content.published('email')).find((entry) => entry.email === name);
+    const wording =
+      typeof published?.subject === 'string' && typeof published.body === 'string'
+        ? { subject: published.subject, body: published.body }
+        : FALLBACK[name];
+    const fill = (text: string) =>
+      text.replace(/\{(\w+)\}/g, (match, key: string) => values[key] ?? match);
+    return { subject: fill(wording.subject), body: fill(wording.body) };
+  }
+}

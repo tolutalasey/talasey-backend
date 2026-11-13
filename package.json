@@ -1,0 +1,60 @@
+{
+  "name": "talasey-backend",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@12.18.0",
+  "engines": {
+    "node": ">=22.12"
+  },
+  "scripts": {
+    "db": "node scripts/db.mjs",
+    "setup": "node scripts/setup.mjs",
+    "dev": "nest start --watch --env-file .env",
+    "build": "nest build",
+    "start": "node --env-file-if-exists=.env dist/main.js",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "vitest run",
+    "test:int": "vitest run --config vitest.int.config.ts",
+    "openapi": "nest build && node dist/generate-openapi.js",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "node --env-file-if-exists=.env dist/database/migrate.js",
+    "db:seed": "node --env-file-if-exists=.env dist/database/seed.js",
+    "catalogue:import": "node --env-file-if-exists=.env dist/catalogue/import/import-catalogue.js"
+  },
+  "dependencies": {
+    "@nestjs/common": "12.5.0",
+    "@nestjs/core": "12.5.0",
+    "@nestjs/platform-express": "12.5.0",
+    "@nestjs/swagger": "12.1.1",
+    "drizzle-orm": "0.45.4",
+    "fflate": "0.8.2",
+    "ioredis": "6.0.0",
+    "postgres": "4.1.1",
+    "reflect-metadata": "0.2.2",
+    "rxjs": "7.8.2",
+    "stripe": "23.0.0",
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "@nestjs/cli": "12.0.12",
+    "@nestjs/testing": "12.5.0",
+    "@types/express": "5.0.6",
+    "@types/node": "24.19.2",
+    "@types/supertest": "7.2.1",
+    "drizzle-kit": "0.31.11",
+    "embedded-postgres": "18.6.0-beta.19",
+    "eslint": "10.14.0",
+    "eslint-config-prettier": "10.1.8",
+    "globals": "17.14.0",
+    "prettier": "3.10.1",
+    "supertest": "7.3.2",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.72.2",
+    "vitest": "5.1.0"
+  }
+}

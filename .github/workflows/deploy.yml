@@ -1,0 +1,33 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  release:
+    types: [published]
+
+concurrency:
+  group: deploy-${{ github.event_name == 'release' && 'production' || 'staging' }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  railway:
+    name: Railway (${{ github.event_name == 'release' && 'production' || 'staging' }})
+    runs-on: ubuntu-latest
+    environment: ${{ github.event_name == 'release' && 'production' || 'staging' }}
+    env:
+      RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+      TARGET: ${{ github.event_name == 'release' && 'production' || 'staging' }}
+    steps:
+      - if: env.RAILWAY_TOKEN == ''
+        run: echo "::notice::RAILWAY_TOKEN is not set, so the deploy is skipped."
+      - if: env.RAILWAY_TOKEN != ''
+        uses: actions/checkout@v5
+      - if: env.RAILWAY_TOKEN != ''
+        run: npm install --global @railway/cli
+      - name: Deploy the API (migrations run as its pre-deploy step)
+        if: env.RAILWAY_TOKEN != ''
+        run: railway up --ci --service api --environment "$TARGET"
