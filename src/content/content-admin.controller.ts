@@ -35,12 +35,14 @@ import {
 } from './content.schemas.js';
 import { canPublish, ContentService, type ContentResult } from './content.service.js';
 
+// Singletons (the homepage, navigation) are named by their type; everything else by its title,
+// or by its key (a product's address, a redirect's old path) when it has no title.
 const titleOf = (document: ContentDocument) =>
   String(
     document.draft.title ??
       document.draft.name ??
       document.draft.question ??
-      contentType(document.type)?.label ??
+      (contentType(document.type)?.singleton ? contentType(document.type)?.label : document.key) ??
       document.key,
   );
 

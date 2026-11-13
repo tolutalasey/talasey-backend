@@ -270,6 +270,76 @@ export const CONTENT_TYPES: ContentType[] = [
     schema: pageSchema.extend({ steps: list }),
   },
   {
+    type: 'product-extras',
+    label: 'Product extras',
+    singleton: false,
+    keyField: 'product',
+    locked: false,
+    fields: [
+      {
+        name: 'product',
+        label: 'Product',
+        kind: 'text',
+        help: "The end of the product's web address, like silver-grey-porcelain-paving",
+      },
+      {
+        name: 'completeTheJob',
+        label: 'Complete the job',
+        kind: 'items',
+        help: 'Products that go with it, each with its own add button. Never ticked for the customer.',
+        fields: [
+          {
+            name: 'handle',
+            label: 'Product',
+            kind: 'text',
+            help: 'The end of its web address',
+          },
+          { name: 'reason', label: 'Why it is needed', kind: 'text' },
+        ],
+      },
+      {
+        name: 'documents',
+        label: 'Documents',
+        kind: 'items',
+        help: 'Spec sheets, fitting guides and certificates',
+        fields: [
+          { name: 'title', label: 'Title', kind: 'text' },
+          {
+            name: 'url',
+            label: 'Link',
+            kind: 'text',
+            help: 'Starts with https:// or /, like /downloads/fitting-guide.pdf',
+          },
+        ],
+      },
+      { name: 'features', label: 'Key features', kind: 'list', help: 'One per line' },
+      { name: 'warranty', label: 'Warranty', kind: 'text', help: 'Like: 25-year guarantee' },
+    ],
+    schema: z.object({
+      product: slug,
+      completeTheJob: z
+        .array(z.object({ handle: slug, reason: required('reason it is needed') }))
+        .default([])
+        .refine(
+          (items) => new Set(items.map((item) => item.handle)).size === items.length,
+          'Each product appears once in "complete the job"',
+        ),
+      documents: z
+        .array(
+          z.object({
+            title: required('document title'),
+            url: z
+              .string()
+              .trim()
+              .regex(/^(https:\/\/|\/)\S+$/, 'Document links start with https:// or /'),
+          }),
+        )
+        .default([]),
+      features: list,
+      warranty: optionalText,
+    }),
+  },
+  {
     type: 'range-page',
     label: 'Range and category pages',
     singleton: false,

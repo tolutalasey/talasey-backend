@@ -2,6 +2,7 @@ import { hashPassword } from '../auth/password.js';
 import type { StaffRole } from '../auth/roles.js';
 import { parseConfig } from '../config/config.schema.js';
 import { seedSampleProducts } from '../catalogue/sample-products.js';
+import { seedSampleContent } from '../content/sample-content.js';
 import { seedSampleDelivery } from '../delivery/sample-delivery.js';
 import { createDatabase, type Database } from './client.js';
 import { isEntryPoint } from './run-as-script.js';
@@ -32,6 +33,7 @@ export async function seed(databaseUrl: string, { demo = false }: { demo?: boole
     if (demo) {
       await seedStaff(db);
       await seedSampleProducts(db);
+      await seedSampleContent(db);
     }
   } finally {
     await close();
