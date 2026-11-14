@@ -113,6 +113,10 @@ Emails go through the `Mailer` port. Locally they are written to `.data/outbox` 
 
 `src/samples`. Staff choose which samples are offered (`/admin/samples/offers`, one per product colour or finish). Customers ask for up to five through `POST /store/samples` with their address: no basket or payment, and the site keeps the chosen samples in a cookie until then. Each request gets a number (S1, S2…), and the customer is emailed when it arrives and again when staff mark it as sent (`POST /admin/samples/requests/:id/dispatch`). Marketing consent is recorded only if they tick the box.
 
+## Back in stock
+
+`src/stock-alerts`. On an out-of-stock option of a stocked product, the site asks for an email (`POST /store/stock-alerts`). Each catalogue change queues a check for the products it touched; anyone waiting for an option that can be bought again gets one "back-in-stock" email (wording in /content), and is then forgotten for that option. Made-to-order options can always be bought, so they take no requests.
+
 ## Staff and roles
 
 | Role        | Can                                                     |

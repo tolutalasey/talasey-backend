@@ -16,6 +16,7 @@ import { PaymentsModule } from './payments/payments.module.js';
 import { SamplesModule } from './samples/samples.module.js';
 import { SiteModule } from './site/site.module.js';
 import { SlotsModule } from './slots/slots.module.js';
+import { StockAlertsModule } from './stock-alerts/stock-alerts.module.js';
 import { StoreModule } from './store/store.module.js';
 import { UploadsModule } from './uploads/uploads.module.js';
 
@@ -40,6 +41,7 @@ import { UploadsModule } from './uploads/uploads.module.js';
     MailModule,
     UploadsModule,
     SamplesModule,
+    StockAlertsModule,
   ],
 })
 export class AppModule {}

@@ -104,6 +104,7 @@ export const EMAILS = [
   'enquiry-received',
   'samples-requested',
   'samples-dispatched',
+  'back-in-stock',
 ] as const;
 
 const pageFields = (extra: Field[] = []): Field[] => [
@@ -631,7 +632,7 @@ export const CONTENT_TYPES: ContentType[] = [
         name: 'body',
         label: 'Message',
         kind: 'textarea',
-        help: '{name} is filled in, and {orderNumber} and {deliveryDay} for orders, or {requestNumber} and {samples} for samples',
+        help: '{name} is filled in, and {orderNumber} and {deliveryDay} for orders, or {requestNumber} and {samples} for samples, or {product} and {link} for back in stock',
       },
     ],
     schema: z.object({
