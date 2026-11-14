@@ -22,12 +22,14 @@ import {
   ValidParam,
   ValidQuery,
 } from '../common/contract.js';
-import { CONTENT_TYPES, contentType, problemsOf } from './content-types.js';
+import { CONTENT_TYPES, contentType, keyOf, problemsOf } from './content-types.js';
+import { ContentPreviewService } from './content-preview.service.js';
 import type { ContentDocument } from './content.repository.js';
 import {
   contentDocumentSchema,
   contentDraftSchema,
   contentListQuerySchema,
+  contentPreviewSchema,
   contentSummarySchema,
   contentTypeSchema,
   newContentSchema,
@@ -60,7 +62,10 @@ const summary = (document: ContentDocument) => ({
 @Controller('content')
 @StaffOnly('content.edit')
 export class ContentAdminController {
-  constructor(private readonly content: ContentService) {}
+  constructor(
+    private readonly content: ContentService,
+    private readonly previews: ContentPreviewService,
+  ) {}
 
   @Get('types')
   @Returns(z.array(contentTypeSchema))
@@ -113,6 +118,30 @@ export class ContentAdminController {
     @CurrentStaff() user: StaffUser,
   ): Promise<ContentDocumentDto> {
     return this.dto(await this.content.saveDraft(id, body.data, user), user);
+  }
+
+  @Put('documents/:id/preview')
+  @HttpCode(204)
+  @Accepts(contentDraftSchema)
+  @Fails([404, 'No such document'])
+  async stagePreview(
+    @ValidParam('id', z.uuid()) id: string,
+    @ValidBody(contentDraftSchema) body: z.infer<typeof contentDraftSchema>,
+    @CurrentStaff() user: StaffUser,
+  ) {
+    if (!(await this.content.find(id))) throw new NotFoundException('No such document');
+    await this.previews.stage(user.id, id, body.data);
+  }
+
+  @Get('documents/:id/preview')
+  @Returns(contentPreviewSchema)
+  @Fails([404, 'No such document'])
+  async preview(@ValidParam('id', z.uuid()) id: string, @CurrentStaff() user: StaffUser) {
+    const document = await this.content.find(id);
+    const definition = document && contentType(document.type);
+    if (!document || !definition) throw new NotFoundException('No such document');
+    const data = (await this.previews.staged(user.id, id)) ?? document.draft;
+    return { type: document.type, key: keyOf(definition, data), data };
   }
 
   @Post('documents/:id/publish')

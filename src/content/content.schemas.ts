@@ -30,6 +30,12 @@ export const contentDocumentSchema = contentSummarySchema.extend({
   canPublish: z.boolean(),
 });
 
+export const contentPreviewSchema = z.object({
+  type: z.string(),
+  key: z.string(),
+  data: data.describe('What is being typed if staged, otherwise the saved draft'),
+});
+
 export const newContentSchema = z.object({ type: z.string(), data });
 export const contentDraftSchema = z.object({ data });
 export const contentListQuerySchema = z.object({ type: z.string() });
