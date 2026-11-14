@@ -14417,6 +14417,526 @@
           "store: basket and checkout"
         ]
       }
+    },
+    "/store/account/sign-in-link": {
+      "post": {
+        "operationId": "AccountsController_sendLink",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "pattern": "^(?:[A-Za-z0-9_'+\\-]+\\.)*[A-Za-z0-9_'+\\-]*[A-Za-z0-9_+-]@(?:[A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$"
+                  }
+                },
+                "required": [
+                  "email"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "store: customer accounts"
+        ]
+      }
+    },
+    "/store/account/sessions": {
+      "post": {
+        "operationId": "AccountsController_redeem",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "token": {
+                    "type": "string",
+                    "minLength": 20,
+                    "maxLength": 200
+                  }
+                },
+                "required": [
+                  "token"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "sessionToken": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "sessionToken",
+                    "email"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The link has expired or was already used"
+          }
+        },
+        "tags": [
+          "store: customer accounts"
+        ]
+      },
+      "delete": {
+        "operationId": "AccountsController_signOut",
+        "parameters": [],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "store: customer accounts"
+        ]
+      }
+    },
+    "/store/account": {
+      "get": {
+        "operationId": "AccountsController_account",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "email": {
+                      "type": "string"
+                    },
+                    "orders": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid",
+                            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                          },
+                          "number": {
+                            "type": "integer",
+                            "minimum": -9007199254740991,
+                            "maximum": 9007199254740991
+                          },
+                          "email": {
+                            "type": "string"
+                          },
+                          "address": {
+                            "type": "object",
+                            "properties": {
+                              "firstName": {
+                                "type": "string",
+                                "minLength": 1
+                              },
+                              "lastName": {
+                                "type": "string",
+                                "minLength": 1
+                              },
+                              "address1": {
+                                "type": "string",
+                                "minLength": 1
+                              },
+                              "city": {
+                                "type": "string",
+                                "minLength": 1
+                              },
+                              "postcode": {
+                                "type": "string"
+                              },
+                              "phone": {
+                                "type": "string",
+                                "minLength": 10
+                              }
+                            },
+                            "required": [
+                              "firstName",
+                              "lastName",
+                              "address1",
+                              "city",
+                              "postcode",
+                              "phone"
+                            ],
+                            "additionalProperties": false
+                          },
+                          "lines": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "string",
+                                  "format": "uuid",
+                                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                                },
+                                "title": {
+                                  "type": "string"
+                                },
+                                "variantTitle": {
+                                  "type": "string"
+                                },
+                                "sku": {
+                                  "nullable": true,
+                                  "type": "string"
+                                },
+                                "colour": {
+                                  "nullable": true,
+                                  "type": "string"
+                                },
+                                "quantity": {
+                                  "type": "integer",
+                                  "minimum": -9007199254740991,
+                                  "maximum": 9007199254740991
+                                },
+                                "unitPricePence": {
+                                  "nullable": true,
+                                  "type": "integer",
+                                  "minimum": -9007199254740991,
+                                  "maximum": 9007199254740991
+                                },
+                                "totalPence": {
+                                  "type": "integer",
+                                  "minimum": -9007199254740991,
+                                  "maximum": 9007199254740991
+                                },
+                                "buildId": {
+                                  "nullable": true,
+                                  "type": "string"
+                                },
+                                "bespoke": {
+                                  "nullable": true,
+                                  "type": "object",
+                                  "properties": {
+                                    "unit": {
+                                      "type": "string"
+                                    },
+                                    "dimensions": {
+                                      "type": "object",
+                                      "additionalProperties": {
+                                        "type": "number"
+                                      }
+                                    },
+                                    "choices": {
+                                      "type": "object",
+                                      "additionalProperties": {
+                                        "type": "string"
+                                      }
+                                    }
+                                  },
+                                  "required": [
+                                    "unit",
+                                    "dimensions",
+                                    "choices"
+                                  ],
+                                  "additionalProperties": false
+                                },
+                                "stock": {
+                                  "type": "string",
+                                  "description": "For example \"3 now, 2 made to order\""
+                                },
+                                "variantId": {
+                                  "nullable": true,
+                                  "type": "string",
+                                  "format": "uuid",
+                                  "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                                }
+                              },
+                              "required": [
+                                "id",
+                                "title",
+                                "variantTitle",
+                                "sku",
+                                "colour",
+                                "quantity",
+                                "unitPricePence",
+                                "totalPence",
+                                "buildId",
+                                "bespoke",
+                                "stock",
+                                "variantId"
+                              ],
+                              "additionalProperties": false
+                            }
+                          },
+                          "itemTotalPence": {
+                            "type": "integer",
+                            "minimum": -9007199254740991,
+                            "maximum": 9007199254740991
+                          },
+                          "deliveryPence": {
+                            "type": "integer",
+                            "minimum": -9007199254740991,
+                            "maximum": 9007199254740991
+                          },
+                          "discountPence": {
+                            "type": "integer",
+                            "minimum": -9007199254740991,
+                            "maximum": 9007199254740991
+                          },
+                          "promotions": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "totalPence": {
+                            "type": "integer",
+                            "minimum": -9007199254740991,
+                            "maximum": 9007199254740991
+                          },
+                          "delivery": {
+                            "type": "object",
+                            "properties": {
+                              "shipment": {
+                                "nullable": true,
+                                "type": "string",
+                                "enum": [
+                                  "pallet",
+                                  "parcel"
+                                ]
+                              },
+                              "name": {
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "day": {
+                                "nullable": true,
+                                "type": "object",
+                                "properties": {
+                                  "date": {
+                                    "type": "string",
+                                    "format": "date",
+                                    "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                                  },
+                                  "status": {
+                                    "type": "string",
+                                    "enum": [
+                                      "held",
+                                      "booked",
+                                      "needs-rebooking"
+                                    ]
+                                  }
+                                },
+                                "required": [
+                                  "date",
+                                  "status"
+                                ],
+                                "additionalProperties": false
+                              },
+                              "access": {
+                                "nullable": true,
+                                "type": "object",
+                                "properties": {
+                                  "vehicleAccess": {
+                                    "type": "string",
+                                    "enum": [
+                                      "articulated",
+                                      "rigid",
+                                      "small"
+                                    ]
+                                  },
+                                  "hardStanding": {
+                                    "type": "boolean"
+                                  },
+                                  "kerbsideOk": {
+                                    "type": "boolean"
+                                  }
+                                },
+                                "required": [
+                                  "vehicleAccess",
+                                  "hardStanding",
+                                  "kerbsideOk"
+                                ],
+                                "additionalProperties": false
+                              }
+                            },
+                            "required": [
+                              "shipment",
+                              "name",
+                              "day",
+                              "access"
+                            ],
+                            "additionalProperties": false
+                          },
+                          "payment": {
+                            "type": "object",
+                            "properties": {
+                              "provider": {
+                                "type": "string",
+                                "enum": [
+                                  "stripe",
+                                  "test"
+                                ]
+                              },
+                              "status": {
+                                "type": "string",
+                                "enum": [
+                                  "paid",
+                                  "partly_refunded",
+                                  "refunded"
+                                ]
+                              },
+                              "refundedPence": {
+                                "type": "integer",
+                                "minimum": -9007199254740991,
+                                "maximum": 9007199254740991
+                              }
+                            },
+                            "required": [
+                              "provider",
+                              "status",
+                              "refundedPence"
+                            ],
+                            "additionalProperties": false
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": [
+                              "placed",
+                              "cancelled"
+                            ]
+                          },
+                          "createdAt": {
+                            "type": "string",
+                            "format": "date-time",
+                            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "number",
+                          "email",
+                          "address",
+                          "lines",
+                          "itemTotalPence",
+                          "deliveryPence",
+                          "discountPence",
+                          "promotions",
+                          "totalPence",
+                          "delivery",
+                          "payment",
+                          "status",
+                          "createdAt"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "samples": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "number": {
+                            "type": "integer",
+                            "minimum": -9007199254740991,
+                            "maximum": 9007199254740991
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": [
+                              "new",
+                              "dispatched"
+                            ]
+                          },
+                          "createdAt": {
+                            "type": "string",
+                            "format": "date-time",
+                            "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+                          },
+                          "items": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "productTitle": {
+                                  "type": "string"
+                                },
+                                "productHandle": {
+                                  "type": "string"
+                                },
+                                "label": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "productTitle",
+                                "productHandle",
+                                "label"
+                              ],
+                              "additionalProperties": false
+                            }
+                          }
+                        },
+                        "required": [
+                          "number",
+                          "status",
+                          "createdAt",
+                          "items"
+                        ],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": [
+                    "email",
+                    "orders",
+                    "samples"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not signed in"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "store: customer accounts"
+        ]
+      }
     }
   },
   "info": {

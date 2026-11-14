@@ -7,7 +7,8 @@ export type EmailName =
   | 'enquiry-received'
   | 'samples-requested'
   | 'samples-dispatched'
-  | 'back-in-stock';
+  | 'back-in-stock'
+  | 'sign-in-link';
 
 const FALLBACK: Record<EmailName, { subject: string; body: string }> = {
   'order-confirmation': {
@@ -29,6 +30,10 @@ const FALLBACK: Record<EmailName, { subject: string; body: string }> = {
   'back-in-stock': {
     subject: "It's back: {product}",
     body: 'Hello,\n\nYou asked us to tell you when {product} was back. It is in stock now:\n\n{link}\n\nWe only emailed because you asked, and we will not email about it again.\n\nThe Talasey team',
+  },
+  'sign-in-link': {
+    subject: 'Your link to sign in to Talasey',
+    body: 'Hello,\n\nUse this link to see your orders and samples. It works once, for {minutes} minutes:\n\n{link}\n\nIf you did not ask for it, you can ignore this email.\n\nThe Talasey team',
   },
   'enquiry-received': {
     subject: 'We have your enquiry',

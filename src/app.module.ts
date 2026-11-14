@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { AccountsModule } from './accounts/accounts.module.js';
 import { AuditModule } from './audit/audit.module.js';
 import { AuthModule } from './auth/auth.module.js';
 import { CatalogueModule } from './catalogue/catalogue.module.js';
@@ -43,6 +44,7 @@ import { UploadsModule } from './uploads/uploads.module.js';
     UploadsModule,
     SamplesModule,
     StockAlertsModule,
+    AccountsModule,
     PromotionsModule,
   ],
 })

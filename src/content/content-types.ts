@@ -105,6 +105,7 @@ export const EMAILS = [
   'samples-requested',
   'samples-dispatched',
   'back-in-stock',
+  'sign-in-link',
 ] as const;
 
 const pageFields = (extra: Field[] = []): Field[] => [
