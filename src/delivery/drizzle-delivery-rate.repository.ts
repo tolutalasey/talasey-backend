@@ -23,7 +23,7 @@ export class DrizzleDeliveryRateRepository implements DeliveryRateRepository {
         and(
           eq(deliveryRates.zone, zone),
           eq(deliveryRates.shipment, shipment),
-          gte(deliveryRates.maxWeightKg, weightKg),
+          gte(deliveryRates.maxWeightKg, Math.ceil(weightKg)),
         ),
       )
       .orderBy(asc(deliveryRates.maxWeightKg))
