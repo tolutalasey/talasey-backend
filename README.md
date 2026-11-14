@@ -109,6 +109,10 @@ Photos go through `POST /admin/uploads` (JPEG, PNG or WebP up to 10 MB, checked 
 
 Emails go through the `Mailer` port. Locally they are written to `.data/outbox` to read; the order confirmation uses the published "order-confirmation" email wording.
 
+## Samples
+
+`src/samples`. Staff choose which samples are offered (`/admin/samples/offers`, one per product colour or finish). Customers ask for up to five through `POST /store/samples` with their address: no basket or payment, and the site keeps the chosen samples in a cookie until then. Each request gets a number (S1, S2…), and the customer is emailed when it arrives and again when staff mark it as sent (`POST /admin/samples/requests/:id/dispatch`). Marketing consent is recorded only if they tick the box.
+
 ## Staff and roles
 
 | Role        | Can                                                     |

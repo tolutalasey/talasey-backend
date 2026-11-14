@@ -98,7 +98,13 @@ const linkFields: Field[] = [
 export const GUIDE_TOPICS = ['Planning', 'Buying', 'Laying', 'Care'] as const;
 export const FAQ_TOPICS = ['Delivery', 'Returns', 'Laying', 'Care', 'Finance', 'Samples'] as const;
 export const SEASONS = ['spring', 'summer', 'autumn', 'winter'] as const;
-export const EMAILS = ['order-confirmation', 'delivery-day-booked', 'enquiry-received'] as const;
+export const EMAILS = [
+  'order-confirmation',
+  'delivery-day-booked',
+  'enquiry-received',
+  'samples-requested',
+  'samples-dispatched',
+] as const;
 
 const pageFields = (extra: Field[] = []): Field[] => [
   { name: 'name', label: 'Name', kind: 'text' },
@@ -625,7 +631,7 @@ export const CONTENT_TYPES: ContentType[] = [
         name: 'body',
         label: 'Message',
         kind: 'textarea',
-        help: '{name}, {orderNumber} and {deliveryDay} are filled in',
+        help: '{name} is filled in, and {orderNumber} and {deliveryDay} for orders, or {requestNumber} and {samples} for samples',
       },
     ],
     schema: z.object({

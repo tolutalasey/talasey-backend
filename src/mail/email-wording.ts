@@ -1,7 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { ContentService } from '../content/content.service.js';
 
-export type EmailName = 'order-confirmation' | 'delivery-day-booked' | 'enquiry-received';
+export type EmailName =
+  | 'order-confirmation'
+  | 'delivery-day-booked'
+  | 'enquiry-received'
+  | 'samples-requested'
+  | 'samples-dispatched';
 
 const FALLBACK: Record<EmailName, { subject: string; body: string }> = {
   'order-confirmation': {
@@ -11,6 +16,14 @@ const FALLBACK: Record<EmailName, { subject: string; body: string }> = {
   'delivery-day-booked': {
     subject: 'Your delivery day is booked',
     body: 'Hello {name},\n\n{deliveryDay}\n\nThe Talasey team',
+  },
+  'samples-requested': {
+    subject: 'Your free samples {requestNumber}',
+    body: 'Hello {name},\n\nThank you. We post samples the next working day and email you when they are on their way:\n\n{samples}\n\nThe Talasey team',
+  },
+  'samples-dispatched': {
+    subject: 'Your samples are on their way',
+    body: 'Hello {name},\n\nYour samples {requestNumber} are in the post:\n\n{samples}\n\nWhen you have seen them in your garden, reply to this email with any questions.\n\nThe Talasey team',
   },
   'enquiry-received': {
     subject: 'We have your enquiry',

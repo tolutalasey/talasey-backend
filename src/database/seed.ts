@@ -3,6 +3,7 @@ import type { StaffRole } from '../auth/roles.js';
 import { parseConfig } from '../config/config.schema.js';
 import { seedSampleProducts } from '../catalogue/sample-products.js';
 import { seedSampleContent } from '../content/sample-content.js';
+import { seedSampleOffers } from '../samples/sample-offers.js';
 import { seedSampleDelivery } from '../delivery/sample-delivery.js';
 import { createDatabase, type Database } from './client.js';
 import { isEntryPoint } from './run-as-script.js';
@@ -34,6 +35,7 @@ export async function seed(databaseUrl: string, { demo = false }: { demo?: boole
       await seedStaff(db);
       await seedSampleProducts(db);
       await seedSampleContent(db);
+      await seedSampleOffers(db);
     }
   } finally {
     await close();

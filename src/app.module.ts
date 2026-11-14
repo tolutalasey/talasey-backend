@@ -13,6 +13,7 @@ import { HealthModule } from './health/health.module.js';
 import { JobsModule } from './jobs/jobs.module.js';
 import { MailModule } from './mail/mail.module.js';
 import { PaymentsModule } from './payments/payments.module.js';
+import { SamplesModule } from './samples/samples.module.js';
 import { SiteModule } from './site/site.module.js';
 import { SlotsModule } from './slots/slots.module.js';
 import { StoreModule } from './store/store.module.js';
@@ -38,6 +39,7 @@ import { UploadsModule } from './uploads/uploads.module.js';
     ContentModule,
     MailModule,
     UploadsModule,
+    SamplesModule,
   ],
 })
 export class AppModule {}
