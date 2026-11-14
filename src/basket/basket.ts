@@ -46,6 +46,7 @@ export interface Basket {
   slot: SlotChoice | null;
   access: AccessAnswers | null;
   paymentReference: string | null;
+  promotionCode: string | null;
   orderId: string | null;
   lines: BasketLine[];
 }

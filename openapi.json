@@ -5449,6 +5449,40 @@
                       "nullable": true,
                       "type": "string"
                     },
+                    "discountPence": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "promotionCode": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "promotionProblem": {
+                      "nullable": true,
+                      "description": "Why the code typed in does not apply",
+                      "type": "string"
+                    },
+                    "promotions": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string"
+                          },
+                          "code": {
+                            "nullable": true,
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "name",
+                          "code"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
                     "totalPence": {
                       "type": "integer",
                       "minimum": -9007199254740991,
@@ -5550,6 +5584,10 @@
                     "itemTotalPence",
                     "deliveryPence",
                     "deliveryProblem",
+                    "discountPence",
+                    "promotionCode",
+                    "promotionProblem",
+                    "promotions",
                     "totalPence",
                     "delivery",
                     "orderId",
@@ -5757,6 +5795,40 @@
                       "nullable": true,
                       "type": "string"
                     },
+                    "discountPence": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "promotionCode": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "promotionProblem": {
+                      "nullable": true,
+                      "description": "Why the code typed in does not apply",
+                      "type": "string"
+                    },
+                    "promotions": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string"
+                          },
+                          "code": {
+                            "nullable": true,
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "name",
+                          "code"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
                     "totalPence": {
                       "type": "integer",
                       "minimum": -9007199254740991,
@@ -5858,6 +5930,10 @@
                     "itemTotalPence",
                     "deliveryPence",
                     "deliveryProblem",
+                    "discountPence",
+                    "promotionCode",
+                    "promotionProblem",
+                    "promotions",
                     "totalPence",
                     "delivery",
                     "orderId",
@@ -6100,6 +6176,40 @@
                       "nullable": true,
                       "type": "string"
                     },
+                    "discountPence": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "promotionCode": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "promotionProblem": {
+                      "nullable": true,
+                      "description": "Why the code typed in does not apply",
+                      "type": "string"
+                    },
+                    "promotions": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string"
+                          },
+                          "code": {
+                            "nullable": true,
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "name",
+                          "code"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
                     "totalPence": {
                       "type": "integer",
                       "minimum": -9007199254740991,
@@ -6201,6 +6311,10 @@
                     "itemTotalPence",
                     "deliveryPence",
                     "deliveryProblem",
+                    "discountPence",
+                    "promotionCode",
+                    "promotionProblem",
+                    "promotions",
                     "totalPence",
                     "delivery",
                     "orderId",
@@ -6459,6 +6573,40 @@
                       "nullable": true,
                       "type": "string"
                     },
+                    "discountPence": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "promotionCode": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "promotionProblem": {
+                      "nullable": true,
+                      "description": "Why the code typed in does not apply",
+                      "type": "string"
+                    },
+                    "promotions": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string"
+                          },
+                          "code": {
+                            "nullable": true,
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "name",
+                          "code"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
                     "totalPence": {
                       "type": "integer",
                       "minimum": -9007199254740991,
@@ -6560,6 +6708,10 @@
                     "itemTotalPence",
                     "deliveryPence",
                     "deliveryProblem",
+                    "discountPence",
+                    "promotionCode",
+                    "promotionProblem",
+                    "promotions",
                     "totalPence",
                     "delivery",
                     "orderId",
@@ -6812,6 +6964,40 @@
                       "nullable": true,
                       "type": "string"
                     },
+                    "discountPence": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "promotionCode": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "promotionProblem": {
+                      "nullable": true,
+                      "description": "Why the code typed in does not apply",
+                      "type": "string"
+                    },
+                    "promotions": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string"
+                          },
+                          "code": {
+                            "nullable": true,
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "name",
+                          "code"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
                     "totalPence": {
                       "type": "integer",
                       "minimum": -9007199254740991,
@@ -6916,6 +7102,10 @@
                     "itemTotalPence",
                     "deliveryPence",
                     "deliveryProblem",
+                    "discountPence",
+                    "promotionCode",
+                    "promotionProblem",
+                    "promotions",
                     "totalPence",
                     "delivery",
                     "orderId",
@@ -7152,6 +7342,40 @@
                       "nullable": true,
                       "type": "string"
                     },
+                    "discountPence": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "promotionCode": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "promotionProblem": {
+                      "nullable": true,
+                      "description": "Why the code typed in does not apply",
+                      "type": "string"
+                    },
+                    "promotions": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string"
+                          },
+                          "code": {
+                            "nullable": true,
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "name",
+                          "code"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
                     "totalPence": {
                       "type": "integer",
                       "minimum": -9007199254740991,
@@ -7253,6 +7477,10 @@
                     "itemTotalPence",
                     "deliveryPence",
                     "deliveryProblem",
+                    "discountPence",
+                    "promotionCode",
+                    "promotionProblem",
+                    "promotions",
                     "totalPence",
                     "delivery",
                     "orderId",
@@ -7520,6 +7748,40 @@
                       "nullable": true,
                       "type": "string"
                     },
+                    "discountPence": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "promotionCode": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "promotionProblem": {
+                      "nullable": true,
+                      "description": "Why the code typed in does not apply",
+                      "type": "string"
+                    },
+                    "promotions": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string"
+                          },
+                          "code": {
+                            "nullable": true,
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "name",
+                          "code"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
                     "totalPence": {
                       "type": "integer",
                       "minimum": -9007199254740991,
@@ -7621,6 +7883,726 @@
                     "itemTotalPence",
                     "deliveryPence",
                     "deliveryProblem",
+                    "discountPence",
+                    "promotionCode",
+                    "promotionProblem",
+                    "promotions",
+                    "totalPence",
+                    "delivery",
+                    "orderId",
+                    "payment"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "store: basket and checkout"
+        ]
+      }
+    },
+    "/store/baskets/{id}/promotion": {
+      "put": {
+        "operationId": "StoreBasketController_applyCode",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "code": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 40
+                  }
+                },
+                "required": [
+                  "code"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    },
+                    "email": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "address": {
+                      "nullable": true,
+                      "type": "object",
+                      "properties": {
+                        "firstName": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "lastName": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "address1": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "city": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "postcode": {
+                          "type": "string"
+                        },
+                        "phone": {
+                          "type": "string",
+                          "minLength": 10
+                        }
+                      },
+                      "required": [
+                        "firstName",
+                        "lastName",
+                        "address1",
+                        "city",
+                        "postcode",
+                        "phone"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "lines": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid",
+                            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                          },
+                          "productId": {
+                            "type": "string",
+                            "format": "uuid",
+                            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                          },
+                          "handle": {
+                            "type": "string"
+                          },
+                          "title": {
+                            "type": "string"
+                          },
+                          "variantId": {
+                            "type": "string",
+                            "format": "uuid",
+                            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                          },
+                          "variantTitle": {
+                            "type": "string"
+                          },
+                          "sku": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "colour": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "quantity": {
+                            "type": "integer",
+                            "minimum": -9007199254740991,
+                            "maximum": 9007199254740991
+                          },
+                          "unitPricePence": {
+                            "nullable": true,
+                            "type": "integer",
+                            "minimum": -9007199254740991,
+                            "maximum": 9007199254740991
+                          },
+                          "totalPence": {
+                            "type": "integer",
+                            "minimum": -9007199254740991,
+                            "maximum": 9007199254740991
+                          },
+                          "buildId": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "bespoke": {
+                            "nullable": true,
+                            "type": "object",
+                            "properties": {
+                              "unit": {
+                                "type": "string"
+                              },
+                              "dimensions": {
+                                "type": "object",
+                                "additionalProperties": {
+                                  "type": "number"
+                                }
+                              },
+                              "choices": {
+                                "type": "object",
+                                "additionalProperties": {
+                                  "type": "string"
+                                }
+                              }
+                            },
+                            "required": [
+                              "unit",
+                              "dimensions",
+                              "choices"
+                            ],
+                            "additionalProperties": false
+                          },
+                          "stock": {
+                            "type": "string",
+                            "description": "For example \"3 now, 2 made to order\""
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "productId",
+                          "handle",
+                          "title",
+                          "variantId",
+                          "variantTitle",
+                          "sku",
+                          "colour",
+                          "quantity",
+                          "unitPricePence",
+                          "totalPence",
+                          "buildId",
+                          "bespoke",
+                          "stock"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "itemTotalPence": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "deliveryPence": {
+                      "nullable": true,
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "deliveryProblem": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "discountPence": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "promotionCode": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "promotionProblem": {
+                      "nullable": true,
+                      "description": "Why the code typed in does not apply",
+                      "type": "string"
+                    },
+                    "promotions": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string"
+                          },
+                          "code": {
+                            "nullable": true,
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "name",
+                          "code"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "totalPence": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "delivery": {
+                      "type": "object",
+                      "properties": {
+                        "shipment": {
+                          "nullable": true,
+                          "type": "string",
+                          "enum": [
+                            "pallet",
+                            "parcel"
+                          ]
+                        },
+                        "name": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "day": {
+                          "nullable": true,
+                          "type": "object",
+                          "properties": {
+                            "date": {
+                              "type": "string",
+                              "format": "date",
+                              "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                            },
+                            "status": {
+                              "type": "string",
+                              "enum": [
+                                "held",
+                                "booked",
+                                "needs-rebooking"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "date",
+                            "status"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "access": {
+                          "nullable": true,
+                          "type": "object",
+                          "properties": {
+                            "vehicleAccess": {
+                              "type": "string",
+                              "enum": [
+                                "articulated",
+                                "rigid",
+                                "small"
+                              ]
+                            },
+                            "hardStanding": {
+                              "type": "boolean"
+                            },
+                            "kerbsideOk": {
+                              "type": "boolean"
+                            }
+                          },
+                          "required": [
+                            "vehicleAccess",
+                            "hardStanding",
+                            "kerbsideOk"
+                          ],
+                          "additionalProperties": false
+                        }
+                      },
+                      "required": [
+                        "shipment",
+                        "name",
+                        "day",
+                        "access"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "orderId": {
+                      "nullable": true,
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    },
+                    "payment": {
+                      "type": "string",
+                      "enum": [
+                        "stripe",
+                        "test"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "email",
+                    "address",
+                    "lines",
+                    "itemTotalPence",
+                    "deliveryPence",
+                    "deliveryProblem",
+                    "discountPence",
+                    "promotionCode",
+                    "promotionProblem",
+                    "promotions",
+                    "totalPence",
+                    "delivery",
+                    "orderId",
+                    "payment"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No such basket"
+          },
+          "422": {
+            "description": "Unknown, ended or used-up code, or not enough spent"
+          }
+        },
+        "tags": [
+          "store: basket and checkout"
+        ]
+      },
+      "delete": {
+        "operationId": "StoreBasketController_removeCode",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    },
+                    "email": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "address": {
+                      "nullable": true,
+                      "type": "object",
+                      "properties": {
+                        "firstName": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "lastName": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "address1": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "city": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "postcode": {
+                          "type": "string"
+                        },
+                        "phone": {
+                          "type": "string",
+                          "minLength": 10
+                        }
+                      },
+                      "required": [
+                        "firstName",
+                        "lastName",
+                        "address1",
+                        "city",
+                        "postcode",
+                        "phone"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "lines": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "format": "uuid",
+                            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                          },
+                          "productId": {
+                            "type": "string",
+                            "format": "uuid",
+                            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                          },
+                          "handle": {
+                            "type": "string"
+                          },
+                          "title": {
+                            "type": "string"
+                          },
+                          "variantId": {
+                            "type": "string",
+                            "format": "uuid",
+                            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                          },
+                          "variantTitle": {
+                            "type": "string"
+                          },
+                          "sku": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "colour": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "quantity": {
+                            "type": "integer",
+                            "minimum": -9007199254740991,
+                            "maximum": 9007199254740991
+                          },
+                          "unitPricePence": {
+                            "nullable": true,
+                            "type": "integer",
+                            "minimum": -9007199254740991,
+                            "maximum": 9007199254740991
+                          },
+                          "totalPence": {
+                            "type": "integer",
+                            "minimum": -9007199254740991,
+                            "maximum": 9007199254740991
+                          },
+                          "buildId": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "bespoke": {
+                            "nullable": true,
+                            "type": "object",
+                            "properties": {
+                              "unit": {
+                                "type": "string"
+                              },
+                              "dimensions": {
+                                "type": "object",
+                                "additionalProperties": {
+                                  "type": "number"
+                                }
+                              },
+                              "choices": {
+                                "type": "object",
+                                "additionalProperties": {
+                                  "type": "string"
+                                }
+                              }
+                            },
+                            "required": [
+                              "unit",
+                              "dimensions",
+                              "choices"
+                            ],
+                            "additionalProperties": false
+                          },
+                          "stock": {
+                            "type": "string",
+                            "description": "For example \"3 now, 2 made to order\""
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "productId",
+                          "handle",
+                          "title",
+                          "variantId",
+                          "variantTitle",
+                          "sku",
+                          "colour",
+                          "quantity",
+                          "unitPricePence",
+                          "totalPence",
+                          "buildId",
+                          "bespoke",
+                          "stock"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "itemTotalPence": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "deliveryPence": {
+                      "nullable": true,
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "deliveryProblem": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "discountPence": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "promotionCode": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "promotionProblem": {
+                      "nullable": true,
+                      "description": "Why the code typed in does not apply",
+                      "type": "string"
+                    },
+                    "promotions": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string"
+                          },
+                          "code": {
+                            "nullable": true,
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "name",
+                          "code"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "totalPence": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "delivery": {
+                      "type": "object",
+                      "properties": {
+                        "shipment": {
+                          "nullable": true,
+                          "type": "string",
+                          "enum": [
+                            "pallet",
+                            "parcel"
+                          ]
+                        },
+                        "name": {
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "day": {
+                          "nullable": true,
+                          "type": "object",
+                          "properties": {
+                            "date": {
+                              "type": "string",
+                              "format": "date",
+                              "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))$"
+                            },
+                            "status": {
+                              "type": "string",
+                              "enum": [
+                                "held",
+                                "booked",
+                                "needs-rebooking"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "date",
+                            "status"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "access": {
+                          "nullable": true,
+                          "type": "object",
+                          "properties": {
+                            "vehicleAccess": {
+                              "type": "string",
+                              "enum": [
+                                "articulated",
+                                "rigid",
+                                "small"
+                              ]
+                            },
+                            "hardStanding": {
+                              "type": "boolean"
+                            },
+                            "kerbsideOk": {
+                              "type": "boolean"
+                            }
+                          },
+                          "required": [
+                            "vehicleAccess",
+                            "hardStanding",
+                            "kerbsideOk"
+                          ],
+                          "additionalProperties": false
+                        }
+                      },
+                      "required": [
+                        "shipment",
+                        "name",
+                        "day",
+                        "access"
+                      ],
+                      "additionalProperties": false
+                    },
+                    "orderId": {
+                      "nullable": true,
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    },
+                    "payment": {
+                      "type": "string",
+                      "enum": [
+                        "stripe",
+                        "test"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "email",
+                    "address",
+                    "lines",
+                    "itemTotalPence",
+                    "deliveryPence",
+                    "deliveryProblem",
+                    "discountPence",
+                    "promotionCode",
+                    "promotionProblem",
+                    "promotions",
                     "totalPence",
                     "delivery",
                     "orderId",
@@ -7912,6 +8894,40 @@
                       "nullable": true,
                       "type": "string"
                     },
+                    "discountPence": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "promotionCode": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "promotionProblem": {
+                      "nullable": true,
+                      "description": "Why the code typed in does not apply",
+                      "type": "string"
+                    },
+                    "promotions": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string"
+                          },
+                          "code": {
+                            "nullable": true,
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "name",
+                          "code"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
                     "totalPence": {
                       "type": "integer",
                       "minimum": -9007199254740991,
@@ -8013,6 +9029,10 @@
                     "itemTotalPence",
                     "deliveryPence",
                     "deliveryProblem",
+                    "discountPence",
+                    "promotionCode",
+                    "promotionProblem",
+                    "promotions",
                     "totalPence",
                     "delivery",
                     "orderId",
@@ -8299,6 +9319,40 @@
                       "nullable": true,
                       "type": "string"
                     },
+                    "discountPence": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "promotionCode": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "promotionProblem": {
+                      "nullable": true,
+                      "description": "Why the code typed in does not apply",
+                      "type": "string"
+                    },
+                    "promotions": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string"
+                          },
+                          "code": {
+                            "nullable": true,
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "name",
+                          "code"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
                     "totalPence": {
                       "type": "integer",
                       "minimum": -9007199254740991,
@@ -8400,6 +9454,10 @@
                     "itemTotalPence",
                     "deliveryPence",
                     "deliveryProblem",
+                    "discountPence",
+                    "promotionCode",
+                    "promotionProblem",
+                    "promotions",
                     "totalPence",
                     "delivery",
                     "orderId",
@@ -8644,6 +9702,40 @@
                       "nullable": true,
                       "type": "string"
                     },
+                    "discountPence": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "promotionCode": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "promotionProblem": {
+                      "nullable": true,
+                      "description": "Why the code typed in does not apply",
+                      "type": "string"
+                    },
+                    "promotions": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string"
+                          },
+                          "code": {
+                            "nullable": true,
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "name",
+                          "code"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
                     "totalPence": {
                       "type": "integer",
                       "minimum": -9007199254740991,
@@ -8745,6 +9837,10 @@
                     "itemTotalPence",
                     "deliveryPence",
                     "deliveryProblem",
+                    "discountPence",
+                    "promotionCode",
+                    "promotionProblem",
+                    "promotions",
                     "totalPence",
                     "delivery",
                     "orderId",
@@ -9060,6 +10156,17 @@
                       "minimum": -9007199254740991,
                       "maximum": 9007199254740991
                     },
+                    "discountPence": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "promotions": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
                     "totalPence": {
                       "type": "integer",
                       "minimum": -9007199254740991,
@@ -9191,6 +10298,8 @@
                     "lines",
                     "itemTotalPence",
                     "deliveryPence",
+                    "discountPence",
+                    "promotions",
                     "totalPence",
                     "delivery",
                     "payment",
@@ -9501,6 +10610,17 @@
                       "minimum": -9007199254740991,
                       "maximum": 9007199254740991
                     },
+                    "discountPence": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "promotions": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
                     "totalPence": {
                       "type": "integer",
                       "minimum": -9007199254740991,
@@ -9632,6 +10752,8 @@
                     "lines",
                     "itemTotalPence",
                     "deliveryPence",
+                    "discountPence",
+                    "promotions",
                     "totalPence",
                     "delivery",
                     "payment",
@@ -9864,6 +10986,17 @@
                       "minimum": -9007199254740991,
                       "maximum": 9007199254740991
                     },
+                    "discountPence": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "promotions": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
                     "totalPence": {
                       "type": "integer",
                       "minimum": -9007199254740991,
@@ -9995,6 +11128,8 @@
                     "lines",
                     "itemTotalPence",
                     "deliveryPence",
+                    "discountPence",
+                    "promotions",
                     "totalPence",
                     "delivery",
                     "payment",
@@ -10026,6 +11161,537 @@
         ],
         "tags": [
           "admin: orders"
+        ]
+      }
+    },
+    "/admin/promotions": {
+      "get": {
+        "operationId": "PromotionsController_list",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "code": {
+                        "nullable": true,
+                        "type": "string"
+                      },
+                      "kind": {
+                        "type": "string",
+                        "enum": [
+                          "percent",
+                          "amount",
+                          "free_delivery"
+                        ]
+                      },
+                      "value": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9007199254740991,
+                        "description": "A percentage, or pence off"
+                      },
+                      "minSpendPence": {
+                        "default": 0,
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 9007199254740991
+                      },
+                      "startsAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+                      },
+                      "endsAt": {
+                        "nullable": true,
+                        "type": "string",
+                        "format": "date-time",
+                        "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+                      },
+                      "maxUses": {
+                        "nullable": true,
+                        "type": "integer",
+                        "minimum": 0,
+                        "exclusiveMinimum": true,
+                        "maximum": 9007199254740991
+                      },
+                      "active": {
+                        "default": true,
+                        "type": "boolean"
+                      },
+                      "id": {
+                        "type": "string",
+                        "format": "uuid",
+                        "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                      },
+                      "uses": {
+                        "type": "integer",
+                        "minimum": -9007199254740991,
+                        "maximum": 9007199254740991
+                      },
+                      "createdBy": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "name",
+                      "code",
+                      "kind",
+                      "value",
+                      "minSpendPence",
+                      "startsAt",
+                      "endsAt",
+                      "maxUses",
+                      "active",
+                      "id",
+                      "uses",
+                      "createdBy"
+                    ],
+                    "additionalProperties": false
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not signed in"
+          },
+          "403": {
+            "description": "The role does not allow this"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "admin: promotions"
+        ]
+      },
+      "post": {
+        "operationId": "PromotionsController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "code": {
+                    "description": "Empty for a promotion that applies by itself",
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "kind": {
+                    "type": "string",
+                    "enum": [
+                      "percent",
+                      "amount",
+                      "free_delivery"
+                    ]
+                  },
+                  "value": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991,
+                    "description": "A percentage, or pence off"
+                  },
+                  "minSpendPence": {
+                    "default": 0,
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "startsAt": {
+                    "type": "string",
+                    "format": "date-time",
+                    "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+                  },
+                  "endsAt": {
+                    "nullable": true,
+                    "type": "string",
+                    "format": "date-time",
+                    "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+                  },
+                  "maxUses": {
+                    "nullable": true,
+                    "type": "integer",
+                    "minimum": 0,
+                    "exclusiveMinimum": true,
+                    "maximum": 9007199254740991
+                  },
+                  "active": {
+                    "default": true,
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "name",
+                  "code",
+                  "kind",
+                  "value",
+                  "startsAt",
+                  "endsAt",
+                  "maxUses"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "code": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "kind": {
+                      "type": "string",
+                      "enum": [
+                        "percent",
+                        "amount",
+                        "free_delivery"
+                      ]
+                    },
+                    "value": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991,
+                      "description": "A percentage, or pence off"
+                    },
+                    "minSpendPence": {
+                      "default": 0,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "startsAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+                    },
+                    "endsAt": {
+                      "nullable": true,
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+                    },
+                    "maxUses": {
+                      "nullable": true,
+                      "type": "integer",
+                      "minimum": 0,
+                      "exclusiveMinimum": true,
+                      "maximum": 9007199254740991
+                    },
+                    "active": {
+                      "default": true,
+                      "type": "boolean"
+                    },
+                    "id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    },
+                    "uses": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "createdBy": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "code",
+                    "kind",
+                    "value",
+                    "minSpendPence",
+                    "startsAt",
+                    "endsAt",
+                    "maxUses",
+                    "active",
+                    "id",
+                    "uses",
+                    "createdBy"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not signed in"
+          },
+          "403": {
+            "description": "The role does not allow this"
+          },
+          "422": {
+            "description": "Something needs fixing, or the code is taken"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "admin: promotions"
+        ]
+      }
+    },
+    "/admin/promotions/{id}": {
+      "put": {
+        "operationId": "PromotionsController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "code": {
+                    "description": "Empty for a promotion that applies by itself",
+                    "nullable": true,
+                    "type": "string"
+                  },
+                  "kind": {
+                    "type": "string",
+                    "enum": [
+                      "percent",
+                      "amount",
+                      "free_delivery"
+                    ]
+                  },
+                  "value": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991,
+                    "description": "A percentage, or pence off"
+                  },
+                  "minSpendPence": {
+                    "default": 0,
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "startsAt": {
+                    "type": "string",
+                    "format": "date-time",
+                    "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+                  },
+                  "endsAt": {
+                    "nullable": true,
+                    "type": "string",
+                    "format": "date-time",
+                    "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+                  },
+                  "maxUses": {
+                    "nullable": true,
+                    "type": "integer",
+                    "minimum": 0,
+                    "exclusiveMinimum": true,
+                    "maximum": 9007199254740991
+                  },
+                  "active": {
+                    "default": true,
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "name",
+                  "code",
+                  "kind",
+                  "value",
+                  "startsAt",
+                  "endsAt",
+                  "maxUses"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "code": {
+                      "nullable": true,
+                      "type": "string"
+                    },
+                    "kind": {
+                      "type": "string",
+                      "enum": [
+                        "percent",
+                        "amount",
+                        "free_delivery"
+                      ]
+                    },
+                    "value": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991,
+                      "description": "A percentage, or pence off"
+                    },
+                    "minSpendPence": {
+                      "default": 0,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9007199254740991
+                    },
+                    "startsAt": {
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+                    },
+                    "endsAt": {
+                      "nullable": true,
+                      "type": "string",
+                      "format": "date-time",
+                      "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z|([+-](?:[01]\\d|2[0-3]):[0-5]\\d)))$"
+                    },
+                    "maxUses": {
+                      "nullable": true,
+                      "type": "integer",
+                      "minimum": 0,
+                      "exclusiveMinimum": true,
+                      "maximum": 9007199254740991
+                    },
+                    "active": {
+                      "default": true,
+                      "type": "boolean"
+                    },
+                    "id": {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    },
+                    "uses": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991
+                    },
+                    "createdBy": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "code",
+                    "kind",
+                    "value",
+                    "minSpendPence",
+                    "startsAt",
+                    "endsAt",
+                    "maxUses",
+                    "active",
+                    "id",
+                    "uses",
+                    "createdBy"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not signed in"
+          },
+          "403": {
+            "description": "The role does not allow this"
+          },
+          "404": {
+            "description": "No such promotion"
+          },
+          "422": {
+            "description": "Something needs fixing, or the code is taken"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "admin: promotions"
+        ]
+      },
+      "delete": {
+        "operationId": "PromotionsController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          },
+          "401": {
+            "description": "Not signed in"
+          },
+          "403": {
+            "description": "The role does not allow this"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "admin: promotions"
         ]
       }
     },

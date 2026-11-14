@@ -136,6 +136,13 @@ export class BasketService {
     return { ok: true, basket: (await this.baskets.find(basketId)) as Basket };
   }
 
+  async setPromotionCode(basketId: string, code: string | null): Promise<BasketChange> {
+    const basket = await this.baskets.find(basketId);
+    if (!basket) return notFound;
+    await this.baskets.update(basketId, { promotionCode: code });
+    return { ok: true, basket: (await this.baskets.find(basketId)) as Basket };
+  }
+
   // How much of each line ships now and how much is made to order. Lines for the same SKU share
   // its stock, first line first.
   stock(basket: Basket): LineStock[] {

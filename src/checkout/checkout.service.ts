@@ -8,6 +8,9 @@ import { JobQueue } from '../jobs/job-queue.js';
 import { ORDER_PLACED } from '../orders/order-placed.job.js';
 import { OrderRepository } from '../orders/order.repository.js';
 import { PAYMENT_PROVIDER, type PaymentProvider } from '../payments/payment-provider.js';
+import { CLOCK, type Clock } from '../common/clock.js';
+import type { PromotionOutcome } from '../promotions/promotion-rules.js';
+import { PromotionsService } from '../promotions/promotions.service.js';
 import { SlotsService } from '../slots/slots.service.js';
 import {
   contactProblems,
@@ -34,12 +37,18 @@ export class CheckoutService {
     private readonly jobs: JobQueue,
     @Inject(PAYMENT_PROVIDER) private readonly payments: PaymentProvider,
     @Inject(DATABASE) private readonly db: Database,
+    private readonly promotions: PromotionsService,
+    @Inject(CLOCK) private readonly clock: Clock,
   ) {}
 
   // Everything that must hold before an order can be placed, as one list of things to fix.
-  async problems(
-    basket: Basket,
-  ): Promise<{ problems: string[]; totalPence: number; deliveryPence: number }> {
+  async problems(basket: Basket): Promise<{
+    problems: string[];
+    totalPence: number;
+    deliveryPence: number;
+    discountPence: number;
+    promotion: PromotionOutcome;
+  }> {
     const problems = [
       ...lineProblems(basket),
       ...contactProblems(basket),
@@ -62,7 +71,19 @@ export class CheckoutService {
         ),
       );
     }
-    return { problems, totalPence: itemTotal(basket) + deliveryPence, deliveryPence };
+    const promotion = await this.promotions.price(
+      { itemsPence: itemTotal(basket), deliveryPence, code: basket.promotionCode },
+      this.clock(),
+    );
+    if (promotion.codeProblem)
+      problems.push(`${promotion.codeProblem} Remove the code to carry on.`);
+    return {
+      problems,
+      totalPence: itemTotal(basket) - promotion.discountPence + promotion.deliveryPence,
+      deliveryPence: promotion.deliveryPence,
+      discountPence: promotion.discountPence,
+      promotion,
+    };
   }
 
   async startPayment(
@@ -86,7 +107,8 @@ export class CheckoutService {
     if (!basket) return refused(['Basket not found'], 404);
     if (basket.orderId) return { ok: true, value: basket.orderId };
 
-    const { problems, totalPence, deliveryPence } = await this.problems(basket);
+    const { problems, totalPence, deliveryPence, discountPence, promotion } =
+      await this.problems(basket);
     if (problems.length > 0) return refused(problems);
     const paid = await this.payments.confirm(
       paymentReference ?? basket.paymentReference,
@@ -111,6 +133,8 @@ export class CheckoutService {
           deliveryName: SHIPMENT_NAMES[locked.shipment ?? 'parcel'],
           itemTotalPence: itemTotal(locked),
           deliveryPence,
+          discountPence,
+          promotions: promotion.applied.map((applied) => applied.code ?? applied.name),
           totalPence,
           slot: locked.shipment === 'pallet' ? locked.slot : null,
           access: locked.shipment === 'pallet' ? locked.access : null,
@@ -132,6 +156,10 @@ export class CheckoutService {
           bespoke: line.bespoke,
           shipNow: line.stockMode === 'made_to_order' ? 0 : (stock.get(line.id)?.now ?? 0),
         })),
+      );
+      await this.promotions.recordUse(
+        tx,
+        promotion.applied.filter((applied) => applied.code).map((applied) => applied.id),
       );
       await this.baskets.update(locked.id, { orderId: id }, tx);
       return id;

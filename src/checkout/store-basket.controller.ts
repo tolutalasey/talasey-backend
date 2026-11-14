@@ -1,6 +1,7 @@
 import {
   ConflictException,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpException,
@@ -37,6 +38,14 @@ import { CheckoutService } from './checkout.service.js';
 import { DeliveryCheckoutService, type DeliveryResult } from './delivery-checkout.service.js';
 
 const id = z.uuid();
+const promotionCodeSchema = z.object({
+  code: z
+    .string()
+    .trim()
+    .min(1, 'Enter a code')
+    .max(40)
+    .transform((code) => code.toUpperCase()),
+});
 
 function fail(problem: string, status: number): never {
   if (status === 404) throw new NotFoundException(problem);
@@ -129,6 +138,27 @@ export class StoreBasketController {
     @ValidBody(contactSchema) body: z.infer<typeof contactSchema>,
   ): Promise<BasketDto> {
     return this.changed(await this.baskets.setContact(basketId, body.email, body.address));
+  }
+
+  // A code that doesn't apply is not saved: the answer says why, and the basket stays as it was.
+  @Put(':id/promotion')
+  @Accepts(promotionCodeSchema)
+  @Returns(basketSchema)
+  @Fails([404, 'No such basket'], [422, 'Unknown, ended or used-up code, or not enough spent'])
+  async applyCode(
+    @ValidParam('id', id) basketId: string,
+    @ValidBody(promotionCodeSchema) body: z.infer<typeof promotionCodeSchema>,
+  ): Promise<BasketDto> {
+    const view = await this.changed(await this.baskets.setPromotionCode(basketId, body.code));
+    if (!view.promotionProblem) return view;
+    await this.baskets.setPromotionCode(basketId, null);
+    throw new UnprocessableEntityException(view.promotionProblem);
+  }
+
+  @Delete(':id/promotion')
+  @Returns(basketSchema)
+  async removeCode(@ValidParam('id', id) basketId: string): Promise<BasketDto> {
+    return this.changed(await this.baskets.setPromotionCode(basketId, null));
   }
 
   @Get(':id/delivery-options')

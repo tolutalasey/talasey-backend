@@ -35,7 +35,8 @@ describe.skipIf(!databaseUrl)('basket, checkout and orders', () => {
     await http().put(basket('/contact')).send({ email: 'amy@example.com', address }).expect(200);
     await http().put(basket('/delivery')).send({ shipment: 'pallet' }).expect(200);
     const { body: days } = await http().get(basket('/delivery-days')).expect(200);
-    return days as { date: string; remaining: number }[];
+    // Earlier runs against the same test database book days too: offer only days with room.
+    return (days as { date: string; remaining: number }[]).filter((day) => day.remaining > 0);
   }
 
   beforeAll(async () => {

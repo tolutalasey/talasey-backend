@@ -117,6 +117,10 @@ Emails go through the `Mailer` port. Locally they are written to `.data/outbox` 
 
 `src/stock-alerts`. On an out-of-stock option of a stocked product, the site asks for an email (`POST /store/stock-alerts`). Each catalogue change queues a check for the products it touched; anyone waiting for an option that can be bought again gets one "back-in-stock" email (wording in /content), and is then forgotten for that option. Made-to-order options can always be bought, so they take no requests.
 
+## Promotions
+
+`src/promotions`. Staff set up promotions at `/admin/promotions` (catalogue permission): a percentage or an amount off products, or free delivery, each with an optional code, minimum spend on products, start and end time, and a limit on uses. `promotion-rules.ts` prices a basket: the best money-off promotion wins (a code or an automatic one, never both), and free delivery adds on top. Shoppers add a code with `PUT /store/baskets/:id/promotion`; a code that no longer applies stops checkout with a reason. Orders keep the discount and the names of the promotions used, and coded uses are counted when the order is placed.
+
 ## Staff and roles
 
 | Role        | Can                                                     |

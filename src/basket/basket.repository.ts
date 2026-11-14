@@ -27,7 +27,14 @@ export interface NewLine {
 type BasketFields = Partial<
   Pick<
     Basket,
-    'email' | 'address' | 'shipment' | 'slot' | 'access' | 'paymentReference' | 'orderId'
+    | 'email'
+    | 'address'
+    | 'shipment'
+    | 'slot'
+    | 'access'
+    | 'paymentReference'
+    | 'promotionCode'
+    | 'orderId'
   >
 >;
 
@@ -85,6 +92,7 @@ export class BasketRepository {
       slot: row.slot,
       access: row.access,
       paymentReference: row.paymentReference,
+      promotionCode: row.promotionCode,
       orderId: row.orderId,
       lines: lines.map(({ linePrice, price, pageType, ...line }): BasketLine => ({
         ...line,

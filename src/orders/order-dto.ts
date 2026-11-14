@@ -24,6 +24,8 @@ export function toOrderDto(order: Order): OrderDto {
     })),
     itemTotalPence: order.itemTotalPence,
     deliveryPence: order.deliveryPence,
+    discountPence: order.discountPence,
+    promotions: order.promotions,
     totalPence: order.totalPence,
     delivery: {
       shipment: order.shipment,

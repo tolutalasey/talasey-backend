@@ -45,6 +45,7 @@ const basket: Basket = {
   slot: { holdId: 'h1', postcode: 'M11AE', date: '2026-11-18', zone: 'north-west', status: 'held' },
   access: { vehicleAccess: 'rigid', hardStanding: true, kerbsideOk: true },
   paymentReference: null,
+  promotionCode: null,
   orderId: null,
   lines: [line],
 };
