@@ -408,8 +408,18 @@ export const CONTENT_TYPES: ContentType[] = [
         fields: [
           { name: 'name', label: 'Option', kind: 'text', help: 'Like Manual wind screen' },
           { name: 'kind', label: 'Made of', kind: 'select', options: PERGOLA_SIDE_KINDS },
-          { name: 'sku3m', label: 'SKU for a 3 m side', kind: 'text', help: 'Horizontal panel for panels' },
-          { name: 'sku4m', label: 'SKU for a 4 m side', kind: 'text', help: 'Horizontal panel for panels' },
+          {
+            name: 'sku3m',
+            label: 'SKU for a 3 m side',
+            kind: 'text',
+            help: 'Horizontal panel for panels',
+          },
+          {
+            name: 'sku4m',
+            label: 'SKU for a 4 m side',
+            kind: 'text',
+            help: 'Horizontal panel for panels',
+          },
           { name: 'verticalSku3m', label: 'Vertical panel SKU, 3 m side', kind: 'text' },
           { name: 'verticalSku4m', label: 'Vertical panel SKU, 4 m side', kind: 'text' },
           { name: 'panels3m', label: 'Panels on a 3 m side', kind: 'text' },
@@ -489,6 +499,27 @@ export const CONTENT_TYPES: ContentType[] = [
       { name: 'h1', label: 'Main heading', kind: 'text' },
       { name: 'intro', label: 'Introduction', kind: 'textarea' },
       {
+        name: 'photo',
+        label: 'Photo at the top',
+        kind: 'image',
+        help: 'A wide garden photo, at least 2000 pixels across. Left empty, a brochure photo is used.',
+      },
+      {
+        name: 'gallery',
+        label: 'Photo gallery',
+        kind: 'items',
+        help: 'Shown on the page while it has no products to list, and below the products once it does',
+        fields: [
+          { name: 'photo', label: 'Photo', kind: 'image' },
+          {
+            name: 'caption',
+            label: 'Caption',
+            kind: 'text',
+            help: 'Like Corten steel stag sculptures',
+          },
+        ],
+      },
+      {
         name: 'scope',
         label: 'Which products it lists',
         kind: 'group',
@@ -540,6 +571,8 @@ export const CONTENT_TYPES: ContentType[] = [
         kind: z.enum(['range', 'category'], { error: 'Choose range or category' }),
         h1: required('main heading'),
         intro: required('introduction'),
+        photo: image.nullish(),
+        gallery: z.array(z.object({ photo: image, caption: optionalText })).default([]),
         scope: z.object({ categories: list, titleIncludes: list }),
         buyingGuide: optionalText,
         faqs: z.array(faqItem).default([]),
