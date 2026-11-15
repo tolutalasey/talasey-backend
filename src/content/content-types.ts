@@ -209,10 +209,23 @@ export const CONTENT_TYPES: ContentType[] = [
         fields: linkFields,
       },
       {
+        name: 'heroScenes',
+        label: 'Hero photos',
+        kind: 'items',
+        help: 'They take turns behind the heading, each with a tab that links to its range',
+        fields: [
+          { name: 'photo', label: 'Photo', kind: 'image' },
+          { name: 'topic', label: 'Small label', kind: 'text' },
+          { name: 'title', label: 'Tab title', kind: 'text' },
+          { name: 'href', label: 'Goes to', kind: 'text' },
+        ],
+      },
+      {
         name: 'projectTiles',
         label: 'Project tiles',
         kind: 'items',
         fields: [
+          { name: 'photo', label: 'Photo', kind: 'image' },
           { name: 'title', label: 'Title', kind: 'text' },
           { name: 'summary', label: 'Summary', kind: 'textarea' },
           { name: 'href', label: 'Goes to', kind: 'text' },
@@ -243,9 +256,20 @@ export const CONTENT_TYPES: ContentType[] = [
       h1: required('main heading'),
       intro: required('introduction'),
       heroActions: z.array(link).length(2, 'Add exactly two buttons'),
+      heroScenes: z
+        .array(
+          z.object({
+            photo: image,
+            topic: required('small label'),
+            title: required('tab title'),
+            href: required('link'),
+          }),
+        )
+        .default([]),
       projectTiles: z
         .array(
           z.object({
+            photo: image.nullish(),
             title: required('title'),
             summary: required('summary'),
             href: required('link'),
