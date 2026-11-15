@@ -55,10 +55,18 @@ export const lineTotal = (line: BasketLine) => (line.unitPricePence ?? 0) * line
 export const itemTotal = (basket: Basket) =>
   basket.lines.reduce((total, line) => total + lineTotal(line), 0);
 
-// Delivery is priced on weight, so every line needs one.
+// Products bought through a builder (page type 4, the pergolas) have delivery built into their
+// price, so they add nothing to the weight delivery is priced on.
+export const deliveryIncluded = (line: BasketLine) => line.pageType === '4';
+
+export const onlyDeliveryIncluded = (basket: Basket) =>
+  basket.lines.length > 0 && basket.lines.every(deliveryIncluded);
+
+// Delivery is priced on weight, so every other line needs one.
 export function basketWeight(basket: Basket): { weightKg: number } | { problem: string } {
   let weightKg = 0;
   for (const line of basket.lines) {
+    if (deliveryIncluded(line)) continue;
     if (line.weightKg === null) {
       return { problem: `${line.productTitle} has no weight, so we can't price its delivery.` };
     }
