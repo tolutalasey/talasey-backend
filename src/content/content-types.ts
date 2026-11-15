@@ -225,7 +225,7 @@ export const CONTENT_TYPES: ContentType[] = [
         name: 'products',
         label: 'Featured products',
         kind: 'list',
-        help: 'Product web addresses, one per line',
+        help: 'Product web addresses, one per line. Spaces left are filled with the newest products that have a photo and a price',
       },
       seoField,
     ],
