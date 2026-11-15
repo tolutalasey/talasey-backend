@@ -53,6 +53,16 @@ const seo = z.object({
     .superRefine(toZod((value) => lengthCheck(value, SEO_DESCRIPTION, 'search description'))),
 });
 const link = z.object({ label: required('link text'), href: required('link address') });
+const metres = z.coerce
+  .number({ error: 'Give sizes in metres, like 3' })
+  .positive('Give sizes in metres, like 3');
+const optionalCount = z
+  .union([z.literal(''), z.coerce.number().int().positive()])
+  .nullish()
+  .transform((value) => (value === '' ? null : value));
+
+export const PERGOLA_LIGHTING = ['Optional kit for each size', 'Included as standard'] as const;
+export const PERGOLA_SIDE_KINDS = ['One piece per side', 'Panels to mix'] as const;
 const faqItem = z.object({ question: required('question'), answer: required('answer') });
 const image = z.object({
   src: required('photo'),
@@ -345,6 +355,125 @@ export const CONTENT_TYPES: ContentType[] = [
         .default([]),
       features: list,
       warranty: optionalText,
+    }),
+  },
+  {
+    type: 'pergola-builder',
+    label: 'Pergola builders',
+    singleton: false,
+    keyField: 'slug',
+    locked: false,
+    fields: [
+      {
+        name: 'slug',
+        label: 'Web address',
+        kind: 'text',
+        help: 'The end of its address under /pergolas/, like origin-pergola',
+      },
+      { name: 'range', label: 'Range', kind: 'text', help: 'Like Origin' },
+      { name: 'intro', label: 'Introduction', kind: 'textarea' },
+      { name: 'roof', label: 'Roof', kind: 'text', help: 'Like Manual louvres' },
+      { name: 'lighting', label: 'Lighting', kind: 'select', options: PERGOLA_LIGHTING },
+      {
+        name: 'sizes',
+        label: 'Sizes',
+        kind: 'items',
+        help: 'Each size, with the pergola SKU for each way of fixing it',
+        fields: [
+          { name: 'label', label: 'Size', kind: 'text', help: 'Like 3 × 3 m' },
+          { name: 'width', label: 'Front and back (m)', kind: 'text' },
+          { name: 'depth', label: 'Left and right (m)', kind: 'text' },
+          { name: 'freeStandingSku', label: 'Free-standing SKU', kind: 'text' },
+          { name: 'wallMountedSku', label: 'Wall-mounted SKU', kind: 'text' },
+          {
+            name: 'freeStandingSize',
+            label: 'Free-standing exact size',
+            kind: 'text',
+            help: 'Like 3023 × 3023 mm, 2550 mm high',
+          },
+          { name: 'wallMountedSize', label: 'Wall-mounted exact size', kind: 'text' },
+          {
+            name: 'lightingKitSku',
+            label: 'LED kit SKU',
+            kind: 'text',
+            help: 'Only when lighting is an optional kit',
+          },
+        ],
+      },
+      {
+        name: 'sides',
+        label: 'Side options',
+        kind: 'items',
+        help: 'One option per side. A 6 m side is two 3 m bays. Options whose SKUs are not on the shop are not offered.',
+        fields: [
+          { name: 'name', label: 'Option', kind: 'text', help: 'Like Manual wind screen' },
+          { name: 'kind', label: 'Made of', kind: 'select', options: PERGOLA_SIDE_KINDS },
+          { name: 'sku3m', label: 'SKU for a 3 m side', kind: 'text', help: 'Horizontal panel for panels' },
+          { name: 'sku4m', label: 'SKU for a 4 m side', kind: 'text', help: 'Horizontal panel for panels' },
+          { name: 'verticalSku3m', label: 'Vertical panel SKU, 3 m side', kind: 'text' },
+          { name: 'verticalSku4m', label: 'Vertical panel SKU, 4 m side', kind: 'text' },
+          { name: 'panels3m', label: 'Panels on a 3 m side', kind: 'text' },
+          { name: 'panels4m', label: 'Panels on a 4 m side', kind: 'text' },
+        ],
+      },
+      { name: 'heaterSku', label: 'Heater SKU', kind: 'text', help: 'Any number can be added' },
+      {
+        name: 'messages',
+        label: 'Messages in the summary',
+        kind: 'list',
+        help: 'Power, foundations, delivery and lead times. One per line.',
+      },
+      {
+        name: 'details',
+        label: 'Product details',
+        kind: 'items',
+        fields: [
+          { name: 'heading', label: 'Heading', kind: 'text' },
+          { name: 'text', label: 'Text', kind: 'textarea' },
+        ],
+      },
+      seoField,
+    ],
+    schema: z.object({
+      slug,
+      range: required('range name'),
+      intro: required('introduction'),
+      roof: required('roof'),
+      lighting: z.enum(PERGOLA_LIGHTING, { error: 'Choose how lighting works' }),
+      sizes: z
+        .array(
+          z.object({
+            label: required('size'),
+            width: metres,
+            depth: metres,
+            freeStandingSku: required('free-standing SKU'),
+            wallMountedSku: required('wall-mounted SKU'),
+            freeStandingSize: optionalText,
+            wallMountedSize: optionalText,
+            lightingKitSku: optionalText,
+          }),
+        )
+        .min(1, 'Add at least one size'),
+      sides: z
+        .array(
+          z.object({
+            name: required('side option name'),
+            kind: z.enum(PERGOLA_SIDE_KINDS, { error: 'Choose what the side option is made of' }),
+            sku3m: optionalText,
+            sku4m: optionalText,
+            verticalSku3m: optionalText,
+            verticalSku4m: optionalText,
+            panels3m: optionalCount,
+            panels4m: optionalCount,
+          }),
+        )
+        .default([]),
+      heaterSku: optionalText,
+      messages: list,
+      details: z
+        .array(z.object({ heading: required('heading'), text: required('text') }))
+        .default([]),
+      seo,
     }),
   },
   {
