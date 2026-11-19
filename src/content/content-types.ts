@@ -61,6 +61,8 @@ const optionalCount = z
   .nullish()
   .transform((value) => (value === '' ? null : value));
 
+export const SOLD_AS = ['paving', 'decking', 'cladding', 'jointing', 'cleaner', 'single'] as const;
+
 export const PERGOLA_LIGHTING = ['Optional kit for each size', 'Included as standard'] as const;
 export const PERGOLA_SIDE_KINDS = ['One piece per side', 'Panels to mix'] as const;
 const faqItem = z.object({ question: required('question'), answer: required('answer') });
@@ -354,6 +356,19 @@ export const CONTENT_TYPES: ContentType[] = [
           },
         ],
       },
+      {
+        name: 'soldAs',
+        label: 'Sold as',
+        kind: 'select',
+        options: [...SOLD_AS],
+        help: 'Sets the words and the calculator on the product page: paving by the pack, decking and cladding by the board, jointing by the tub, cleaners by the bottle. Leave empty to go by the category',
+      },
+      {
+        name: 'suits',
+        label: 'Suits',
+        kind: 'list',
+        help: 'What it is for, one per line, like Porcelain or Natural stone',
+      },
       { name: 'features', label: 'Key features', kind: 'list', help: 'One per line' },
       { name: 'warranty', label: 'Warranty', kind: 'text', help: 'Like: 25-year guarantee' },
       {
@@ -404,6 +419,8 @@ export const CONTENT_TYPES: ContentType[] = [
       installation: optionalText,
       care: optionalText,
       faqs: z.array(faqItem).default([]),
+      soldAs: z.enum(SOLD_AS).nullish(),
+      suits: list,
     }),
   },
   {
