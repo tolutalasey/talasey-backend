@@ -113,6 +113,9 @@ export const productImages = pgTable(
     alt: text('alt').notNull(),
     width: integer('width'),
     height: integer('height'),
+    // The option this photo shows, such as Colour: Kandla Grey; null when it suits every option.
+    showsOption: text('shows_option'),
+    showsValue: text('shows_value'),
     rank: integer('rank').notNull().default(0),
   },
   (table) => [index('product_image_product_idx').on(table.productId)],

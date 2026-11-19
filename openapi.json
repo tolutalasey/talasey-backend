@@ -2227,6 +2227,24 @@
                               "minimum": 0,
                               "exclusiveMinimum": true,
                               "maximum": 9007199254740991
+                            },
+                            "shows": {
+                              "description": "The option this photo shows, such as Colour: Kandla Grey; empty suits every option",
+                              "nullable": true,
+                              "type": "object",
+                              "properties": {
+                                "option": {
+                                  "type": "string"
+                                },
+                                "value": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "option",
+                                "value"
+                              ],
+                              "additionalProperties": false
                             }
                           },
                           "required": [
@@ -2525,6 +2543,24 @@
                             "minimum": 0,
                             "exclusiveMinimum": true,
                             "maximum": 9007199254740991
+                          },
+                          "shows": {
+                            "description": "The option this photo shows, such as Colour: Kandla Grey; empty suits every option",
+                            "nullable": true,
+                            "type": "object",
+                            "properties": {
+                              "option": {
+                                "type": "string"
+                              },
+                              "value": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "option",
+                              "value"
+                            ],
+                            "additionalProperties": false
                           }
                         },
                         "required": [
@@ -3256,6 +3292,24 @@
                             "minimum": 0,
                             "exclusiveMinimum": true,
                             "maximum": 9007199254740991
+                          },
+                          "shows": {
+                            "description": "The option this photo shows, such as Colour: Kandla Grey; empty suits every option",
+                            "nullable": true,
+                            "type": "object",
+                            "properties": {
+                              "option": {
+                                "type": "string"
+                              },
+                              "value": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "option",
+                              "value"
+                            ],
+                            "additionalProperties": false
                           }
                         },
                         "required": [
@@ -3289,6 +3343,24 @@
                             "minimum": 0,
                             "exclusiveMinimum": true,
                             "maximum": 9007199254740991
+                          },
+                          "shows": {
+                            "description": "The option this photo shows, such as Colour: Kandla Grey; empty suits every option",
+                            "nullable": true,
+                            "type": "object",
+                            "properties": {
+                              "option": {
+                                "type": "string"
+                              },
+                              "value": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "option",
+                              "value"
+                            ],
+                            "additionalProperties": false
                           },
                           "colourId": {
                             "type": "string",
@@ -3612,6 +3684,24 @@
                             "minimum": 0,
                             "exclusiveMinimum": true,
                             "maximum": 9007199254740991
+                          },
+                          "shows": {
+                            "description": "The option this photo shows, such as Colour: Kandla Grey; empty suits every option",
+                            "nullable": true,
+                            "type": "object",
+                            "properties": {
+                              "option": {
+                                "type": "string"
+                              },
+                              "value": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "option",
+                              "value"
+                            ],
+                            "additionalProperties": false
                           }
                         },
                         "required": [
@@ -3645,6 +3735,24 @@
                             "minimum": 0,
                             "exclusiveMinimum": true,
                             "maximum": 9007199254740991
+                          },
+                          "shows": {
+                            "description": "The option this photo shows, such as Colour: Kandla Grey; empty suits every option",
+                            "nullable": true,
+                            "type": "object",
+                            "properties": {
+                              "option": {
+                                "type": "string"
+                              },
+                              "value": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "option",
+                              "value"
+                            ],
+                            "additionalProperties": false
                           },
                           "colourId": {
                             "type": "string",
@@ -3960,6 +4068,23 @@
                           "minimum": 0,
                           "exclusiveMinimum": true,
                           "maximum": 9007199254740991
+                        },
+                        "shows": {
+                          "description": "The option this photo shows, such as Colour: Kandla Grey; empty suits every option",
+                          "nullable": true,
+                          "type": "object",
+                          "properties": {
+                            "option": {
+                              "type": "string"
+                            },
+                            "value": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "option",
+                            "value"
+                          ]
                         }
                       },
                       "required": [
@@ -3992,6 +4117,23 @@
                           "minimum": 0,
                           "exclusiveMinimum": true,
                           "maximum": 9007199254740991
+                        },
+                        "shows": {
+                          "description": "The option this photo shows, such as Colour: Kandla Grey; empty suits every option",
+                          "nullable": true,
+                          "type": "object",
+                          "properties": {
+                            "option": {
+                              "type": "string"
+                            },
+                            "value": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "option",
+                            "value"
+                          ]
                         },
                         "colourId": {
                           "type": "string",
@@ -4248,6 +4390,24 @@
                             "minimum": 0,
                             "exclusiveMinimum": true,
                             "maximum": 9007199254740991
+                          },
+                          "shows": {
+                            "description": "The option this photo shows, such as Colour: Kandla Grey; empty suits every option",
+                            "nullable": true,
+                            "type": "object",
+                            "properties": {
+                              "option": {
+                                "type": "string"
+                              },
+                              "value": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "option",
+                              "value"
+                            ],
+                            "additionalProperties": false
                           }
                         },
                         "required": [
@@ -4281,6 +4441,24 @@
                             "minimum": 0,
                             "exclusiveMinimum": true,
                             "maximum": 9007199254740991
+                          },
+                          "shows": {
+                            "description": "The option this photo shows, such as Colour: Kandla Grey; empty suits every option",
+                            "nullable": true,
+                            "type": "object",
+                            "properties": {
+                              "option": {
+                                "type": "string"
+                              },
+                              "value": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "option",
+                              "value"
+                            ],
+                            "additionalProperties": false
                           },
                           "colourId": {
                             "type": "string",

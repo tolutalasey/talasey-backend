@@ -356,6 +356,28 @@ export const CONTENT_TYPES: ContentType[] = [
       },
       { name: 'features', label: 'Key features', kind: 'list', help: 'One per line' },
       { name: 'warranty', label: 'Warranty', kind: 'text', help: 'Like: 25-year guarantee' },
+      {
+        name: 'installation',
+        label: 'Installation',
+        kind: 'textarea',
+        help: 'How it is laid or fitted. Leave a blank line between steps',
+      },
+      {
+        name: 'care',
+        label: 'Care and maintenance',
+        kind: 'textarea',
+        help: 'Cleaning, sealing and upkeep. Leave a blank line between paragraphs',
+      },
+      {
+        name: 'faqs',
+        label: 'Questions and answers',
+        kind: 'items',
+        help: 'Questions customers ask about this product',
+        fields: [
+          { name: 'question', label: 'Question', kind: 'text' },
+          { name: 'answer', label: 'Answer', kind: 'textarea' },
+        ],
+      },
     ],
     schema: z.object({
       product: slug,
@@ -379,6 +401,9 @@ export const CONTENT_TYPES: ContentType[] = [
         .default([]),
       features: list,
       warranty: optionalText,
+      installation: optionalText,
+      care: optionalText,
+      faqs: z.array(faqItem).default([]),
     }),
   },
   {

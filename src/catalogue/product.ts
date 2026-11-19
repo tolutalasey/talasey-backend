@@ -13,11 +13,17 @@ export interface VariantState {
   barcode: string | null;
 }
 
+export interface ImageShows {
+  option: string;
+  value: string;
+}
+
 export interface ImageState {
   url: string;
   alt: string;
   width?: number | null;
   height?: number | null;
+  shows?: ImageShows | null;
 }
 
 export interface ColourImageState {

@@ -177,7 +177,15 @@ export class ProductRepository {
     if (state.images.length > 0) {
       await executor
         .insert(productImages)
-        .values(state.images.map((image, rank) => ({ ...image, productId: id, rank })));
+        .values(
+          state.images.map(({ shows, ...image }, rank) => ({
+            ...image,
+            showsOption: shows?.option ?? null,
+            showsValue: shows?.value ?? null,
+            productId: id,
+            rank,
+          })),
+        );
     }
     await executor.delete(colourImages).where(eq(colourImages.productId, id));
     if (state.colourImages.length > 0) {
@@ -226,7 +234,14 @@ function toProduct(
   category: { handle: string; name: string } | null,
   children: {
     variants: (VariantState & { productId: string })[];
-    images: { url: string; alt: string; width: number | null; height: number | null }[];
+    images: {
+      url: string;
+      alt: string;
+      width: number | null;
+      height: number | null;
+      showsOption: string | null;
+      showsValue: string | null;
+    }[];
     colourImages: { colourId: string; size: string; finish: string; url: string; alt: string }[];
   },
 ): CatalogueProduct {
@@ -255,7 +270,13 @@ function toProduct(
     attributes: row.attributes,
     pimSku: row.pimSku,
     variants: children.variants.map(({ productId: _product, ...variant }) => variant),
-    images: children.images.map(({ url, alt, width, height }) => ({ url, alt, width, height })),
+    images: children.images.map(({ url, alt, width, height, showsOption, showsValue }) => ({
+      url,
+      alt,
+      width,
+      height,
+      shows: showsOption && showsValue ? { option: showsOption, value: showsValue } : null,
+    })),
     colourImages: children.colourImages.map(({ colourId, size, finish, url, alt }) => ({
       colourId,
       size,

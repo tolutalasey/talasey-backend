@@ -7,6 +7,10 @@ const image = z.object({
   alt: z.string(),
   width: z.number().int().positive().nullish(),
   height: z.number().int().positive().nullish(),
+  shows: z
+    .object({ option: z.string(), value: z.string() })
+    .nullish()
+    .describe('The option this photo shows, such as Colour: Kandla Grey; empty suits every option'),
 });
 const option = z.object({ title: z.string(), values: z.array(z.string()) });
 

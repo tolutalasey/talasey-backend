@@ -52,11 +52,16 @@ export function productProblems(product: ProductState, colourIds: Set<string>): 
     problems.push('Only made-to-measure products (page type 2) have a price formula');
   }
 
+  const optionValues = new Map(product.options.map((option) => [option.title, option.values]));
   for (const image of product.images) {
     if (!image.alt.trim()) problems.push('Every photo needs a description (alt text)');
+    if (image.shows && !optionValues.get(image.shows.option)?.includes(image.shows.value)) {
+      problems.push(
+        `A photo is set to show ${image.shows.option}: ${image.shows.value}, which the product doesn't offer`,
+      );
+    }
   }
 
-  const optionValues = new Map(product.options.map((option) => [option.title, option.values]));
   for (const variant of product.variants) {
     const name = variant.title || 'An option';
     if (!variant.title.trim()) problems.push('Every option needs a name');
