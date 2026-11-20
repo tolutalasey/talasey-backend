@@ -16622,7 +16622,9 @@
                           "site-survey",
                           "stockist",
                           "installer",
-                          "showroom"
+                          "showroom",
+                          "partner",
+                          "warranty"
                         ]
                       },
                       "name": {
@@ -16756,7 +16758,9 @@
                         "site-survey",
                         "stockist",
                         "installer",
-                        "showroom"
+                        "showroom",
+                        "partner",
+                        "warranty"
                       ]
                     },
                     "name": {
@@ -16913,7 +16917,9 @@
                         "site-survey",
                         "stockist",
                         "installer",
-                        "showroom"
+                        "showroom",
+                        "partner",
+                        "warranty"
                       ]
                     },
                     "name": {

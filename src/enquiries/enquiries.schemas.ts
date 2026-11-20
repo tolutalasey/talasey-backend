@@ -6,6 +6,8 @@ export const ENQUIRY_KINDS = [
   'stockist',
   'installer',
   'showroom',
+  'partner',
+  'warranty',
 ] as const;
 export const ENQUIRY_STATUSES = ['new', 'in-progress', 'done'] as const;
 export const MAX_ENQUIRY_PHOTOS = 5;

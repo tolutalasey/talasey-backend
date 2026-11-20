@@ -68,6 +68,16 @@ const WORDING: Record<Kind, { what: string; subject: string; reply: string }> = 
     subject: 'Showroom visit request',
     reply: "We'll check availability and confirm your visit within one working day.",
   },
+  partner: {
+    what: 'Partner Programme application',
+    subject: 'Partner Programme application',
+    reply: "We'll review your application and be in touch within 5 working days.",
+  },
+  warranty: {
+    what: 'warranty registration',
+    subject: 'Warranty registration',
+    reply: 'Your warranty is registered. Keep this email with your proof of purchase.',
+  },
 };
 
 // These need a postcode and a phone number, so the team can find someone local and call back.

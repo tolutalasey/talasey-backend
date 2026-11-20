@@ -196,6 +196,9 @@ export const NEWS_CATEGORIES = [
   'Product Updates',
 ] as const;
 
+// Forms a plain page can show under its text, each sent to Enquiries in /admin.
+export const PAGE_FORMS = ['partner', 'warranty', 'contact'] as const;
+
 export const GUIDE_TOPICS = ['Planning', 'Buying', 'Laying', 'Care'] as const;
 export const FAQ_TOPICS = [
   'Natural stone',
@@ -1225,6 +1228,23 @@ export const CONTENT_TYPES: ContentType[] = [
         help: 'Leave a blank line between paragraphs. Start a line with ## for a heading or - for a bullet point. Add a link like [Contact us](/contact/)',
       },
       {
+        name: 'faqs',
+        label: 'Questions and answers',
+        kind: 'items',
+        help: 'Optional. Shown under the text, each opening with a drop-down',
+        fields: [
+          { name: 'question', label: 'Question', kind: 'text' },
+          { name: 'answer', label: 'Answer', kind: 'textarea' },
+        ],
+      },
+      {
+        name: 'form',
+        label: 'Form',
+        kind: 'select',
+        options: PAGE_FORMS,
+        help: 'Optional. partner: Partner Programme application. warranty: warranty registration. contact: a message to the team',
+      },
+      {
         name: 'actions',
         label: 'Buttons at the end',
         kind: 'items',
@@ -1245,6 +1265,8 @@ export const CONTENT_TYPES: ContentType[] = [
       intro: optionalText,
       photo: image.nullish(),
       body: required('text'),
+      faqs: z.array(faqItem).default([]),
+      form: z.enum(PAGE_FORMS).nullish(),
       actions: z.array(link).max(3, 'Keep it to three buttons').default([]),
       placeholder: z.boolean().default(false),
       seo,
