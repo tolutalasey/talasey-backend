@@ -592,7 +592,23 @@ export const CONTENT_TYPES: ContentType[] = [
         kind: 'list',
         help: 'What it is for, one per line, like Porcelain or Natural stone',
       },
-      { name: 'features', label: 'Key features', kind: 'list', help: 'One per line' },
+      { name: 'features', label: 'Features and benefits', kind: 'list', help: 'One per line' },
+      {
+        name: 'colours',
+        label: 'Colours',
+        kind: 'items',
+        help: 'For a product sold in several colours: the words on each colour’s own page',
+        fields: [
+          { name: 'colour', label: 'Colour', kind: 'text', help: 'As it is named on the product' },
+          { name: 'description', label: 'Description', kind: 'textarea' },
+          {
+            name: 'features',
+            label: 'Features and benefits',
+            kind: 'list',
+            help: 'One per line. Leave empty to use the product’s own',
+          },
+        ],
+      },
       { name: 'warranty', label: 'Warranty', kind: 'text', help: 'Like: 25-year guarantee' },
       {
         name: 'installation',
@@ -638,6 +654,15 @@ export const CONTENT_TYPES: ContentType[] = [
         )
         .default([]),
       features: list,
+      colours: z
+        .array(
+          z.object({
+            colour: required('colour'),
+            description: optionalText,
+            features: list,
+          }),
+        )
+        .default([]),
       warranty: optionalText,
       installation: optionalText,
       care: optionalText,
