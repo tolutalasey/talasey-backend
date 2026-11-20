@@ -47,11 +47,12 @@ export const buildSchema = z.object({
     .array(
       z.object({
         variantId: z.uuid(),
-        quantity: z.number().int().positive(),
-        side: z.string().optional(),
+        quantity: z.number().int().positive().max(999),
+        side: z.string().max(60).optional(),
       }),
     )
-    .min(1),
+    .min(1)
+    .max(100),
 });
 
 export const quantitySchema = z.object({ quantity: z.number().int().min(0).max(999) });

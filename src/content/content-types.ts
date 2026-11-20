@@ -56,6 +56,10 @@ const link = z.object({ label: required('link text'), href: required('link addre
 const metres = z.coerce
   .number({ error: 'Give sizes in metres, like 3' })
   .positive('Give sizes in metres, like 3');
+const millimetres = z.coerce
+  .number({ error: 'Give sizes in millimetres, like 1873' })
+  .int('Give sizes in whole millimetres')
+  .positive('Give sizes in millimetres, like 1873');
 const optionalCount = z
   .union([z.literal(''), z.coerce.number().int().positive()])
   .nullish()
@@ -546,6 +550,154 @@ export const CONTENT_TYPES: ContentType[] = [
         .default([]),
       heaterSku: optionalText,
       messages: list,
+      details: z
+        .array(z.object({ heading: required('heading'), text: required('text') }))
+        .default([]),
+      seo,
+    }),
+  },
+  {
+    type: 'fence-builder',
+    label: 'Fence builders',
+    singleton: false,
+    keyField: 'slug',
+    locked: false,
+    fields: [
+      {
+        name: 'slug',
+        label: 'Web address',
+        kind: 'text',
+        help: 'The end of its address under /fence-builder/, like composite-fencing',
+      },
+      { name: 'name', label: 'Name', kind: 'text', help: 'Like Composite fencing' },
+      { name: 'intro', label: 'Introduction', kind: 'textarea' },
+      {
+        name: 'bayWidth',
+        label: 'Bay width (mm)',
+        kind: 'text',
+        help: 'Post centre to post centre, like 1873',
+      },
+      {
+        name: 'boardCounts',
+        label: 'Heights offered (boards per bay)',
+        kind: 'list',
+        help: 'One number per line, like 6, 8, 10 and 11',
+      },
+      {
+        name: 'styles',
+        label: 'Fence styles',
+        kind: 'items',
+        help: 'Each style is a board product; its colours are the colours shoppers choose from',
+        fields: [
+          { name: 'name', label: 'Style', kind: 'text', help: 'Like Traditional' },
+          {
+            name: 'boardProduct',
+            label: 'Board product',
+            kind: 'text',
+            help: "The end of the board's web address",
+          },
+          { name: 'boardHeight', label: 'Board height (mm)', kind: 'text', help: 'Like 158' },
+        ],
+      },
+      {
+        name: 'posts',
+        label: 'Posts',
+        kind: 'items',
+        help: 'Ways of fixing the posts. One post at each end and one between each bay',
+        fields: [
+          { name: 'name', label: 'Fixing', kind: 'text', help: 'Like Concreted in the ground' },
+          { name: 'product', label: 'Post product', kind: 'text' },
+          {
+            name: 'maxHeight',
+            label: 'Tallest fence it takes (mm)',
+            kind: 'text',
+            help: 'Height above the ground, like 1800',
+          },
+        ],
+      },
+      {
+        name: 'trimProduct',
+        label: 'Trim kit product',
+        kind: 'text',
+        help: 'One per bay. Leave empty when the fence needs none',
+      },
+      {
+        name: 'toppers',
+        label: 'Trellis toppers',
+        kind: 'items',
+        help: 'Optional, one per bay',
+        fields: [
+          { name: 'name', label: 'Topper', kind: 'text', help: 'Like Diagonal trellis' },
+          { name: 'product', label: 'Product', kind: 'text' },
+          { name: 'height', label: 'Height (mm)', kind: 'text', help: 'Like 316' },
+        ],
+      },
+      {
+        name: 'postExtras',
+        label: 'Post extras',
+        kind: 'items',
+        help: 'Optional, one per post, such as caps and lights',
+        fields: [
+          { name: 'name', label: 'Extra', kind: 'text', help: 'Like Solar light post caps' },
+          { name: 'product', label: 'Product', kind: 'text' },
+          {
+            name: 'withProduct',
+            label: 'Also needs',
+            kind: 'text',
+            help: 'A product that goes with each one, like a light adapter. Optional',
+          },
+        ],
+      },
+      {
+        name: 'details',
+        label: 'Product details',
+        kind: 'items',
+        fields: [
+          { name: 'heading', label: 'Heading', kind: 'text' },
+          { name: 'text', label: 'Text', kind: 'textarea' },
+        ],
+      },
+      seoField,
+    ],
+    schema: z.object({
+      slug,
+      name: required('name'),
+      intro: required('introduction'),
+      bayWidth: millimetres,
+      boardCounts: z
+        .array(z.coerce.number().int().min(1).max(30))
+        .min(1, 'Add at least one height, as a number of boards'),
+      styles: z
+        .array(
+          z.object({
+            name: required('style name'),
+            boardProduct: slug,
+            boardHeight: millimetres,
+          }),
+        )
+        .min(1, 'Add at least one fence style'),
+      posts: z
+        .array(
+          z.object({
+            name: required('fixing name'),
+            product: slug,
+            maxHeight: millimetres,
+          }),
+        )
+        .min(1, 'Add at least one way of fixing the posts'),
+      trimProduct: optionalText,
+      toppers: z
+        .array(z.object({ name: required('topper name'), product: slug, height: millimetres }))
+        .default([]),
+      postExtras: z
+        .array(
+          z.object({
+            name: required('extra name'),
+            product: slug,
+            withProduct: optionalText,
+          }),
+        )
+        .default([]),
       details: z
         .array(z.object({ heading: required('heading'), text: required('text') }))
         .default([]),
