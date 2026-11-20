@@ -2,10 +2,12 @@ import { Injectable } from '@nestjs/common';
 import {
   basketWeight,
   onlyDeliveryIncluded,
+  samplesOnly,
   type AccessAnswers,
   type Basket,
   type Shipment,
 } from '../basket/basket.js';
+import { SAMPLE_DELIVERY_PENCE } from '../basket/sample-pricing.js';
 import { BasketRepository } from '../basket/basket.repository.js';
 import { DeliveryService } from '../delivery/delivery.service.js';
 import { parsePostcode, type Postcode } from '../delivery/postcode.js';
@@ -15,6 +17,7 @@ export const SHIPMENT_NAMES: Record<Shipment, string> = {
   pallet: 'Pallet delivery on a day you choose',
   parcel: 'Parcel delivery',
 };
+export const SAMPLE_DELIVERY_NAME = 'Sample delivery by post';
 
 export interface DeliveryOption {
   shipment: Shipment;
@@ -37,11 +40,21 @@ export class DeliveryCheckoutService {
     private readonly slots: SlotsService,
   ) {}
 
+  // One delivery charge per order, the highest that applies: samples sent with paid goods ride in
+  // the same delivery, and never cost less than a samples-only order would.
   async quote(basket: Basket, shipment: Shipment): Promise<DeliveryOption> {
+    const goods = await this.goodsQuote(basket, shipment);
+    if (basket.samples.length === 0 || goods.pricePence === null) return goods;
+    if (onlyDeliveryIncluded(basket)) return goods;
+    return { ...goods, pricePence: Math.max(goods.pricePence, SAMPLE_DELIVERY_PENCE) };
+  }
+
+  private async goodsQuote(basket: Basket, shipment: Shipment): Promise<DeliveryOption> {
     const option = { shipment, name: SHIPMENT_NAMES[shipment] };
     const postcode = basket.address && parsePostcode(basket.address.postcode);
     if (!postcode)
       return { ...option, pricePence: null, problem: 'Add a delivery postcode first.' };
+    if (samplesOnly(basket)) return this.samplesOnly(shipment);
     if (onlyDeliveryIncluded(basket)) return this.included(postcode, shipment);
     const weight = basketWeight(basket);
     if ('problem' in weight) return { ...option, pricePence: null, problem: weight.problem };
@@ -62,6 +75,17 @@ export class DeliveryCheckoutService {
               : 'Too heavy for one pallet. Call us and we will arrange it.',
         };
     }
+  }
+
+  private samplesOnly(shipment: Shipment): DeliveryOption {
+    return shipment === 'parcel'
+      ? { shipment, name: SAMPLE_DELIVERY_NAME, pricePence: SAMPLE_DELIVERY_PENCE, problem: null }
+      : {
+          shipment,
+          name: SHIPMENT_NAMES[shipment],
+          pricePence: null,
+          problem: 'Samples come by post.',
+        };
   }
 
   // A bag of pergola parts comes on a pallet at no charge, wherever we deliver.

@@ -3,6 +3,7 @@ import { ContentService } from '../content/content.service.js';
 
 export type EmailName =
   | 'order-confirmation'
+  | 'sample-order-confirmation'
   | 'delivery-day-booked'
   | 'enquiry-received'
   | 'samples-requested'
@@ -13,7 +14,11 @@ export type EmailName =
 const FALLBACK: Record<EmailName, { subject: string; body: string }> = {
   'order-confirmation': {
     subject: 'Your Talasey order {orderNumber}',
-    body: 'Hello {name},\n\nThank you for your order {orderNumber}. {deliveryDay}\n\nThe Talasey team',
+    body: 'Hello {name},\n\nThank you for your order {orderNumber}. {deliveryDay}\n\n{samples}The Talasey team',
+  },
+  'sample-order-confirmation': {
+    subject: 'Your Talasey samples {orderNumber}',
+    body: 'Hello {name},\n\nThank you. We post samples the next working day:\n\n{samples}\n\nWhen you have seen them in your garden, reply to this email with any questions.\n\nThe Talasey team',
   },
   'delivery-day-booked': {
     subject: 'Your delivery day is booked',

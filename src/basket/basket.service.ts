@@ -18,6 +18,8 @@ import {
   type LineStock,
 } from '../catalogue/rules/stock-mode.js';
 import type { Address, Basket } from './basket.js';
+import { SamplesRepository } from '../samples/samples.repository.js';
+import { MAX_SAMPLES } from './sample-pricing.js';
 import { BasketRepository, type NewLine } from './basket.repository.js';
 
 export type BasketChange =
@@ -38,6 +40,7 @@ export class BasketService {
     private readonly baskets: BasketRepository,
     private readonly products: ProductRepository,
     private readonly colourSets: ColourSetRepository,
+    private readonly sampleOffers: SamplesRepository,
   ) {}
 
   async create(): Promise<Basket> {
@@ -125,6 +128,37 @@ export class BasketService {
       }));
     });
     return result.ok ? { ...result, buildId } : result;
+  }
+
+  async addSample(basketId: string, offerId: string): Promise<BasketChange> {
+    const basket = await this.baskets.find(basketId);
+    if (!basket) return notFound;
+    if (basket.orderId) return problem('This basket has already been ordered.');
+    if (basket.samples.some((sample) => sample.offerId === offerId)) {
+      return { ok: true, basket };
+    }
+    if (basket.samples.length >= MAX_SAMPLES) {
+      return problem(`You can order up to ${MAX_SAMPLES} samples at a time.`);
+    }
+    const [offer] = await this.sampleOffers.offersByIds([offerId]);
+    if (!offer?.active) return problem('That sample is no longer offered.');
+    const sample = {
+      offerId: offer.id,
+      productTitle: offer.productTitle,
+      productHandle: offer.productHandle,
+      label: offer.label,
+    };
+    await this.baskets.update(basketId, { samples: [...basket.samples, sample] });
+    return { ok: true, basket: (await this.baskets.find(basketId)) as Basket };
+  }
+
+  async removeSample(basketId: string, offerId: string): Promise<BasketChange> {
+    const basket = await this.baskets.find(basketId);
+    if (!basket) return notFound;
+    if (basket.orderId) return problem('This basket has already been ordered.');
+    const samples = basket.samples.filter((sample) => sample.offerId !== offerId);
+    await this.baskets.update(basketId, { samples });
+    return { ok: true, basket: { ...basket, samples } };
   }
 
   async setQuantity(basketId: string, lineId: string, quantity: number): Promise<BasketChange> {

@@ -1,4 +1,4 @@
-import type { Basket, SlotChoice } from '../basket/basket.js';
+import { isEmpty, type Basket, type SlotChoice } from '../basket/basket.js';
 import { splitStock } from '../catalogue/rules/stock-mode.js';
 import type { SlotHold } from '../slots/slot.repository.js';
 
@@ -7,7 +7,7 @@ const samePostcode = (a: string, b: string) =>
 
 // The lines themselves: still for sale, priced, and in stock where the product is stocked only.
 export function lineProblems(basket: Basket): string[] {
-  if (basket.lines.length === 0) return ['Your basket is empty.'];
+  if (isEmpty(basket)) return ['Your basket is empty.'];
   const problems: string[] = [];
   const wanted = new Map<string, number>();
   for (const line of basket.lines) {

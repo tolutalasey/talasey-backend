@@ -11,6 +11,7 @@ import {
 } from 'drizzle-orm/pg-core';
 import { colours, variants } from './catalogue.js';
 import { shipmentType } from './delivery.js';
+import type { SampleItemRow } from './samples.js';
 
 export interface AddressRow {
   firstName: string;
@@ -58,6 +59,7 @@ export const baskets = pgTable('basket', {
   paymentReference: text('payment_reference'),
   promotionCode: text('promotion_code'),
   orderId: uuid('order_id'),
+  samples: jsonb('samples').$type<SampleItemRow[]>().notNull().default([]),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
 });
@@ -83,6 +85,10 @@ export const basketLines = pgTable(
   },
   (table) => [index('basket_line_basket_idx').on(table.basketId)],
 );
+
+export interface OrderSampleRow extends SampleItemRow {
+  pricePence: number;
+}
 
 export const orderStatus = pgEnum('order_status', ['placed', 'cancelled']);
 export const paymentStatus = pgEnum('payment_status', ['paid', 'partly_refunded', 'refunded']);
@@ -110,6 +116,8 @@ export const orders = pgTable(
     paymentReference: text('payment_reference').notNull(),
     paymentStatus: paymentStatus('payment_status').notNull().default('paid'),
     refundedPence: integer('refunded_pence').notNull().default(0),
+    // Samples are kept apart from the products bought, for reporting and the right emails.
+    samples: jsonb('samples').$type<OrderSampleRow[]>().notNull().default([]),
     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   },
   (table) => [index('order_created_idx').on(table.createdAt)],

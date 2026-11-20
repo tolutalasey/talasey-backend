@@ -9,6 +9,7 @@ import { OrderRepository } from '../orders/order.repository.js';
 import { StoreOrdersController } from '../orders/store-orders.controller.js';
 import { StripeWebhookController } from '../payments/stripe-webhook.controller.js';
 import { PromotionsModule } from '../promotions/promotions.module.js';
+import { SamplesModule } from '../samples/samples.module.js';
 import { SlotsModule } from '../slots/slots.module.js';
 import { BasketViewService } from './basket-view.service.js';
 import { CheckoutService } from './checkout.service.js';
@@ -16,7 +17,7 @@ import { DeliveryCheckoutService } from './delivery-checkout.service.js';
 import { StoreBasketController } from './store-basket.controller.js';
 
 @Module({
-  imports: [CatalogueModule, DeliveryModule, SlotsModule, PromotionsModule],
+  imports: [CatalogueModule, DeliveryModule, SlotsModule, PromotionsModule, SamplesModule],
   controllers: [
     StoreBasketController,
     StoreOrdersController,

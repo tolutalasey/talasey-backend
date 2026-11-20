@@ -1,7 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { Database } from '../database/client.js';
 import { DATABASE } from '../database/database.module.js';
-import { itemTotal, lineTotal, type Basket } from '../basket/basket.js';
+import { itemTotal, lineTotal, samplesOnly, type Basket } from '../basket/basket.js';
+import { samplePrices } from '../basket/sample-pricing.js';
 import { BasketRepository } from '../basket/basket.repository.js';
 import { BasketService } from '../basket/basket.service.js';
 import { JobQueue } from '../jobs/job-queue.js';
@@ -18,7 +19,11 @@ import {
   lineProblems,
   slotHoldProblems,
 } from './checkout-problems.js';
-import { DeliveryCheckoutService, SHIPMENT_NAMES } from './delivery-checkout.service.js';
+import {
+  DeliveryCheckoutService,
+  SAMPLE_DELIVERY_NAME,
+  SHIPMENT_NAMES,
+} from './delivery-checkout.service.js';
 
 export type CheckoutResult<T> =
   { ok: true; value: T } | { ok: false; problem: string; status: 400 | 402 | 404 };
@@ -130,7 +135,10 @@ export class CheckoutService {
           email: locked.email ?? '',
           address: locked.address as NonNullable<Basket['address']>,
           shipment: locked.shipment ?? 'parcel',
-          deliveryName: SHIPMENT_NAMES[locked.shipment ?? 'parcel'],
+          deliveryName: samplesOnly(locked)
+            ? SAMPLE_DELIVERY_NAME
+            : SHIPMENT_NAMES[locked.shipment ?? 'parcel'],
+          samples: samplePrices(locked.samples),
           itemTotalPence: itemTotal(locked),
           deliveryPence,
           discountPence,

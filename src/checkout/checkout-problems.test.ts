@@ -32,6 +32,7 @@ const line: BasketLine = {
 
 const basket: Basket = {
   id: 'b1',
+  samples: [],
   email: 'amy@example.com',
   address: {
     firstName: 'Amy',

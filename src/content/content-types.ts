@@ -211,6 +211,7 @@ const finderAnswerList = z
 export const SEASONS = ['spring', 'summer', 'autumn', 'winter'] as const;
 export const EMAILS = [
   'order-confirmation',
+  'sample-order-confirmation',
   'delivery-day-booked',
   'enquiry-received',
   'samples-requested',

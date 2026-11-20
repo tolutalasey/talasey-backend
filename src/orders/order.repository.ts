@@ -24,9 +24,11 @@ export class OrderRepository {
   ): Promise<string> {
     const [created] = await executor.insert(orders).values(order).returning({ id: orders.id });
     if (!created) throw new Error('Order was not created');
-    await executor
-      .insert(orderLines)
-      .values(lines.map(({ shipNow: _now, ...line }) => ({ ...line, orderId: created.id })));
+    if (lines.length > 0) {
+      await executor
+        .insert(orderLines)
+        .values(lines.map(({ shipNow: _now, ...line }) => ({ ...line, orderId: created.id })));
+    }
     // What ships from the yard comes off the stock count now; made-to-order quantities don't.
     for (const line of lines) {
       if (line.shipNow > 0 && line.variantId) {

@@ -22,6 +22,15 @@ export const accessAnswersSchema = z.object({
 });
 
 export const shipmentSchema = z.enum(['pallet', 'parcel']);
+export const addSampleSchema = z.object({ offerId: z.uuid() });
+
+const sampleSchema = z.object({
+  offerId: z.uuid(),
+  productTitle: z.string(),
+  productHandle: z.string(),
+  label: z.string(),
+  pricePence: z.number().int().describe('0 for the first three'),
+});
 
 export const addLineSchema = z.object({
   variantId: z.uuid(),
@@ -102,6 +111,8 @@ export const basketSchema = z.object({
   email: z.string().nullable(),
   address: addressSchema.nullable(),
   lines: z.array(lineSchema),
+  samples: z.array(sampleSchema),
+  samplesPence: z.number().int().describe('What the samples beyond the free ones cost'),
   itemTotalPence: z.number().int(),
   deliveryPence: z.number().int().nullable(),
   deliveryProblem: z.string().nullable(),
@@ -145,6 +156,7 @@ export const orderSchema = z.object({
       .omit({ productId: true, handle: true, variantId: true })
       .extend({ variantId: z.uuid().nullable() }),
   ),
+  samples: z.array(sampleSchema),
   itemTotalPence: z.number().int(),
   deliveryPence: z.number().int(),
   discountPence: z.number().int(),

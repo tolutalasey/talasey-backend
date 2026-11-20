@@ -35,6 +35,7 @@ type BasketFields = Partial<
     | 'paymentReference'
     | 'promotionCode'
     | 'orderId'
+    | 'samples'
   >
 >;
 
@@ -94,6 +95,7 @@ export class BasketRepository {
       paymentReference: row.paymentReference,
       promotionCode: row.promotionCode,
       orderId: row.orderId,
+      samples: row.samples,
       lines: lines.map(({ linePrice, price, pageType, ...line }): BasketLine => ({
         ...line,
         pageType: pageType as PageType | null,

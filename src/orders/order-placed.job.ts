@@ -37,11 +37,21 @@ export class OrderPlacedJob implements OnModuleInit {
         ? `Your pallet arrives on ${order.slot.date}.`
         : 'We will call you to agree a delivery day.'
       : 'We will email you when it is on its way.';
-    const email = await this.wording.render('order-confirmation', {
-      name: order.address.firstName,
-      orderNumber: `#${order.number}`,
-      deliveryDay: day,
-    });
+    const samples = order.samples
+      .map((sample) => `- ${sample.productTitle}: ${sample.label}`)
+      .join('\n');
+    const email = await this.wording.render(
+      order.lines.length === 0 ? 'sample-order-confirmation' : 'order-confirmation',
+      {
+        name: order.address.firstName,
+        orderNumber: `#${order.number}`,
+        deliveryDay: day,
+        samples:
+          order.lines.length === 0 || !samples
+            ? samples
+            : `Your samples come with it:\n${samples}\n\n`,
+      },
+    );
     await this.mailer.send({ to: order.email, ...email });
   }
 

@@ -17,6 +17,7 @@ import type { Basket } from '../basket/basket.js';
 import {
   accessAnswersSchema,
   addLineSchema,
+  addSampleSchema,
   basketSchema,
   bespokeItemSchema,
   buildSchema,
@@ -116,6 +117,27 @@ export class StoreBasketController {
     );
     const view = await this.changed(result);
     return { ...view, buildId: result.buildId ?? '' };
+  }
+
+  @Post(':id/samples')
+  @Accepts(addSampleSchema)
+  @Returns(basketSchema, 201)
+  @Fails([404, 'No such basket'], [422, 'Sample not offered, or too many samples'])
+  async addSample(
+    @ValidParam('id', id) basketId: string,
+    @ValidBody(addSampleSchema) body: z.infer<typeof addSampleSchema>,
+  ): Promise<BasketDto> {
+    return this.changed(await this.baskets.addSample(basketId, body.offerId));
+  }
+
+  @Delete(':id/samples/:offerId')
+  @Returns(basketSchema)
+  @Fails([404, 'No such basket'])
+  async removeSample(
+    @ValidParam('id', id) basketId: string,
+    @ValidParam('offerId', id) offerId: string,
+  ): Promise<BasketDto> {
+    return this.changed(await this.baskets.removeSample(basketId, offerId));
   }
 
   @Patch(':id/lines/:lineId')

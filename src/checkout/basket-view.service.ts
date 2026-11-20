@@ -1,11 +1,12 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { itemTotal, lineTotal, type Basket } from '../basket/basket.js';
+import { samplePrices, sampleTotal } from '../basket/sample-pricing.js';
 import type { BasketDto } from '../basket/basket.schemas.js';
 import { BasketService } from '../basket/basket.service.js';
 import { CLOCK, type Clock } from '../common/clock.js';
 import { PAYMENT_PROVIDER, type PaymentProvider } from '../payments/payment-provider.js';
 import { PromotionsService } from '../promotions/promotions.service.js';
-import { DeliveryCheckoutService, SHIPMENT_NAMES } from './delivery-checkout.service.js';
+import { DeliveryCheckoutService } from './delivery-checkout.service.js';
 
 // The basket as the site shows it: lines priced now, delivery quoted for the chosen way.
 @Injectable()
@@ -46,6 +47,8 @@ export class BasketViewService {
         bespoke: line.bespoke,
         stock: stock.get(line.id) ?? '',
       })),
+      samples: samplePrices(basket.samples),
+      samplesPence: sampleTotal(basket.samples),
       itemTotalPence: items,
       deliveryPence: quote?.pricePence == null ? null : promotion.deliveryPence,
       deliveryProblem: quote?.problem ?? null,
@@ -57,7 +60,7 @@ export class BasketViewService {
         items - promotion.discountPence + (quote?.pricePence == null ? 0 : promotion.deliveryPence),
       delivery: {
         shipment: basket.shipment,
-        name: basket.shipment ? SHIPMENT_NAMES[basket.shipment] : null,
+        name: quote?.name ?? null,
         day: basket.slot ? { date: basket.slot.date, status: basket.slot.status } : null,
         access: basket.access,
       },

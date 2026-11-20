@@ -3,10 +3,12 @@ import type {
   AddressRow,
   BespokeRow,
   BuildPartRow,
+  SampleItemRow,
   SlotChoiceRow,
 } from '../database/schema/index.js';
 import type { PageType } from '../catalogue/rules/page-types.js';
 import type { StockMode } from '../catalogue/rules/stock-mode.js';
+import { sampleTotal } from './sample-pricing.js';
 
 export type Address = AddressRow;
 export type AccessAnswers = AccessAnswersRow;
@@ -49,11 +51,16 @@ export interface Basket {
   promotionCode: string | null;
   orderId: string | null;
   lines: BasketLine[];
+  samples: SampleItemRow[];
 }
 
 export const lineTotal = (line: BasketLine) => (line.unitPricePence ?? 0) * line.quantity;
 export const itemTotal = (basket: Basket) =>
-  basket.lines.reduce((total, line) => total + lineTotal(line), 0);
+  basket.lines.reduce((total, line) => total + lineTotal(line), 0) + sampleTotal(basket.samples);
+
+export const isEmpty = (basket: Basket) => basket.lines.length === 0 && basket.samples.length === 0;
+export const samplesOnly = (basket: Basket) =>
+  basket.lines.length === 0 && basket.samples.length > 0;
 
 // Products bought through a builder (page type 4, the pergolas) have delivery built into their
 // price, so they add nothing to the weight delivery is priced on.

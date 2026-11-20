@@ -6,5 +6,6 @@ import { SamplesService } from './samples.service.js';
 @Module({
   controllers: [StoreSamplesController, AdminSamplesController],
   providers: [SamplesRepository, SamplesService],
+  exports: [SamplesRepository],
 })
 export class SamplesModule {}

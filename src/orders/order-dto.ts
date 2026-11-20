@@ -22,6 +22,7 @@ export function toOrderDto(order: Order): OrderDto {
       bespoke: line.bespoke,
       stock: line.stock,
     })),
+    samples: order.samples,
     itemTotalPence: order.itemTotalPence,
     deliveryPence: order.deliveryPence,
     discountPence: order.discountPence,
