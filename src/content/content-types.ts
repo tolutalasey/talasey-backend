@@ -45,6 +45,15 @@ const required = (label: string) =>
     .min(1, `Add the ${label}`);
 const slug = z.string({ error: 'Add a URL slug' }).superRefine(toZod(slugCheck));
 const optionalText = z.string().trim().nullish();
+// A product's web address as the shop made it. Page address rules (length, dates, codes) are for
+// new pages, so they don't apply here.
+const productHandle = z
+  .string({ error: "Add the product's web address" })
+  .trim()
+  .regex(
+    /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
+    "Use the end of the product's web address, like solar-light-post-cap",
+  );
 const list = z.array(z.string().trim().min(1)).default([]);
 const seo = z.object({
   title: z.string().superRefine(toZod((value) => lengthCheck(value, SEO_TITLE, 'search title'))),
@@ -430,9 +439,9 @@ export const CONTENT_TYPES: ContentType[] = [
       },
     ],
     schema: z.object({
-      product: slug,
+      product: productHandle,
       completeTheJob: z
-        .array(z.object({ handle: slug, reason: required('reason it is needed') }))
+        .array(z.object({ handle: productHandle, reason: required('reason it is needed') }))
         .default([])
         .refine(
           (items) => new Set(items.map((item) => item.handle)).size === items.length,
@@ -702,7 +711,7 @@ export const CONTENT_TYPES: ContentType[] = [
         .array(
           z.object({
             name: required('style name'),
-            boardProduct: slug,
+            boardProduct: productHandle,
             boardHeight: millimetres,
           }),
         )
@@ -711,20 +720,22 @@ export const CONTENT_TYPES: ContentType[] = [
         .array(
           z.object({
             name: required('fixing name'),
-            product: slug,
+            product: productHandle,
             maxHeight: millimetres,
           }),
         )
         .min(1, 'Add at least one way of fixing the posts'),
       trimProduct: optionalText,
       toppers: z
-        .array(z.object({ name: required('topper name'), product: slug, height: millimetres }))
+        .array(
+          z.object({ name: required('topper name'), product: productHandle, height: millimetres }),
+        )
         .default([]),
       postExtras: z
         .array(
           z.object({
             name: required('extra name'),
-            product: slug,
+            product: productHandle,
             withProduct: optionalText,
           }),
         )
