@@ -120,6 +120,21 @@ const linkFields: Field[] = [
   },
 ];
 
+// Homepage sections added to match the current site. Left empty, they keep its wording.
+const KEEPS = "Leave empty to keep the current site's wording";
+const TILE_FIELDS: Field[] = [
+  { name: 'photo', label: 'Photo', kind: 'image' },
+  { name: 'title', label: 'Title', kind: 'text' },
+  { name: 'summary', label: 'Summary', kind: 'textarea' },
+  { name: 'href', label: 'Goes to', kind: 'text' },
+];
+const homeTile = z.object({
+  photo: image.nullish(),
+  title: required('title'),
+  summary: required('summary'),
+  href: required('link'),
+});
+
 export const GUIDE_TOPICS = ['Planning', 'Buying', 'Laying', 'Care'] as const;
 export const FAQ_TOPICS = ['Delivery', 'Returns', 'Laying', 'Care', 'Finance', 'Samples'] as const;
 export const FINDER_PRICES = ['lower', 'any', 'higher'] as const;
@@ -266,15 +281,59 @@ export const CONTENT_TYPES: ContentType[] = [
           { name: 'href', label: 'Goes to', kind: 'text' },
         ],
       },
+      { name: 'projectsHeading', label: 'Tiles heading', kind: 'text', help: KEEPS },
+      { name: 'projectsIntro', label: 'Tiles introduction', kind: 'textarea', help: KEEPS },
       {
         name: 'projectTiles',
         label: 'Project tiles',
         kind: 'items',
+        fields: TILE_FIELDS,
+      },
+      { name: 'whyHeading', label: 'Why Talasey heading', kind: 'text', help: KEEPS },
+      {
+        name: 'whyPoints',
+        label: 'Why Talasey points',
+        kind: 'items',
+        help: KEEPS,
         fields: [
-          { name: 'photo', label: 'Photo', kind: 'image' },
           { name: 'title', label: 'Title', kind: 'text' },
-          { name: 'summary', label: 'Summary', kind: 'textarea' },
-          { name: 'href', label: 'Goes to', kind: 'text' },
+          { name: 'text', label: 'Text', kind: 'textarea' },
+        ],
+      },
+      {
+        name: 'whyStats',
+        label: 'Numbers',
+        kind: 'items',
+        help: KEEPS,
+        fields: [
+          { name: 'value', label: 'Number, like 25+', kind: 'text' },
+          { name: 'label', label: 'What it counts', kind: 'text' },
+        ],
+      },
+      { name: 'collectionsHeading', label: 'Collections heading', kind: 'text', help: KEEPS },
+      {
+        name: 'collectionsIntro',
+        label: 'Collections introduction',
+        kind: 'textarea',
+        help: KEEPS,
+      },
+      {
+        name: 'collections',
+        label: 'Collections',
+        kind: 'items',
+        help: KEEPS,
+        fields: TILE_FIELDS,
+      },
+      { name: 'stepsHeading', label: 'Planning steps heading', kind: 'text', help: KEEPS },
+      { name: 'stepsIntro', label: 'Planning steps introduction', kind: 'textarea', help: KEEPS },
+      {
+        name: 'steps',
+        label: 'Planning steps',
+        kind: 'items',
+        help: KEEPS,
+        fields: [
+          { name: 'title', label: 'Step', kind: 'text' },
+          { name: 'links', label: 'Links', kind: 'items', fields: linkFields },
         ],
       },
       {
@@ -296,6 +355,32 @@ export const CONTENT_TYPES: ContentType[] = [
         kind: 'list',
         help: 'Product web addresses, one per line. Spaces left are filled with the newest products that have a photo and a price',
       },
+      { name: 'newsHeading', label: 'Articles heading', kind: 'text', help: KEEPS },
+      { name: 'newsIntro', label: 'Articles introduction', kind: 'textarea', help: KEEPS },
+      { name: 'samplesHeading', label: 'Samples heading', kind: 'text', help: KEEPS },
+      { name: 'samplesText', label: 'Samples text', kind: 'textarea', help: KEEPS },
+      {
+        name: 'samplesPoints',
+        label: 'Samples ticks',
+        kind: 'list',
+        help: 'One per line. ' + KEEPS,
+      },
+      {
+        name: 'samplesActions',
+        label: 'Samples buttons',
+        kind: 'items',
+        help: KEEPS,
+        fields: linkFields,
+      },
+      { name: 'closingHeading', label: 'Closing heading', kind: 'text', help: KEEPS },
+      { name: 'closingText', label: 'Closing text', kind: 'textarea', help: KEEPS },
+      {
+        name: 'closingActions',
+        label: 'Closing buttons',
+        kind: 'items',
+        help: KEEPS,
+        fields: linkFields,
+      },
       seoField,
     ],
     schema: z.object({
@@ -312,16 +397,27 @@ export const CONTENT_TYPES: ContentType[] = [
           }),
         )
         .default([]),
-      projectTiles: z
-        .array(
-          z.object({
-            photo: image.nullish(),
-            title: required('title'),
-            summary: required('summary'),
-            href: required('link'),
-          }),
-        )
-        .min(2, 'Add at least two project tiles'),
+      projectsHeading: optionalText,
+      projectsIntro: optionalText,
+      projectTiles: z.array(homeTile).min(2, 'Add at least two project tiles'),
+      whyHeading: optionalText,
+      whyPoints: z
+        .array(z.object({ title: required('title'), text: required('text') }))
+        .max(4, 'Add up to four points')
+        .optional(),
+      whyStats: z
+        .array(z.object({ value: required('number'), label: required('what it counts') }))
+        .max(4, 'Add up to four numbers')
+        .optional(),
+      collectionsHeading: optionalText,
+      collectionsIntro: optionalText,
+      collections: z.array(homeTile).max(12, 'Add up to 12 collections').optional(),
+      stepsHeading: optionalText,
+      stepsIntro: optionalText,
+      steps: z
+        .array(z.object({ title: required('step'), links: z.array(link).default([]) }))
+        .max(6, 'Add up to six steps')
+        .optional(),
       seasonalBlocks: z
         .array(
           z.object({
@@ -334,6 +430,15 @@ export const CONTENT_TYPES: ContentType[] = [
         .default([]),
       featuredHeading: required('featured products heading'),
       products: list,
+      newsHeading: optionalText,
+      newsIntro: optionalText,
+      samplesHeading: optionalText,
+      samplesText: optionalText,
+      samplesPoints: z.array(z.string().trim().min(1)).optional(),
+      samplesActions: z.array(link).max(2, 'Add up to two buttons').optional(),
+      closingHeading: optionalText,
+      closingText: optionalText,
+      closingActions: z.array(link).max(2, 'Add up to two buttons').optional(),
       seo,
     }),
   },
