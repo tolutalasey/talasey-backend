@@ -113,6 +113,37 @@ const linkFields: Field[] = [
 
 export const GUIDE_TOPICS = ['Planning', 'Buying', 'Laying', 'Care'] as const;
 export const FAQ_TOPICS = ['Delivery', 'Returns', 'Laying', 'Care', 'Finance', 'Samples'] as const;
+export const FINDER_PRICES = ['lower', 'any', 'higher'] as const;
+
+// An answer that favours products whose name, colours or finishes contain one of its words.
+const finderAnswers = (name: string, label: string): Field => ({
+  name,
+  label,
+  kind: 'items',
+  fields: [
+    { name: 'label', label: 'Answer', kind: 'text' },
+    { name: 'hint', label: 'Small print', kind: 'text' },
+    {
+      name: 'words',
+      label: 'Words to look for',
+      kind: 'text',
+      help: 'Words in product names, colours or finishes, separated by commas. Leave empty for "no preference"',
+    },
+    { name: 'reason', label: 'Reason shown on results', kind: 'text', help: 'Like Low upkeep' },
+  ],
+});
+
+const finderAnswerList = z
+  .array(
+    z.object({
+      label: required('answer'),
+      hint: optionalText,
+      words: optionalText,
+      reason: optionalText,
+    }),
+  )
+  .min(2, 'Add at least two answers');
+
 export const SEASONS = ['spring', 'summer', 'autumn', 'winter'] as const;
 export const EMAILS = [
   'order-confirmation',
@@ -701,6 +732,75 @@ export const CONTENT_TYPES: ContentType[] = [
       details: z
         .array(z.object({ heading: required('heading'), text: required('text') }))
         .default([]),
+      seo,
+    }),
+  },
+  {
+    type: 'product-finder',
+    label: 'Product finder',
+    singleton: true,
+    keyField: null,
+    locked: false,
+    fields: [
+      { name: 'heading', label: 'Main heading', kind: 'text' },
+      { name: 'intro', label: 'Introduction', kind: 'textarea' },
+      {
+        name: 'projects',
+        label: 'Answers to "What are you planning?"',
+        kind: 'items',
+        help: 'Each answer shows products from the ranges listed',
+        fields: [
+          { name: 'label', label: 'Answer', kind: 'text', help: 'Like A new patio or path' },
+          { name: 'hint', label: 'Small print', kind: 'text' },
+          {
+            name: 'ranges',
+            label: 'Ranges',
+            kind: 'text',
+            help: 'Range web addresses separated by commas, like porcelain-paving, natural-stone-paving',
+          },
+        ],
+      },
+      finderAnswers('looks', 'Answers to "Which look do you like?"'),
+      finderAnswers('colours', 'Answers to "Which colours suit your garden?"'),
+      finderAnswers('upkeep', 'Answers to "How much upkeep are you happy with?"'),
+      {
+        name: 'budgets',
+        label: 'Answers to "What sort of budget?"',
+        kind: 'items',
+        fields: [
+          { name: 'label', label: 'Answer', kind: 'text' },
+          { name: 'hint', label: 'Small print', kind: 'text' },
+          { name: 'price', label: 'Favours', kind: 'select', options: FINDER_PRICES },
+          { name: 'reason', label: 'Reason shown on results', kind: 'text' },
+        ],
+      },
+      seoField,
+    ],
+    schema: z.object({
+      heading: required('main heading'),
+      intro: required('introduction'),
+      projects: z
+        .array(
+          z.object({
+            label: required('answer'),
+            hint: optionalText,
+            ranges: required('ranges'),
+          }),
+        )
+        .min(2, 'Add at least two answers'),
+      looks: finderAnswerList,
+      colours: finderAnswerList,
+      upkeep: finderAnswerList,
+      budgets: z
+        .array(
+          z.object({
+            label: required('answer'),
+            hint: optionalText,
+            price: z.enum(FINDER_PRICES),
+            reason: optionalText,
+          }),
+        )
+        .min(2, 'Add at least two answers'),
       seo,
     }),
   },
