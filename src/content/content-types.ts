@@ -176,7 +176,19 @@ const documentRangesField: Field = {
 };
 
 export const GUIDE_TOPICS = ['Planning', 'Buying', 'Laying', 'Care'] as const;
-export const FAQ_TOPICS = ['Delivery', 'Returns', 'Laying', 'Care', 'Finance', 'Samples'] as const;
+export const FAQ_TOPICS = [
+  'Natural stone',
+  'Porcelain',
+  'Composite',
+  'Artificial grass',
+  'Laying',
+  'Care',
+  'Protecting',
+  'Delivery',
+  'Returns',
+  'Finance',
+  'Samples',
+] as const;
 export const FINDER_PRICES = ['lower', 'any', 'higher'] as const;
 
 // An answer that favours products whose name, colours or finishes contain one of its words.
