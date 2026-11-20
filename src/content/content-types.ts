@@ -182,6 +182,20 @@ export const ACKNOWLEDGEMENT_RANGES = [
   'Artificial grass',
 ] as const;
 
+export const NEWS_CATEGORIES = [
+  'Company Updates',
+  'Educational',
+  'Inspirational',
+  'Competitions & Awards',
+  'New Appointments',
+  'Training',
+  'Case Studies',
+  'Events',
+  'Tips & Advice',
+  'Interviews',
+  'Product Updates',
+] as const;
+
 export const GUIDE_TOPICS = ['Planning', 'Buying', 'Laying', 'Care'] as const;
 export const FAQ_TOPICS = [
   'Natural stone',
@@ -1398,6 +1412,48 @@ export const CONTENT_TYPES: ContentType[] = [
       range: z.enum(ACKNOWLEDGEMENT_RANGES, { error: 'Choose a product range' }),
       page: optionalCount,
       photos: z.array(z.object({ photo: image })).default([]),
+    }),
+  },
+  {
+    type: 'news-post',
+    label: 'News & blogs',
+    singleton: false,
+    keyField: 'slug',
+    locked: false,
+    fields: [
+      { name: 'title', label: 'Title', kind: 'text' },
+      slugField,
+      { name: 'publishedOn', label: 'Date', kind: 'date' },
+      {
+        name: 'categories',
+        label: 'Categories',
+        kind: 'list',
+        help: `One per line, from: ${NEWS_CATEGORIES.join(', ')}`,
+      },
+      {
+        name: 'excerpt',
+        label: 'Summary',
+        kind: 'textarea',
+        help: 'Shown on the news list and in search results',
+      },
+      {
+        name: 'body',
+        label: 'Article',
+        kind: 'textarea',
+        help: 'A blank line between paragraphs, "## " for a heading, "- " for a bullet, [text](address) for a link and ![description](https://…) on its own line for a picture',
+      },
+      { name: 'photo', label: 'Main photo', kind: 'image' },
+    ],
+    schema: z.object({
+      title: required('title'),
+      slug,
+      publishedOn: z.iso.date({ error: 'Add the date' }),
+      categories: z
+        .array(z.enum(NEWS_CATEGORIES, { error: `Use one of: ${NEWS_CATEGORIES.join(', ')}` }))
+        .default([]),
+      excerpt: optionalText,
+      body: required('article'),
+      photo: image.nullish(),
     }),
   },
   {
