@@ -8,7 +8,7 @@ The storefront depends on the back-end API. Deploying the front end first can br
 
 ## Decision
 
-Every environment deploys in this order: back end, then migrations (as Railway pre-deploy steps), then the front end, then tests against the new URL.
+Every environment deploys in this order: back end, then migrations (run by the API's start command), then the front end, then tests against the new URL.
 
 ## Consequences
 

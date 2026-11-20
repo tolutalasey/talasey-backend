@@ -12,7 +12,7 @@ Deploys are automatic once hosting is paid for. You don't run them by hand.
 
 Each project deploys from its own repo. Release the backend first when both change (ADR 0009, 0039):
 
-1. **API.** Railway deploys `talasey-backend`. Its pre-deploy step runs the migrations; if one fails, the deploy stops and the old version keeps serving.
+1. **API.** Railway deploys `talasey-backend`. `npm run start` runs the migrations before the API starts; if one fails, the API doesn't start and the reason is in the deploy logs. Railway's config file (`railway.json`) isn't applied to this service, so don't rely on its pre-deploy step.
 2. **Site.** Vercel builds and deploys `talasey-frontend`.
 3. **Smoke tests.** Playwright runs against the new URL. If they fail on production, the workflow rolls back.
 
