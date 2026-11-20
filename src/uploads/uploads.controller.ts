@@ -21,6 +21,7 @@ import { FILE_STORAGE, type FileStorage } from './file-storage.js';
 import { imageInfo } from './image-size.js';
 
 export const MAX_UPLOAD_BYTES = 10 * 1024 * 1024;
+export const MAX_DOCUMENT_BYTES = 25 * 1024 * 1024;
 
 const uploadedSchema = z.object({
   url: z.string().describe('Where the site loads it from, like /uploads/2026/11/abc.jpg'),
@@ -28,10 +29,21 @@ const uploadedSchema = z.object({
   height: z.number().int(),
 });
 
+const uploadedDocumentSchema = z.object({
+  url: z.string().describe('Where the site loads it from, like /uploads/abc.pdf'),
+  bytes: z.number().int(),
+});
+
 const CONTENT_TYPES: Record<string, string> = {
   jpg: 'image/jpeg',
   png: 'image/png',
   webp: 'image/webp',
+  pdf: 'application/pdf',
+};
+
+const isPdf = (bytes: Buffer) => bytes.subarray(0, 5).toString('latin1') === '%PDF-';
+const fileBody = {
+  schema: { type: 'object', properties: { file: { type: 'string', format: 'binary' } } },
 };
 
 @ApiTags('uploads')
@@ -43,9 +55,7 @@ export class UploadsController {
   @StaffOnly('uploads')
   @UseInterceptors(FileInterceptor('file', { limits: { fileSize: MAX_UPLOAD_BYTES } }))
   @ApiConsumes('multipart/form-data')
-  @ApiBody({
-    schema: { type: 'object', properties: { file: { type: 'string', format: 'binary' } } },
-  })
+  @ApiBody(fileBody)
   @Returns(uploadedSchema, 201)
   @Fails([422, 'Not a JPEG, PNG or WebP photo'], [413, 'Bigger than 10 MB'])
   async upload(
@@ -59,10 +69,27 @@ export class UploadsController {
     return { url: `/uploads/${name}`, width: info.width, height: info.height };
   }
 
+  @Post('admin/uploads/documents')
+  @StaffOnly('uploads')
+  @UseInterceptors(FileInterceptor('file', { limits: { fileSize: MAX_DOCUMENT_BYTES } }))
+  @ApiConsumes('multipart/form-data')
+  @ApiBody(fileBody)
+  @Returns(uploadedDocumentSchema, 201)
+  @Fails([422, 'Not a PDF'], [413, 'Bigger than 25 MB'])
+  async uploadDocument(
+    @UploadedFile() file: { buffer: Buffer } | undefined,
+    @CurrentStaff() _user: StaffUser,
+  ): Promise<z.infer<typeof uploadedDocumentSchema>> {
+    if (!file || !isPdf(file.buffer)) throw new UnprocessableEntityException('Choose a PDF');
+    const name = `${randomUUID()}.pdf`;
+    await this.storage.save(name, file.buffer, 'application/pdf');
+    return { url: `/uploads/${name}`, bytes: file.buffer.length };
+  }
+
   @Get('uploads/:name')
   @ApiExcludeEndpoint()
   async serve(
-    @ValidParam('name', z.string().regex(/^[a-f0-9-]{36}\.(jpg|png|webp)$/)) name: string,
+    @ValidParam('name', z.string().regex(/^[a-f0-9-]{36}\.(jpg|png|webp|pdf)$/)) name: string,
     @Res() response: Response,
   ) {
     const bytes = await this.storage.read(name);

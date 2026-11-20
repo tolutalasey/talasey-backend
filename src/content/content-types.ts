@@ -19,7 +19,7 @@ export type Field =
     }
   | { name: string; label: string; kind: 'select'; options: readonly string[]; help?: string }
   | { name: string; label: string; kind: 'group' | 'items'; fields: Field[]; help?: string }
-  | { name: string; label: string; kind: 'image'; help?: string };
+  | { name: string; label: string; kind: 'image' | 'file'; help?: string };
 
 export interface ContentType {
   type: string;
@@ -43,6 +43,13 @@ const required = (label: string) =>
     .string({ error: `Add the ${label}` })
     .trim()
     .min(1, `Add the ${label}`);
+const YOUTUBE_ID = /^[\w-]{11}$/;
+// The video's ID from any YouTube link (watch, share, embed or shorts), or the ID itself.
+const youtubeId = (value: string) => {
+  if (YOUTUBE_ID.test(value)) return value;
+  const match = /(?:v=|youtu\.be\/|embed\/|shorts\/)([\w-]{11})/.exec(value);
+  return match?.[1] ?? null;
+};
 const slug = z.string({ error: 'Add a URL slug' }).superRefine(toZod(slugCheck));
 const optionalText = z.string().trim().nullish();
 // A product's web address as the shop made it. Page address rules (length, dates, codes) are for
@@ -134,6 +141,39 @@ const homeTile = z.object({
   summary: required('summary'),
   href: required('link'),
 });
+
+export const DOCUMENT_KINDS = [
+  'Installation & Technical Guides',
+  'Specification Sheets',
+  'Safety Data Sheets',
+  'Declaration of Performance',
+  'Comparison Charts',
+] as const;
+export const DOCUMENT_RANGES = [
+  'Artificial Grass',
+  'Cleaners',
+  'Composite Products',
+  'Finishing Touches',
+  'Installation',
+  'Natural Stone',
+  'Porcelain',
+  'Sealers',
+] as const;
+const documentRanges = z
+  .array(z.enum(DOCUMENT_RANGES, { error: `Use one of: ${DOCUMENT_RANGES.join(', ')}` }))
+  .default([]);
+const productsField: Field = {
+  name: 'products',
+  label: 'Show on these products',
+  kind: 'list',
+  help: 'Product web addresses, one per line',
+};
+const documentRangesField: Field = {
+  name: 'ranges',
+  label: 'Product ranges',
+  kind: 'list',
+  help: `One per line, from: ${DOCUMENT_RANGES.join(', ')}`,
+};
 
 export const GUIDE_TOPICS = ['Planning', 'Buying', 'Laying', 'Care'] as const;
 export const FAQ_TOPICS = ['Delivery', 'Returns', 'Laying', 'Care', 'Finance', 'Samples'] as const;
@@ -1205,6 +1245,67 @@ export const CONTENT_TYPES: ContentType[] = [
       colours: list,
       products: list,
       permission: z.literal(true, { error: 'Only publish photos the customer agreed we can use' }),
+    }),
+  },
+  {
+    type: 'hub-document',
+    label: 'Knowledge Hub documents',
+    singleton: false,
+    keyField: 'slug',
+    locked: false,
+    fields: [
+      { name: 'title', label: 'Title', kind: 'text' },
+      slugField,
+      { name: 'kind', label: 'Document type', kind: 'select', options: DOCUMENT_KINDS },
+      { name: 'file', label: 'PDF', kind: 'file' },
+      { name: 'thumbnail', label: 'Cover picture', kind: 'image' },
+      documentRangesField,
+      productsField,
+      { name: 'publishedOn', label: 'Date', kind: 'date' },
+    ],
+    schema: z.object({
+      title: required('title'),
+      slug,
+      kind: z.enum(DOCUMENT_KINDS, { error: 'Choose a document type' }),
+      file: required('PDF'),
+      thumbnail: image.nullish(),
+      ranges: documentRanges,
+      products: z.array(productHandle).default([]),
+      publishedOn: z.iso.date({ error: 'Add the date' }),
+    }),
+  },
+  {
+    type: 'video',
+    label: 'Videos',
+    singleton: false,
+    keyField: 'slug',
+    locked: false,
+    fields: [
+      { name: 'title', label: 'Title', kind: 'text' },
+      slugField,
+      {
+        name: 'youtube',
+        label: 'YouTube link',
+        kind: 'text',
+        help: 'Paste the address of the video on YouTube',
+      },
+      { name: 'summary', label: 'Summary', kind: 'textarea' },
+      documentRangesField,
+      productsField,
+      { name: 'publishedOn', label: 'Date', kind: 'date' },
+    ],
+    schema: z.object({
+      title: required('title'),
+      slug,
+      youtube: z
+        .string({ error: 'Paste the YouTube link' })
+        .trim()
+        .transform((value) => youtubeId(value) ?? '')
+        .refine(Boolean, 'Paste a YouTube link, like https://www.youtube.com/watch?v=yL5G2vCriY8'),
+      summary: optionalText,
+      ranges: documentRanges,
+      products: z.array(productHandle).default([]),
+      publishedOn: z.iso.date({ error: 'Add the date' }),
     }),
   },
   {
