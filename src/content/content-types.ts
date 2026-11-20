@@ -175,6 +175,13 @@ const documentRangesField: Field = {
   help: `One per line, from: ${DOCUMENT_RANGES.join(', ')}`,
 };
 
+export const ACKNOWLEDGEMENT_RANGES = [
+  'Porcelain',
+  'Natural stone',
+  'Composite',
+  'Artificial grass',
+] as const;
+
 export const GUIDE_TOPICS = ['Planning', 'Buying', 'Laying', 'Care'] as const;
 export const FAQ_TOPICS = [
   'Natural stone',
@@ -1326,6 +1333,71 @@ export const CONTENT_TYPES: ContentType[] = [
       ranges: documentRanges,
       products: z.array(productHandle).default([]),
       publishedOn: z.iso.date({ error: 'Add the date' }),
+    }),
+  },
+  {
+    type: 'brochure',
+    label: 'Brochures',
+    singleton: false,
+    keyField: 'slug',
+    locked: false,
+    fields: [
+      { name: 'title', label: 'Title', kind: 'text' },
+      slugField,
+      { name: 'edition', label: 'Edition number (sets the order)', kind: 'text' },
+      { name: 'summary', label: 'Summary', kind: 'textarea' },
+      {
+        name: 'link',
+        label: 'Link to read it',
+        kind: 'text',
+        help: 'The Flipsnack address, or leave empty to show "Coming soon"',
+      },
+      { name: 'cover', label: 'Cover', kind: 'image' },
+    ],
+    schema: z.object({
+      title: required('title'),
+      slug,
+      edition: z.coerce.number({ error: 'Give the edition as a number' }).int().positive(),
+      summary: required('summary'),
+      link: z
+        .string()
+        .trim()
+        .refine(
+          (value) => value === '' || /^https:\/\//.test(value),
+          'Use a link starting https://',
+        )
+        .nullish(),
+      cover: image.nullish(),
+    }),
+  },
+  {
+    type: 'acknowledgement',
+    label: 'Brochure acknowledgements',
+    singleton: false,
+    keyField: 'slug',
+    locked: false,
+    fields: [
+      { name: 'company', label: 'Company', kind: 'text' },
+      slugField,
+      { name: 'about', label: 'What they do', kind: 'text' },
+      { name: 'product', label: 'Product in the photo', kind: 'text' },
+      { name: 'range', label: 'Product range', kind: 'select', options: ACKNOWLEDGEMENT_RANGES },
+      { name: 'page', label: 'Brochure page', kind: 'text' },
+      {
+        name: 'photos',
+        label: 'Photos',
+        kind: 'items',
+        fields: [{ name: 'photo', label: 'Photo', kind: 'image' }],
+      },
+    ],
+    schema: z.object({
+      company: required('company name'),
+      slug,
+      about: optionalText,
+      product: required('product'),
+      range: z.enum(ACKNOWLEDGEMENT_RANGES, { error: 'Choose a product range' }),
+      page: optionalCount,
+      photos: z.array(z.object({ photo: image })).default([]),
     }),
   },
   {
