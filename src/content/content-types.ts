@@ -1057,16 +1057,92 @@ export const CONTENT_TYPES: ContentType[] = [
     locked: false,
     fields: [
       {
-        name: 'header',
-        label: 'Links at the top of every page',
+        name: 'menu',
+        label: 'Main menu',
         kind: 'items',
+        help: 'Each item opens a menu of sections. Leave its sections empty to make it a plain link',
+        fields: [
+          { name: 'label', label: 'Menu name', kind: 'text', help: 'Like Landscaping Materials' },
+          {
+            name: 'href',
+            label: 'Goes to',
+            kind: 'text',
+            help: 'Only for a plain link, like /custom-made/',
+          },
+          {
+            name: 'sections',
+            label: 'Sections',
+            kind: 'items',
+            fields: [
+              { name: 'label', label: 'Section name', kind: 'text', help: 'Like Paving' },
+              { name: 'href', label: 'Goes to', kind: 'text', help: 'Like /porcelain-paving/' },
+              {
+                name: 'photo',
+                label: 'Photo',
+                kind: 'image',
+                help: 'Shown beside the menu. Left empty, the range photo is used',
+              },
+              {
+                name: 'links',
+                label: 'Links under this section',
+                kind: 'items',
+                fields: linkFields,
+              },
+            ],
+          },
+        ],
+      },
+      {
+        name: 'header',
+        label: 'Links at the very top',
+        kind: 'items',
+        help: 'Like Brochures, News, About us and Contact us',
         fields: linkFields,
       },
-      { name: 'footer', label: 'Links in the footer', kind: 'items', fields: linkFields },
+      {
+        name: 'footer',
+        label: 'Footer columns',
+        kind: 'items',
+        fields: [
+          { name: 'heading', label: 'Column heading', kind: 'text', help: 'Like Help & Advice' },
+          { name: 'links', label: 'Links', kind: 'items', fields: linkFields },
+        ],
+      },
     ],
     schema: z.object({
-      header: z.array(link).max(8, 'Keep the top links to eight'),
-      footer: z.array(link).default([]),
+      menu: z
+        .array(
+          z.object({
+            label: required('menu name'),
+            href: optionalText,
+            sections: z
+              .array(
+                z.object({
+                  label: required('section name'),
+                  href: optionalText,
+                  photo: image.nullish(),
+                  links: z.array(link).default([]),
+                }),
+              )
+              .default([]),
+          }),
+        )
+        .min(1, 'Add at least one menu')
+        .max(9, 'Keep the main menu to nine items')
+        .superRefine((menu, ctx) =>
+          menu.forEach((item, index) => {
+            if (!item.href && item.sections.length === 0)
+              ctx.addIssue({
+                code: 'custom',
+                path: [index, 'href'],
+                message: `Give "${item.label}" an address or at least one section`,
+              });
+          }),
+        ),
+      header: z.array(link).max(8, 'Keep the top links to eight').default([]),
+      footer: z
+        .array(z.object({ heading: required('column heading'), links: z.array(link).min(1) }))
+        .default([]),
     }),
   },
   {
@@ -1080,6 +1156,12 @@ export const CONTENT_TYPES: ContentType[] = [
       { name: 'contactEmail', label: 'Customer service email', kind: 'text' },
       { name: 'openingHours', label: 'Opening hours', kind: 'text' },
       {
+        name: 'address',
+        label: 'Head office address',
+        kind: 'textarea',
+        help: 'Shown in the footer. One line per line of the address',
+      },
+      {
         name: 'socialProfiles',
         label: 'Social profiles',
         kind: 'list',
@@ -1090,6 +1172,7 @@ export const CONTENT_TYPES: ContentType[] = [
       contactPhone: required('phone number'),
       contactEmail: z.email('Add an email like hello@talasey.co.uk'),
       openingHours: optionalText,
+      address: optionalText,
       socialProfiles: z.array(z.url({ protocol: /^https$/ })).default([]),
     }),
   },
