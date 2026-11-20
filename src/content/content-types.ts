@@ -1224,6 +1224,12 @@ export const CONTENT_TYPES: ContentType[] = [
       { name: 'town', label: 'Town', kind: 'text' },
       { name: 'style', label: 'Style', kind: 'text' },
       { name: 'space', label: 'Space', kind: 'text' },
+      {
+        name: 'categories',
+        label: 'Gallery categories',
+        kind: 'list',
+        help: 'One per line, like Cottage gardens or Decking projects. Shoppers filter the gallery by these',
+      },
       { name: 'colours', label: 'Colours', kind: 'list' },
       {
         name: 'products',
@@ -1243,6 +1249,7 @@ export const CONTENT_TYPES: ContentType[] = [
       town: optionalText,
       style: optionalText,
       space: optionalText,
+      categories: list,
       colours: list,
       products: list,
       permission: z.literal(true, { error: 'Only publish photos the customer agreed we can use' }),
