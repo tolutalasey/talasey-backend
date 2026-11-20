@@ -39,8 +39,39 @@ const toDto = (row: EnquiryRow): EnquiryDto => ({
   createdAt: row.createdAt.toISOString(),
 });
 
-const what = (kind: EnquiryDto['kind']) =>
-  kind === 'site-survey' ? 'site survey request' : 'message';
+type Kind = EnquiryDto['kind'];
+
+// How each kind of enquiry is named in the emails, and what the customer is told happens next.
+const WORDING: Record<Kind, { what: string; subject: string; reply: string }> = {
+  contact: {
+    what: 'message',
+    subject: 'Website message',
+    reply: "We'll get back to you as soon as we can.",
+  },
+  'site-survey': {
+    what: 'site survey request',
+    subject: 'Site survey request',
+    reply: "We'll be in touch within 2 working days to arrange a visit.",
+  },
+  stockist: {
+    what: 'stockist request',
+    subject: 'Stockist request',
+    reply: "We'll email you the stockists nearest to you within one working day.",
+  },
+  installer: {
+    what: 'installer request',
+    subject: 'Installer request',
+    reply: "We'll put you in touch with an approved installer near you within 2 working days.",
+  },
+  showroom: {
+    what: 'showroom visit request',
+    subject: 'Showroom visit request',
+    reply: "We'll check availability and confirm your visit within one working day.",
+  },
+};
+
+// These need a postcode and a phone number, so the team can find someone local and call back.
+const LOCAL: Kind[] = ['site-survey', 'stockist', 'installer', 'showroom'];
 
 @Injectable()
 export class EnquiriesService {
@@ -65,14 +96,16 @@ export class EnquiriesService {
     const known = kinds.filter((kind): kind is NonNullable<typeof kind> => kind !== null);
     if (known.length < kinds.length) problems.push('Send photos as JPEG, PNG, WebP or HEIC.');
 
-    let productTitle: string | null = null;
-    if (input.kind === 'site-survey') {
+    const productTitle = input.productHandle ? await this.productTitle(input.productHandle) : null;
+    if (LOCAL.includes(input.kind)) {
       if (!input.phone) problems.push('Enter your phone number.');
       const postcode = postcodeProblem(input.postcode ?? '');
       if (postcode) problems.push(postcode);
-      productTitle = input.productHandle ? await this.productTitle(input.productHandle) : null;
-      if (!productTitle) problems.push('That product is no longer available.');
-    } else if (!input.message || input.message.length < 10) {
+    }
+    if (input.kind === 'site-survey' && !productTitle) {
+      problems.push('That product is no longer available.');
+    }
+    if (input.kind === 'contact' && (!input.message || input.message.length < 10)) {
       problems.push('Tell us a little more, at least 10 characters.');
     }
     if (problems.length > 0) return { ok: false, problems };
@@ -163,20 +196,24 @@ export class EnquiriesService {
       `Happy to be contacted: ${enquiry.consent ? 'yes' : 'no'}`,
       `\nOpen it in the admin: ${this.config.WEB_URL}/admin/enquiries/${enquiry.id}/`,
     ].filter(Boolean);
-    const subject =
-      enquiry.kind === 'site-survey'
-        ? `Site survey request: ${enquiry.productTitle} (${enquiry.postcode})`
-        : `Website message from ${enquiry.name}`;
+    const wording = WORDING[enquiry.kind];
+    const subject = [
+      `${wording.subject} from ${enquiry.name}`,
+      enquiry.productTitle && `: ${enquiry.productTitle}`,
+      enquiry.postcode && ` (${enquiry.postcode})`,
+    ]
+      .filter(Boolean)
+      .join('');
     await this.mailer.send({ to: this.config.ENQUIRIES_TO, subject, body: lines.join('\n') });
     await this.mailer.send({
       to: enquiry.email,
-      subject: `We've received your ${what(enquiry.kind)}`,
+      subject: `We've received your ${wording.what}`,
       body: [
         `Hello ${enquiry.name},`,
         '',
-        enquiry.kind === 'site-survey'
-          ? `Thank you for asking about a site survey for the ${enquiry.productTitle}. We'll be in touch within 2 working days to arrange a visit.`
-          : "Thank you for your message. We'll get back to you as soon as we can.",
+        enquiry.productTitle
+          ? `Thank you for asking about the ${enquiry.productTitle}. ${wording.reply}`
+          : `Thank you. ${wording.reply}`,
         '',
         'Talasey',
         '0330 333 8030',

@@ -16619,7 +16619,10 @@
                         "type": "string",
                         "enum": [
                           "contact",
-                          "site-survey"
+                          "site-survey",
+                          "stockist",
+                          "installer",
+                          "showroom"
                         ]
                       },
                       "name": {
@@ -16750,7 +16753,10 @@
                       "type": "string",
                       "enum": [
                         "contact",
-                        "site-survey"
+                        "site-survey",
+                        "stockist",
+                        "installer",
+                        "showroom"
                       ]
                     },
                     "name": {
@@ -16904,7 +16910,10 @@
                       "type": "string",
                       "enum": [
                         "contact",
-                        "site-survey"
+                        "site-survey",
+                        "stockist",
+                        "installer",
+                        "showroom"
                       ]
                     },
                     "name": {

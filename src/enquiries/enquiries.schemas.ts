@@ -1,6 +1,12 @@
 import { z } from 'zod';
 
-export const ENQUIRY_KINDS = ['contact', 'site-survey'] as const;
+export const ENQUIRY_KINDS = [
+  'contact',
+  'site-survey',
+  'stockist',
+  'installer',
+  'showroom',
+] as const;
 export const ENQUIRY_STATUSES = ['new', 'in-progress', 'done'] as const;
 export const MAX_ENQUIRY_PHOTOS = 5;
 export const MAX_ENQUIRY_PHOTO_BYTES = 5 * 1024 * 1024;
