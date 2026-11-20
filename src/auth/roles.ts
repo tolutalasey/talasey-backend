@@ -10,13 +10,14 @@ export const PERMISSIONS = [
   'uploads',
   'audit',
   'users',
+  'enquiries',
 ] as const;
 export type Permission = (typeof PERMISSIONS)[number];
 
 const GRANTS: Record<StaffRole, readonly Permission[]> = {
   owner: PERMISSIONS,
-  catalogue: ['catalogue', 'orders', 'delivery', 'uploads', 'audit'],
-  editor: ['content.edit', 'content.publish', 'uploads', 'audit'],
+  catalogue: ['catalogue', 'orders', 'delivery', 'uploads', 'audit', 'enquiries'],
+  editor: ['content.edit', 'content.publish', 'uploads', 'audit', 'enquiries'],
   contributor: ['content.edit', 'uploads'],
 };
 

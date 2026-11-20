@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { OFFLINE_ACTIONS } from './product.js';
 import { PAGE_TYPES } from './rules/page-types.js';
 import { STOCK_MODES } from './rules/stock-mode.js';
 
@@ -30,6 +31,20 @@ export const storeVariantSchema = z.object({
   weightKg: z.number().nullable(),
 });
 
+const measurementsSchema = z.object({
+  unit: z.enum(['mm', 'cm']),
+  dimensions: z.array(
+    z.object({
+      key: z.string(),
+      label: z.string(),
+      min: z.number(),
+      max: z.number(),
+      step: z.number(),
+    }),
+  ),
+  choices: z.array(z.object({ name: z.string(), label: z.string(), answers: z.array(z.string()) })),
+});
+
 export const storeProductSchema = z.object({
   id: z.uuid(),
   handle: z.string(),
@@ -41,6 +56,13 @@ export const storeProductSchema = z.object({
   images: z.array(image),
   pageType: z.enum(PAGE_TYPES).nullable(),
   madeToMeasure: z.boolean(),
+  sellOnline: z.boolean(),
+  offlineAction: z.enum(OFFLINE_ACTIONS),
+  measurements: measurementsSchema
+    .nullable()
+    .describe(
+      'The sizes and choices a made-to-measure product asks for; the price formula stays private',
+    ),
   leadTime: z.object({ minDays: z.number(), maxDays: z.number() }).nullable(),
   updatedAt: z.iso.datetime(),
   categories: z.array(z.object({ handle: z.string(), name: z.string() })),
@@ -103,6 +125,8 @@ export const productInputSchema = z.object({
   colourOptionValue: z.string().nullable(),
   colourRequired: z.boolean(),
   colourLabel: z.string().nullable(),
+  sellOnline: z.boolean().default(true),
+  offlineAction: z.enum(OFFLINE_ACTIONS).default('stockist'),
   bespoke: z.unknown().nullable(),
   variants: z.array(variantInput),
   images: z.array(image),

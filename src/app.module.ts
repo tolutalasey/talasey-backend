@@ -19,6 +19,7 @@ import { SamplesModule } from './samples/samples.module.js';
 import { SiteModule } from './site/site.module.js';
 import { SlotsModule } from './slots/slots.module.js';
 import { StockAlertsModule } from './stock-alerts/stock-alerts.module.js';
+import { EnquiriesModule } from './enquiries/enquiries.module.js';
 import { StoreModule } from './store/store.module.js';
 import { UploadsModule } from './uploads/uploads.module.js';
 
@@ -44,6 +45,7 @@ import { UploadsModule } from './uploads/uploads.module.js';
     UploadsModule,
     SamplesModule,
     StockAlertsModule,
+    EnquiriesModule,
     AccountsModule,
     PromotionsModule,
   ],

@@ -39,6 +39,8 @@ export interface BespokeRow {
   unit: string;
   dimensions: Record<string, number>;
   choices: Record<string, string>;
+  // How it reads to people, like "1200 × 400 × 500 mm, Powder coated". Older lines have none.
+  summary?: string;
 }
 
 export interface BuildPartRow {

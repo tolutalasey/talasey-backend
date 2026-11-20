@@ -85,6 +85,20 @@
       "when": 1795097346444,
       "tag": "0011_product_image_shows",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1795175789804,
+      "tag": "0012_product_sell_online",
+      "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1795176468736,
+      "tag": "0013_enquiries",
+      "breakpoints": true
     }
   ]
 }

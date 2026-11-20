@@ -9,8 +9,18 @@ import {
   products,
   variants,
 } from '../database/schema/index.js';
-import type { CatalogueProduct, ProductState, ProductSummary, VariantState } from './product.js';
+import {
+  OFFLINE_ACTIONS,
+  type CatalogueProduct,
+  type OfflineAction,
+  type ProductState,
+  type ProductSummary,
+  type VariantState,
+} from './product.js';
 import type { PageType } from './rules/page-types.js';
+
+const offlineActionOf = (value: string): OfflineAction =>
+  OFFLINE_ACTIONS.includes(value as OfflineAction) ? (value as OfflineAction) : 'stockist';
 
 type ProductRow = typeof products.$inferSelect;
 
@@ -46,6 +56,8 @@ function productFields(state: ProductState) {
     colourOptionValue: state.colourOptionValue,
     colourRequired: state.colourRequired,
     colourLabel: state.colourLabel,
+    sellOnline: state.sellOnline,
+    offlineAction: state.offlineAction,
     bespoke: state.bespoke ?? null,
     attributes: state.attributes,
     pimSku: state.pimSku,
@@ -175,17 +187,15 @@ export class ProductRepository {
 
     await executor.delete(productImages).where(eq(productImages.productId, id));
     if (state.images.length > 0) {
-      await executor
-        .insert(productImages)
-        .values(
-          state.images.map(({ shows, ...image }, rank) => ({
-            ...image,
-            showsOption: shows?.option ?? null,
-            showsValue: shows?.value ?? null,
-            productId: id,
-            rank,
-          })),
-        );
+      await executor.insert(productImages).values(
+        state.images.map(({ shows, ...image }, rank) => ({
+          ...image,
+          showsOption: shows?.option ?? null,
+          showsValue: shows?.value ?? null,
+          productId: id,
+          rank,
+        })),
+      );
     }
     await executor.delete(colourImages).where(eq(colourImages.productId, id));
     if (state.colourImages.length > 0) {
@@ -266,6 +276,8 @@ function toProduct(
     colourOptionValue: row.colourOptionValue,
     colourRequired: row.colourRequired,
     colourLabel: row.colourLabel,
+    sellOnline: row.sellOnline,
+    offlineAction: offlineActionOf(row.offlineAction),
     bespoke: row.bespoke,
     attributes: row.attributes,
     pimSku: row.pimSku,

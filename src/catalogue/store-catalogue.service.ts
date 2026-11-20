@@ -10,6 +10,25 @@ import { coloursFor } from './rules/colour-rules.js';
 
 const CACHE_SECONDS = 300;
 
+const MEASUREMENT_ORDER = ['W', 'D', 'H', 'L'];
+
+// The fields a made-to-measure product asks for, without the formula or the prices behind it.
+function measurementsOf(bespoke: unknown): StoreProduct['measurements'] {
+  const config = readBespokeConfig({ bespoke });
+  if (!config) return null;
+  return {
+    unit: config.unit,
+    dimensions: Object.entries(config.dimensions)
+      .flatMap(([key, limits]) => (limits ? [{ key, ...limits }] : []))
+      .sort((a, b) => MEASUREMENT_ORDER.indexOf(a.key) - MEASUREMENT_ORDER.indexOf(b.key)),
+    choices: config.choices.map(({ name, label, answers }) => ({
+      name,
+      label,
+      answers: answers.map((answer) => answer.label),
+    })),
+  };
+}
+
 export function toStoreProduct(product: CatalogueProduct): StoreProduct {
   const managed = product.stockMode !== 'made_to_order';
   return {
@@ -23,6 +42,9 @@ export function toStoreProduct(product: CatalogueProduct): StoreProduct {
     images: product.images,
     pageType: product.pageType,
     madeToMeasure: product.pageType === '2' && Boolean(product.bespoke),
+    sellOnline: product.sellOnline,
+    offlineAction: product.offlineAction,
+    measurements: product.pageType === '2' ? measurementsOf(product.bespoke) : null,
     leadTime:
       product.leadTimeMinDays !== null && product.leadTimeMaxDays !== null
         ? { minDays: product.leadTimeMinDays, maxDays: product.leadTimeMaxDays }

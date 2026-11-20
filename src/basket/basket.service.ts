@@ -5,6 +5,7 @@ import {
   readBespokeConfig,
   type BespokeSelection,
 } from '../catalogue/bespoke/pricing.js';
+import { describeBespoke } from '../catalogue/bespoke/summary.js';
 import { ColourSetRepository } from '../catalogue/colour-sets/colour-set.repository.js';
 import type { CatalogueProduct } from '../catalogue/product.js';
 import { ProductRepository } from '../catalogue/product.repository.js';
@@ -94,7 +95,12 @@ export class BasketService {
           variantId: item.variantId,
           quantity: item.quantity,
           unitPricePence: Math.round(priced.price * 100),
-          bespoke: { unit: config.unit, dimensions: item.dimensions, choices: item.choices },
+          bespoke: {
+            unit: config.unit,
+            dimensions: item.dimensions,
+            choices: item.choices,
+            summary: describeBespoke(config, item),
+          },
         },
       ];
     });
@@ -175,6 +181,9 @@ export class BasketService {
     const product = ids[0] ? await this.products.find({ id: ids[0] }) : null;
     const variant = product?.variants.find((candidate) => candidate.id === variantId);
     if (!product?.published || !variant) return 'That product is no longer available.';
+    if (!product.sellOnline) {
+      return `${product.title} isn't sold online. Call us and we'll tell you where to buy it.`;
+    }
     if (variant.pricePence === null && !allowUnpriced) {
       return `${product.title} isn't for sale online yet. Call us for a price.`;
     }

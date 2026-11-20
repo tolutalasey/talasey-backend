@@ -80,6 +80,8 @@ export class ProductAdminService implements OnModuleInit {
       colourOptionValue: null,
       colourRequired: true,
       colourLabel: null,
+      sellOnline: true,
+      offlineAction: 'stockist',
       bespoke: null,
       attributes: {},
       pimSku: null,

@@ -34,6 +34,10 @@ export interface ColourImageState {
   finish: string;
 }
 
+// What a product that isn't sold online offers instead of the basket.
+export const OFFLINE_ACTIONS = ['stockist', 'installer', 'showroom'] as const;
+export type OfflineAction = (typeof OFFLINE_ACTIONS)[number];
+
 // Everything about one product, as edited in the admin, written to the audit log and restored.
 export interface ProductState {
   handle: string;
@@ -53,6 +57,8 @@ export interface ProductState {
   colourOptionValue: string | null;
   colourRequired: boolean;
   colourLabel: string | null;
+  sellOnline: boolean;
+  offlineAction: OfflineAction;
   bespoke: unknown;
   attributes: Record<string, string>;
   pimSku: string | null;

@@ -21,6 +21,8 @@ const product: ProductState = {
   colourOptionValue: null,
   colourRequired: true,
   colourLabel: null,
+  sellOnline: true,
+  offlineAction: 'stockist',
   bespoke: null,
   attributes: {},
   pimSku: null,

@@ -15,6 +15,8 @@ export const configSchema = z.object({
   STRIPE_SECRET_KEY: optional(z.string().startsWith('sk_')),
   STRIPE_WEBHOOK_SECRET: optional(z.string().startsWith('whsec_')),
   UPLOAD_DIR: z.string().default('.data/uploads'),
+  // Where contact messages and site survey requests are emailed.
+  ENQUIRIES_TO: z.email().default('sales@talasey.co.uk'),
   // Cloudflare R2 for uploaded photos. Leave all four empty to keep them in UPLOAD_DIR.
   R2_ACCOUNT_ID: optional(z.string().regex(/^[a-f0-9]{32}$/, 'The 32-character account ID')),
   R2_BUCKET: optional(z.string().min(3)),

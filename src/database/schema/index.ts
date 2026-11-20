@@ -7,3 +7,4 @@ export * from './staff.js';
 export * from './samples.js';
 export * from './stock-alerts.js';
 export * from './promotions.js';
+export * from './enquiries.js';

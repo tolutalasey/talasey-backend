@@ -71,6 +71,9 @@ export const products = pgTable('product', {
   colourOptionValue: text('colour_option_value'),
   colourRequired: boolean('colour_required').notNull().default(true),
   colourLabel: text('colour_label'),
+  // Off: shown but can't be bought online; the page offers offlineAction instead.
+  sellOnline: boolean('sell_online').notNull().default(true),
+  offlineAction: text('offline_action').notNull().default('stockist'),
   bespoke: jsonb('bespoke'),
   attributes: jsonb('attributes').$type<Record<string, string>>().notNull().default({}),
   pimSku: text('pim_sku'),

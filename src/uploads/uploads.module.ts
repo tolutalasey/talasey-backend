@@ -26,5 +26,6 @@ import { UploadsController } from './uploads.controller.js';
           : new LocalFileStorage(config.UPLOAD_DIR),
     },
   ],
+  exports: [FILE_STORAGE],
 })
 export class UploadsModule {}

@@ -82,6 +82,7 @@ const lineSchema = z.object({
       unit: z.string(),
       dimensions: z.record(z.string(), z.number()),
       choices: z.record(z.string(), z.string()),
+      summary: z.string().optional().describe('Like "1200 × 400 × 500 mm, Powder coated"'),
     })
     .nullable(),
   stock: z.string().describe('For example "3 now, 2 made to order"'),
