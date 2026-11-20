@@ -595,6 +595,12 @@ export const CONTENT_TYPES: ContentType[] = [
         kind: 'list',
         help: 'What it is for, one per line, like Porcelain or Natural stone',
       },
+      {
+        name: 'description',
+        label: 'Description',
+        kind: 'textarea',
+        help: 'The words under the name. Leave empty to use the product’s own',
+      },
       { name: 'features', label: 'Features and benefits', kind: 'list', help: 'One per line' },
       {
         name: 'colours',
@@ -656,6 +662,7 @@ export const CONTENT_TYPES: ContentType[] = [
           }),
         )
         .default([]),
+      description: optionalText,
       features: list,
       colours: z
         .array(
