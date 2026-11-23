@@ -25,6 +25,16 @@ const quantityInput = handleInput.extend({
   area_m2: z.number().positive().max(10_000),
   waste_percent: z.number().min(0).max(30).optional(),
 });
+const teamInput = z.object({
+  name: z.string().trim().min(1).max(200),
+  email: z.email(),
+  phone: z.string().trim().max(40).optional(),
+  postcode: z.string().trim().max(12).optional(),
+  message: z.string().trim().min(10).max(2500),
+});
+export type TeamRequest = z.infer<typeof teamInput>;
+export type PassToTeam = (request: TeamRequest) => Promise<{ ok: boolean; problems?: string[] }>;
+
 const showInput = z.object({
   products: z
     .array(
@@ -60,6 +70,12 @@ export const TOOL_DEFINITIONS: ToolDefinition[] = [
     name: 'show_products',
     description: `Show up to ${MAX_CARDS} products as cards under your reply, with a link and, when a single variant is chosen, an Add to bag button. Pass variant_id (from product_details) and quantity (for example the packs from work_out_quantity) when you know them. Call it whenever you recommend specific products.`,
     input_schema: z.toJSONSchema(showInput) as Record<string, unknown>,
+  },
+  {
+    name: 'pass_to_team',
+    description:
+      "Send the visitor's question or quote request to the Talasey team, who reply by email or phone within working hours. Needs their name, email and a clear message summing up what they want (products, sizes, area, postcode for delivery). Photos they sent in the chat go with it. Only call it after reading the details back to them and getting a clear yes.",
+    input_schema: z.toJSONSchema(teamInput) as Record<string, unknown>,
   },
 ];
 
@@ -100,9 +116,12 @@ function card(
 export class AssistantTools {
   readonly cards: ProductCard[] = [];
 
-  constructor(private readonly products: StoreProduct[]) {}
+  constructor(
+    private readonly products: StoreProduct[],
+    private readonly passToTeam: PassToTeam,
+  ) {}
 
-  run(name: string, input: unknown): unknown {
+  async run(name: string, input: unknown): Promise<unknown> {
     switch (name) {
       case 'search_products': {
         const { query, limit } = searchInput.parse(input);
@@ -129,6 +148,12 @@ export class AssistantTools {
         });
         this.cards.splice(0, this.cards.length, ...shown);
         return { shown: shown.map((entry) => entry.title) };
+      }
+      case 'pass_to_team': {
+        const result = await this.passToTeam(teamInput.parse(input));
+        return result.ok
+          ? { sent: true, next: 'The team will reply by email, usually within one working day.' }
+          : { sent: false, problems: result.problems ?? ['It could not be sent just now'] };
       }
       default:
         return { error: `There is no tool called ${name}` };

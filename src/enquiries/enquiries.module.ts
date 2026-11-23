@@ -7,5 +7,6 @@ import { EnquiriesService } from './enquiries.service.js';
   imports: [UploadsModule],
   controllers: [StoreEnquiriesController, AdminEnquiriesController],
   providers: [EnquiriesService],
+  exports: [EnquiriesService],
 })
 export class EnquiriesModule {}

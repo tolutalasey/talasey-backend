@@ -11,7 +11,8 @@ import {
 } from './answer-model.js';
 import { AssistantPhotos, type SaveResult, type StoredPhoto } from './assistant-photos.js';
 import { buildPrompt } from './assistant-prompt.js';
-import { AssistantTools, TOOL_DEFINITIONS } from './assistant-tools.js';
+import { EnquiriesService } from '../enquiries/enquiries.service.js';
+import { AssistantTools, TOOL_DEFINITIONS, type TeamRequest } from './assistant-tools.js';
 import {
   MAX_PHOTOS_SENT,
   type AssistantReply,
@@ -24,6 +25,7 @@ const MAX_TOOL_ROUNDS = 6;
 const HOUR = 60 * 60;
 const DAY = 24 * HOUR;
 const PHOTOS_PER_HOUR = 10;
+const HAND_OFFS_PER_DAY = 3;
 
 export type ChatResult =
   ({ ok: true } & AssistantReply) | { ok: false; reason: 'off' | 'busy' | 'failed' };
@@ -45,6 +47,7 @@ export class AssistantService {
     private readonly knowledge: SiteKnowledgeService,
     private readonly catalogue: StoreCatalogueService,
     private readonly photos: AssistantPhotos,
+    private readonly enquiries: EnquiriesService,
   ) {}
 
   get enabled(): boolean {
@@ -61,7 +64,9 @@ export class AssistantService {
         this.photosIn(request),
       ]);
       const prompt = buildPrompt(request, knowledge, photos);
-      const tools = new AssistantTools(products);
+      const tools = new AssistantTools(products, (details) =>
+        this.passToTeam(details, request, photos, visitor),
+      );
       const reply = await this.converse(prompt.system, prompt.turns, tools);
       return reply ? { ok: true, reply, products: tools.cards } : { ok: false, reason: 'failed' };
     } catch (error) {
@@ -74,6 +79,37 @@ export class AssistantService {
     const sent = await this.store.increment(`assistant:photos:${visitor}`, HOUR);
     if (sent > PHOTOS_PER_HOUR) return { ok: false, busy: true };
     return this.photos.save(bytes);
+  }
+
+  // A conversation handed to the team becomes a normal website enquiry, emailed like the others.
+  private async passToTeam(
+    details: TeamRequest,
+    request: AssistantRequest,
+    photos: Map<string, StoredPhoto>,
+    visitor: string,
+  ): Promise<{ ok: boolean; problems?: string[] }> {
+    const sent = await this.store.increment(`assistant:handoffs:${visitor}`, DAY);
+    if (sent > HAND_OFFS_PER_DAY) {
+      return {
+        ok: false,
+        problems: ['Already sent today. Ask them to call 0330 333 8030 instead.'],
+      };
+    }
+    const result = await this.enquiries.submit(
+      {
+        kind: 'contact',
+        name: details.name,
+        email: details.email,
+        phone: details.phone,
+        postcode: details.postcode,
+        topic: 'Website chat',
+        message: `${details.message}\n\n(Sent from the website chat${request.page ? ` on ${request.page}` : ''}.)`,
+        answers: {},
+        consent: false,
+      },
+      [...photos.values()].map((photo) => photo.bytes),
+    );
+    return result.ok ? { ok: true } : { ok: false, problems: result.problems };
   }
 
   private async photosIn(request: AssistantRequest): Promise<Map<string, StoredPhoto>> {
@@ -102,18 +138,16 @@ export class AssistantService {
       });
       if (!response.wantsTools) return textOf(response.content);
       turns.push({ role: 'assistant', content: response.content });
-      turns.push({
-        role: 'user',
-        content: response.content.flatMap((block) => this.use(block, tools)),
-      });
+      const results = await Promise.all(response.content.map((block) => this.use(block, tools)));
+      turns.push({ role: 'user', content: results.flat() });
     }
     return '';
   }
 
-  private use(block: ContentBlock, tools: AssistantTools): ContentBlock[] {
+  private async use(block: ContentBlock, tools: AssistantTools): Promise<ContentBlock[]> {
     if (block.type !== 'tool_use') return [];
     try {
-      const result = tools.run(block.name, block.input);
+      const result = await tools.run(block.name, block.input);
       return [{ type: 'tool_result', tool_use_id: block.id, content: JSON.stringify(result) }];
     } catch (error) {
       const message = error instanceof Error ? error.message : 'That did not work';
