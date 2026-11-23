@@ -17718,10 +17718,81 @@
                   "properties": {
                     "reply": {
                       "type": "string"
+                    },
+                    "products": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "handle": {
+                            "type": "string"
+                          },
+                          "title": {
+                            "type": "string"
+                          },
+                          "href": {
+                            "type": "string"
+                          },
+                          "image": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "choice": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "price": {
+                            "nullable": true,
+                            "type": "string"
+                          },
+                          "stock": {
+                            "type": "string"
+                          },
+                          "add": {
+                            "nullable": true,
+                            "description": "Set when one variant is chosen and it can go straight in the bag",
+                            "type": "object",
+                            "properties": {
+                              "variantId": {
+                                "type": "string",
+                                "format": "uuid",
+                                "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                              },
+                              "quantity": {
+                                "type": "integer",
+                                "minimum": 0,
+                                "exclusiveMinimum": true,
+                                "maximum": 9007199254740991
+                              },
+                              "label": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "variantId",
+                              "quantity",
+                              "label"
+                            ],
+                            "additionalProperties": false
+                          }
+                        },
+                        "required": [
+                          "handle",
+                          "title",
+                          "href",
+                          "image",
+                          "choice",
+                          "price",
+                          "stock",
+                          "add"
+                        ],
+                        "additionalProperties": false
+                      }
                     }
                   },
                   "required": [
-                    "reply"
+                    "reply",
+                    "products"
                   ],
                   "additionalProperties": false
                 }

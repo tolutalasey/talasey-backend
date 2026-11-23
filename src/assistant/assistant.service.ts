@@ -1,18 +1,32 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
+import { StoreCatalogueService } from '../catalogue/store-catalogue.service.js';
 import { APP_CONFIG } from '../config/config.module.js';
 import type { AppConfig } from '../config/config.schema.js';
 import { KEY_VALUE_STORE, type KeyValueStore } from '../store/key-value-store.js';
-import { ANSWER_MODEL, type AnswerModel } from './answer-model.js';
+import {
+  ANSWER_MODEL,
+  type AnswerModel,
+  type ContentBlock,
+  type ModelTurn,
+} from './answer-model.js';
 import { buildPrompt } from './assistant-prompt.js';
-import type { AssistantRequest } from './assistant.schemas.js';
+import { AssistantTools, TOOL_DEFINITIONS } from './assistant-tools.js';
+import type { AssistantReply, AssistantRequest } from './assistant.schemas.js';
 import { SiteKnowledgeService } from './site-knowledge.service.js';
 
-const MAX_REPLY_TOKENS = 700;
+const MAX_REPLY_TOKENS = 1000;
+const MAX_TOOL_ROUNDS = 6;
 const HOUR = 60 * 60;
 const DAY = 24 * HOUR;
 
 export type ChatResult =
-  { ok: true; reply: string } | { ok: false; reason: 'off' | 'busy' | 'failed' };
+  ({ ok: true } & AssistantReply) | { ok: false; reason: 'off' | 'busy' | 'failed' };
+
+const textOf = (content: ContentBlock[]) =>
+  content
+    .flatMap((block) => (block.type === 'text' ? [block.text] : []))
+    .join('')
+    .trim();
 
 @Injectable()
 export class AssistantService {
@@ -23,6 +37,7 @@ export class AssistantService {
     @Inject(KEY_VALUE_STORE) private readonly store: KeyValueStore,
     @Inject(APP_CONFIG) private readonly config: AppConfig,
     private readonly knowledge: SiteKnowledgeService,
+    private readonly catalogue: StoreCatalogueService,
   ) {}
 
   get enabled(): boolean {
@@ -32,13 +47,53 @@ export class AssistantService {
   async reply(request: AssistantRequest, visitor: string): Promise<ChatResult> {
     if (!this.model.enabled) return { ok: false, reason: 'off' };
     if (!(await this.withinLimits(visitor))) return { ok: false, reason: 'busy' };
-    const prompt = buildPrompt(request, await this.knowledge.current());
     try {
-      const reply = await this.model.answer({ ...prompt, maxTokens: MAX_REPLY_TOKENS });
-      return reply ? { ok: true, reply } : { ok: false, reason: 'failed' };
+      const [knowledge, products] = await Promise.all([
+        this.knowledge.current(),
+        this.catalogue.published(),
+      ]);
+      const prompt = buildPrompt(request, knowledge);
+      const tools = new AssistantTools(products);
+      const reply = await this.converse(prompt.system, prompt.turns, tools);
+      return reply ? { ok: true, reply, products: tools.cards } : { ok: false, reason: 'failed' };
     } catch (error) {
       this.logger.error(error instanceof Error ? error.message : String(error));
       return { ok: false, reason: 'failed' };
+    }
+  }
+
+  // Lets the model look things up as many times as it needs, then returns its final words.
+  private async converse(
+    system: { text: string; cache: boolean }[],
+    opening: ModelTurn[],
+    tools: AssistantTools,
+  ): Promise<string> {
+    const turns = [...opening];
+    for (let round = 0; round < MAX_TOOL_ROUNDS; round++) {
+      const response = await this.model.respond({
+        system,
+        turns,
+        tools: TOOL_DEFINITIONS,
+        maxTokens: MAX_REPLY_TOKENS,
+      });
+      if (!response.wantsTools) return textOf(response.content);
+      turns.push({ role: 'assistant', content: response.content });
+      turns.push({
+        role: 'user',
+        content: response.content.flatMap((block) => this.use(block, tools)),
+      });
+    }
+    return '';
+  }
+
+  private use(block: ContentBlock, tools: AssistantTools): ContentBlock[] {
+    if (block.type !== 'tool_use') return [];
+    try {
+      const result = tools.run(block.name, block.input);
+      return [{ type: 'tool_result', tool_use_id: block.id, content: JSON.stringify(result) }];
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'That did not work';
+      return [{ type: 'tool_result', tool_use_id: block.id, content: message, is_error: true }];
     }
   }
 

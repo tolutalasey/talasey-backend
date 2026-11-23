@@ -1,20 +1,37 @@
 import type { AppConfig } from '../config/config.schema.js';
 
+export type ContentBlock =
+  | { type: 'text'; text: string }
+  | { type: 'tool_use'; id: string; name: string; input: unknown }
+  | { type: 'tool_result'; tool_use_id: string; content: string; is_error?: boolean };
+
 export interface ModelTurn {
   role: 'user' | 'assistant';
-  content: string;
+  content: string | ContentBlock[];
+}
+
+export interface ToolDefinition {
+  name: string;
+  description: string;
+  input_schema: Record<string, unknown>;
 }
 
 export interface AnswerRequest {
   // Parts of the system prompt in order. Fixed parts come first so they can be cached.
   system: { text: string; cache: boolean }[];
   turns: ModelTurn[];
+  tools: ToolDefinition[];
   maxTokens: number;
+}
+
+export interface ModelResponse {
+  content: ContentBlock[];
+  wantsTools: boolean;
 }
 
 export interface AnswerModel {
   readonly enabled: boolean;
-  answer(request: AnswerRequest): Promise<string>;
+  respond(request: AnswerRequest): Promise<ModelResponse>;
 }
 
 export const ANSWER_MODEL = Symbol('ANSWER_MODEL');
@@ -24,7 +41,8 @@ const API_VERSION = '2023-06-01';
 const TIMEOUT_MS = 45_000;
 
 interface MessagesResponse {
-  content?: { type: string; text?: string }[];
+  content?: ContentBlock[];
+  stop_reason?: string;
 }
 
 export class AnthropicAnswerModel implements AnswerModel {
@@ -35,7 +53,7 @@ export class AnthropicAnswerModel implements AnswerModel {
     private readonly model: string,
   ) {}
 
-  async answer(request: AnswerRequest): Promise<string> {
+  async respond(request: AnswerRequest): Promise<ModelResponse> {
     const response = await fetch(MESSAGES_URL, {
       method: 'POST',
       headers: {
@@ -46,6 +64,7 @@ export class AnthropicAnswerModel implements AnswerModel {
       body: JSON.stringify({
         model: this.model,
         max_tokens: request.maxTokens,
+        tools: request.tools,
         system: request.system.map(({ text, cache }) => ({
           type: 'text',
           text,
@@ -57,18 +76,14 @@ export class AnthropicAnswerModel implements AnswerModel {
     });
     if (!response.ok) throw new Error(`The answer service replied ${response.status}`);
     const body = (await response.json()) as MessagesResponse;
-    return (body.content ?? [])
-      .filter((block) => block.type === 'text')
-      .map((block) => block.text ?? '')
-      .join('')
-      .trim();
+    return { content: body.content ?? [], wantsTools: body.stop_reason === 'tool_use' };
   }
 }
 
 export class NoAnswerModel implements AnswerModel {
   readonly enabled = false;
 
-  answer(): Promise<string> {
+  respond(): Promise<ModelResponse> {
     return Promise.reject(new Error('The assistant is switched off'));
   }
 }

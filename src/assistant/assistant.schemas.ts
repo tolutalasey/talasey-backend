@@ -30,7 +30,26 @@ export const assistantRequestSchema = z.object({
 export type AssistantRequest = z.infer<typeof assistantRequestSchema>;
 export type Turn = z.infer<typeof turnSchema>;
 
-export const assistantReplySchema = z.object({ reply: z.string() });
+export const productCardSchema = z.object({
+  handle: z.string(),
+  title: z.string(),
+  href: z.string(),
+  image: z.string().nullable(),
+  // The variant picked for the visitor, such as "Pearl 600x600mm", when there are several.
+  choice: z.string().nullable(),
+  price: z.string().nullable(),
+  stock: z.string(),
+  add: z
+    .object({ variantId: z.uuid(), quantity: z.number().int().positive(), label: z.string() })
+    .nullable()
+    .describe('Set when one variant is chosen and it can go straight in the bag'),
+});
+export type ProductCard = z.infer<typeof productCardSchema>;
+
+export const assistantReplySchema = z.object({
+  reply: z.string(),
+  products: z.array(productCardSchema),
+});
 export type AssistantReply = z.infer<typeof assistantReplySchema>;
 
 export const assistantStatusSchema = z.object({ enabled: z.boolean() });

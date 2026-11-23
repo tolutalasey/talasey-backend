@@ -54,7 +54,7 @@ export class StoreAssistantController {
     @Ip() ip: string,
   ): Promise<AssistantReply> {
     const result = await this.assistant.reply(body, visitorKey(forwarded, ip));
-    if (result.ok) return { reply: result.reply };
+    if (result.ok) return { reply: result.reply, products: result.products };
     if (result.reason === 'busy') {
       throw new HttpException('Too many messages for now', HttpStatus.TOO_MANY_REQUESTS);
     }
