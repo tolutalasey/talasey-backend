@@ -17684,6 +17684,11 @@
                           "type": "string",
                           "minLength": 1,
                           "maxLength": 8000
+                        },
+                        "photoId": {
+                          "type": "string",
+                          "format": "uuid",
+                          "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
                         }
                       },
                       "required": [
@@ -17804,6 +17809,63 @@
           },
           "503": {
             "description": "The assistant is switched off or could not answer"
+          }
+        },
+        "tags": [
+          "store: assistant"
+        ]
+      }
+    },
+    "/store/assistant/photos": {
+      "post": {
+        "operationId": "StoreAssistantController_photo",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "photo": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "photoId": {
+                      "type": "string",
+                      "format": "uuid",
+                      "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+                    }
+                  },
+                  "required": [
+                    "photoId"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "No photo, or not a JPEG, PNG or WebP under 5 MB"
+          },
+          "429": {
+            "description": "Too many photos for now"
+          },
+          "503": {
+            "description": "The assistant is switched off"
           }
         },
         "tags": [

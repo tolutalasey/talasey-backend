@@ -9,15 +9,21 @@ import {
   type ContentBlock,
   type ModelTurn,
 } from './answer-model.js';
+import { AssistantPhotos, type SaveResult, type StoredPhoto } from './assistant-photos.js';
 import { buildPrompt } from './assistant-prompt.js';
 import { AssistantTools, TOOL_DEFINITIONS } from './assistant-tools.js';
-import type { AssistantReply, AssistantRequest } from './assistant.schemas.js';
+import {
+  MAX_PHOTOS_SENT,
+  type AssistantReply,
+  type AssistantRequest,
+} from './assistant.schemas.js';
 import { SiteKnowledgeService } from './site-knowledge.service.js';
 
 const MAX_REPLY_TOKENS = 1000;
 const MAX_TOOL_ROUNDS = 6;
 const HOUR = 60 * 60;
 const DAY = 24 * HOUR;
+const PHOTOS_PER_HOUR = 10;
 
 export type ChatResult =
   ({ ok: true } & AssistantReply) | { ok: false; reason: 'off' | 'busy' | 'failed' };
@@ -38,6 +44,7 @@ export class AssistantService {
     @Inject(APP_CONFIG) private readonly config: AppConfig,
     private readonly knowledge: SiteKnowledgeService,
     private readonly catalogue: StoreCatalogueService,
+    private readonly photos: AssistantPhotos,
   ) {}
 
   get enabled(): boolean {
@@ -48,11 +55,12 @@ export class AssistantService {
     if (!this.model.enabled) return { ok: false, reason: 'off' };
     if (!(await this.withinLimits(visitor))) return { ok: false, reason: 'busy' };
     try {
-      const [knowledge, products] = await Promise.all([
+      const [knowledge, products, photos] = await Promise.all([
         this.knowledge.current(),
         this.catalogue.published(),
+        this.photosIn(request),
       ]);
-      const prompt = buildPrompt(request, knowledge);
+      const prompt = buildPrompt(request, knowledge, photos);
       const tools = new AssistantTools(products);
       const reply = await this.converse(prompt.system, prompt.turns, tools);
       return reply ? { ok: true, reply, products: tools.cards } : { ok: false, reason: 'failed' };
@@ -60,6 +68,22 @@ export class AssistantService {
       this.logger.error(error instanceof Error ? error.message : String(error));
       return { ok: false, reason: 'failed' };
     }
+  }
+
+  async savePhoto(bytes: Buffer, visitor: string): Promise<SaveResult | { ok: false; busy: true }> {
+    const sent = await this.store.increment(`assistant:photos:${visitor}`, HOUR);
+    if (sent > PHOTOS_PER_HOUR) return { ok: false, busy: true };
+    return this.photos.save(bytes);
+  }
+
+  private async photosIn(request: AssistantRequest): Promise<Map<string, StoredPhoto>> {
+    const ids = request.turns
+      .flatMap((turn) => (turn.photoId ? [turn.photoId] : []))
+      .slice(-MAX_PHOTOS_SENT);
+    const found = await Promise.all(
+      ids.map(async (id) => [id, await this.photos.read(id)] as const),
+    );
+    return new Map(found.flatMap(([id, photo]) => (photo ? [[id, photo] as const] : [])));
   }
 
   // Lets the model look things up as many times as it needs, then returns its final words.

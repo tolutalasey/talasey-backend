@@ -1,5 +1,6 @@
-import type { ModelTurn } from './answer-model.js';
-import type { AssistantRequest } from './assistant.schemas.js';
+import type { ContentBlock, ModelTurn } from './answer-model.js';
+import type { StoredPhoto } from './assistant-photos.js';
+import type { AssistantRequest, Turn } from './assistant.schemas.js';
 
 export const ASSISTANT_NAME = 'Tala';
 
@@ -21,6 +22,11 @@ Looking things up:
 - For "how much do I need", get the area in m² (multiply length by width if they give both) and use work_out_quantity. Never do the pack sums yourself. Mention the allowance for cuts and suggest what goes with it, such as primer and jointing for porcelain.
 - Whenever you recommend or price specific products, call show_products so they appear as cards with a link and Add to bag. Pass the variant_id and quantity once they've chosen a size and colour. Keep your text short when cards are shown: say why each one suits them rather than repeating the card details.
 
+Photos:
+- Visitors can send photos of their garden. Say briefly what you notice that matters for the job: the space and its shape, sun or shade, slopes and steps, what's there now (lawn, old slabs, decking, fences) and the style of the house. Then suggest what would suit, with cards.
+- You can't measure from a photo, so ask for rough sizes before working out quantities. If you're unsure what something in a photo is, say so.
+- If a photo isn't of an outdoor space or a product, say you can only help with garden and outdoor projects. Don't comment on people in photos.
+
 Rules:
 - Only state prices, stock, sizes, lead times and policies that come from the tools or the site knowledge below. Prices include VAT. If something isn't there, say you're not sure and offer to pass the question to the team, or point them to [Contact us](/contact/) or 0330 333 8030.
 - Never invent products, discounts, delivery dates or guarantees.
@@ -33,7 +39,11 @@ export interface PromptParts {
   turns: ModelTurn[];
 }
 
-export function buildPrompt(request: AssistantRequest, knowledge: string): PromptParts {
+export function buildPrompt(
+  request: AssistantRequest,
+  knowledge: string,
+  photos: ReadonlyMap<string, StoredPhoto> = new Map(),
+): PromptParts {
   const where = request.page
     ? `The visitor is on ${request.page}${request.pageTitle ? ` ("${request.pageTitle}")` : ''}.`
     : 'The visitor is somewhere on the website.';
@@ -46,20 +56,38 @@ export function buildPrompt(request: AssistantRequest, knowledge: string): Promp
       },
       { text: where, cache: false },
     ],
-    turns: alternating(request.turns),
+    turns: alternating(request.turns, photos),
   };
+}
+
+function contentOf(turn: Turn, photos: ReadonlyMap<string, StoredPhoto>): ContentBlock[] {
+  const photo = turn.photoId ? photos.get(turn.photoId) : undefined;
+  const text: ContentBlock = { type: 'text', text: turn.text };
+  if (!photo) return [text];
+  return [
+    {
+      type: 'image',
+      source: {
+        type: 'base64',
+        media_type: photo.contentType,
+        data: photo.bytes.toString('base64'),
+      },
+    },
+    text,
+  ];
 }
 
 // The model needs the visitor first and the two sides taking turns, so back-to-back messages
 // from one side are joined.
-function alternating(turns: AssistantRequest['turns']): ModelTurn[] {
-  const result: ModelTurn[] = [];
+function alternating(turns: Turn[], photos: ReadonlyMap<string, StoredPhoto>): ModelTurn[] {
+  const result: { role: ModelTurn['role']; content: ContentBlock[] }[] = [];
   for (const turn of turns) {
     const role = turn.role === 'visitor' ? 'user' : 'assistant';
     const last = result.at(-1);
     if (!last && role === 'assistant') continue;
-    if (last?.role === role) last.content += `\n\n${turn.text}`;
-    else result.push({ role, content: turn.text });
+    const content = contentOf(turn, photos);
+    if (last?.role === role) last.content.push(...content);
+    else result.push({ role, content });
   }
   return result;
 }

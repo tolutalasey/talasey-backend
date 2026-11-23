@@ -2,6 +2,9 @@ import { z } from 'zod';
 
 export const MAX_TURNS = 30;
 export const MAX_MESSAGE_CHARS = 2000;
+export const MAX_PHOTO_BYTES = 5 * 1024 * 1024;
+// Only the latest few photos in a conversation are looked at again with each message.
+export const MAX_PHOTOS_SENT = 3;
 
 const turnSchema = z.object({
   role: z.enum(['visitor', 'assistant']),
@@ -10,6 +13,8 @@ const turnSchema = z.object({
     .trim()
     .min(1)
     .max(MAX_MESSAGE_CHARS * 4),
+  // A photo the visitor sent with this message, uploaded first through /store/assistant/photos.
+  photoId: z.uuid().optional(),
 });
 
 export const assistantRequestSchema = z.object({
@@ -53,3 +58,5 @@ export const assistantReplySchema = z.object({
 export type AssistantReply = z.infer<typeof assistantReplySchema>;
 
 export const assistantStatusSchema = z.object({ enabled: z.boolean() });
+
+export const assistantPhotoSchema = z.object({ photoId: z.uuid() });
