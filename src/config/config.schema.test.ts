@@ -14,6 +14,10 @@ describe('parseConfig', () => {
       SLOT_HOLD_MINUTES: 15,
       SLOT_DAYS_AHEAD: 10,
       UPLOAD_DIR: '.data/uploads',
+      ENQUIRIES_TO: 'sales@talasey.co.uk',
+      ASSISTANT_MODEL: 'claude-sonnet-5-5',
+      ASSISTANT_MESSAGES_PER_HOUR: 40,
+      ASSISTANT_MESSAGES_PER_DAY: 3000,
     });
   });
 

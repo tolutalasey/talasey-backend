@@ -17624,6 +17624,121 @@
           "store: customer accounts"
         ]
       }
+    },
+    "/store/assistant": {
+      "get": {
+        "operationId": "StoreAssistantController_status",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "enabled": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "enabled"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "store: assistant"
+        ]
+      }
+    },
+    "/store/assistant/messages": {
+      "post": {
+        "operationId": "StoreAssistantController_message",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "turns": {
+                    "minItems": 1,
+                    "maxItems": 30,
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "role": {
+                          "type": "string",
+                          "enum": [
+                            "visitor",
+                            "assistant"
+                          ]
+                        },
+                        "text": {
+                          "type": "string",
+                          "minLength": 1,
+                          "maxLength": 8000
+                        }
+                      },
+                      "required": [
+                        "role",
+                        "text"
+                      ]
+                    }
+                  },
+                  "page": {
+                    "type": "string",
+                    "maxLength": 300
+                  },
+                  "pageTitle": {
+                    "type": "string",
+                    "maxLength": 300
+                  }
+                },
+                "required": [
+                  "turns"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "reply": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "reply"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many messages for now"
+          },
+          "503": {
+            "description": "The assistant is switched off or could not answer"
+          }
+        },
+        "tags": [
+          "store: assistant"
+        ]
+      }
     }
   },
   "info": {

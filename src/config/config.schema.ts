@@ -23,6 +23,13 @@ export const configSchema = z.object({
   R2_ACCESS_KEY_ID: optional(z.string().min(16)),
   R2_SECRET_ACCESS_KEY: optional(z.string().min(32)),
   REVALIDATE_SECRET: optional(z.string().min(32)),
+  // The site assistant. Without a key it stays switched off and the chat button is hidden.
+  ANTHROPIC_API_KEY: optional(z.string().startsWith('sk-ant-')),
+  ASSISTANT_MODEL: z.string().default('claude-sonnet-5-5'),
+  // Where the assistant reads what the site says. Defaults to WEB_URL/assistant-knowledge.txt.
+  ASSISTANT_KNOWLEDGE_URL: optional(z.url()),
+  ASSISTANT_MESSAGES_PER_HOUR: z.coerce.number().int().positive().default(40),
+  ASSISTANT_MESSAGES_PER_DAY: z.coerce.number().int().positive().default(3000),
 });
 
 export type AppConfig = z.infer<typeof configSchema>;
