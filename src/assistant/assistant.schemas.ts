@@ -18,6 +18,8 @@ const turnSchema = z.object({
 });
 
 export const assistantRequestSchema = z.object({
+  // Made by the chat when a conversation starts, so staff can read it back as one.
+  conversationId: z.uuid().optional(),
   // The whole conversation so far, oldest first, ending with the visitor's new message.
   turns: z
     .array(turnSchema)
@@ -60,3 +62,55 @@ export type AssistantReply = z.infer<typeof assistantReplySchema>;
 export const assistantStatusSchema = z.object({ enabled: z.boolean() });
 
 export const assistantPhotoSchema = z.object({ photoId: z.uuid() });
+
+export const assistantSwitchSchema = z.object({ on: z.boolean() });
+
+export const assistantUsageSchema = z.object({
+  days: z.number().int(),
+  conversations: z.number().int(),
+  messages: z.number().int(),
+  gaps: z.number().int(),
+  handedOff: z.number().int(),
+  failed: z.number().int(),
+  inputTokens: z.number().int(),
+  cachedTokens: z.number().int(),
+  outputTokens: z.number().int(),
+  costUsd: z.number().nullable().describe('Null when the model price is not set'),
+});
+
+export const assistantStatusAdminSchema = z.object({
+  configured: z.boolean().describe('Whether ANTHROPIC_API_KEY is set'),
+  on: z.boolean(),
+  model: z.string(),
+});
+
+export const conversationSummarySchema = z.object({
+  id: z.uuid(),
+  startedAt: z.iso.datetime(),
+  lastAt: z.iso.datetime(),
+  messages: z.number().int(),
+  firstQuestion: z.string(),
+  pages: z.array(z.string()),
+  photos: z.number().int(),
+  gaps: z.number().int(),
+  handedOff: z.boolean(),
+});
+
+export const exchangeSchema = z.object({
+  id: z.uuid(),
+  page: z.string().nullable(),
+  question: z.string(),
+  hadPhoto: z.boolean(),
+  reply: z.string().nullable(),
+  products: z.array(z.string()),
+  gap: z.string().nullable(),
+  handedOff: z.boolean(),
+  failed: z.boolean(),
+  createdAt: z.iso.datetime(),
+});
+
+export const gapSchema = exchangeSchema
+  .pick({ id: true, page: true, question: true, gap: true, createdAt: true })
+  .extend({
+    conversationId: z.uuid(),
+  });

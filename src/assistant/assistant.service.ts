@@ -1,4 +1,5 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
+import { randomUUID } from 'node:crypto';
 import { StoreCatalogueService } from '../catalogue/store-catalogue.service.js';
 import { APP_CONFIG } from '../config/config.module.js';
 import type { AppConfig } from '../config/config.schema.js';
@@ -8,7 +9,9 @@ import {
   type AnswerModel,
   type ContentBlock,
   type ModelTurn,
+  type Usage,
 } from './answer-model.js';
+import { AssistantLog } from './assistant-log.js';
 import { AssistantPhotos, type SaveResult, type StoredPhoto } from './assistant-photos.js';
 import { buildPrompt } from './assistant-prompt.js';
 import { EnquiriesService } from '../enquiries/enquiries.service.js';
@@ -26,6 +29,8 @@ const HOUR = 60 * 60;
 const DAY = 24 * HOUR;
 const PHOTOS_PER_HOUR = 10;
 const HAND_OFFS_PER_DAY = 3;
+const OFF_KEY = 'assistant:off';
+const NO_USAGE: Usage = { input: 0, cached: 0, output: 0 };
 
 export type ChatResult =
   ({ ok: true } & AssistantReply) | { ok: false; reason: 'off' | 'busy' | 'failed' };
@@ -48,15 +53,34 @@ export class AssistantService {
     private readonly catalogue: StoreCatalogueService,
     private readonly photos: AssistantPhotos,
     private readonly enquiries: EnquiriesService,
+    private readonly log: AssistantLog,
   ) {}
 
-  get enabled(): boolean {
-    return this.model.enabled;
+  // On when the API key is set and staff haven't switched it off in the admin.
+  async isOn(): Promise<boolean> {
+    return this.model.enabled && (await this.store.get(OFF_KEY)) !== '1';
+  }
+
+  async switchTo(on: boolean): Promise<void> {
+    if (on) await this.store.delete(OFF_KEY);
+    else await this.store.set(OFF_KEY, '1');
+  }
+
+  async adminStatus() {
+    return {
+      configured: this.model.enabled,
+      on: await this.isOn(),
+      model: this.config.ASSISTANT_MODEL,
+    };
   }
 
   async reply(request: AssistantRequest, visitor: string): Promise<ChatResult> {
-    if (!this.model.enabled) return { ok: false, reason: 'off' };
+    if (!(await this.isOn())) return { ok: false, reason: 'off' };
     if (!(await this.withinLimits(visitor))) return { ok: false, reason: 'busy' };
+    const asked = request.turns.at(-1);
+    const usage = { ...NO_USAGE };
+    let tools: AssistantTools | null = null;
+    let reply = '';
     try {
       const [knowledge, products, photos] = await Promise.all([
         this.knowledge.current(),
@@ -64,15 +88,32 @@ export class AssistantService {
         this.photosIn(request),
       ]);
       const prompt = buildPrompt(request, knowledge, photos);
-      const tools = new AssistantTools(products, (details) =>
+      tools = new AssistantTools(products, (details) =>
         this.passToTeam(details, request, photos, visitor),
       );
-      const reply = await this.converse(prompt.system, prompt.turns, tools);
-      return reply ? { ok: true, reply, products: tools.cards } : { ok: false, reason: 'failed' };
+      reply = await this.converse(prompt.system, prompt.turns, tools, usage);
     } catch (error) {
       this.logger.error(error instanceof Error ? error.message : String(error));
-      return { ok: false, reason: 'failed' };
     }
+    await this.log
+      .record({
+        conversationId: request.conversationId ?? randomUUID(),
+        page: request.page ?? null,
+        question: asked?.text ?? '',
+        hadPhoto: Boolean(asked?.photoId),
+        reply: reply || null,
+        products: tools?.cards.map((card) => card.handle) ?? [],
+        gap: tools?.gap ?? null,
+        handedOff: tools?.handedOff ?? false,
+        failed: !reply,
+        inputTokens: usage.input,
+        cachedTokens: usage.cached,
+        outputTokens: usage.output,
+      })
+      .catch((error: unknown) => this.logger.warn(`Chat not logged: ${String(error)}`));
+    return reply
+      ? { ok: true, reply, products: tools?.cards ?? [] }
+      : { ok: false, reason: 'failed' };
   }
 
   async savePhoto(bytes: Buffer, visitor: string): Promise<SaveResult | { ok: false; busy: true }> {
@@ -127,6 +168,7 @@ export class AssistantService {
     system: { text: string; cache: boolean }[],
     opening: ModelTurn[],
     tools: AssistantTools,
+    usage: Usage,
   ): Promise<string> {
     const turns = [...opening];
     for (let round = 0; round < MAX_TOOL_ROUNDS; round++) {
@@ -136,6 +178,9 @@ export class AssistantService {
         tools: TOOL_DEFINITIONS,
         maxTokens: MAX_REPLY_TOKENS,
       });
+      usage.input += response.usage.input;
+      usage.cached += response.usage.cached;
+      usage.output += response.usage.output;
       if (!response.wantsTools) return textOf(response.content);
       turns.push({ role: 'assistant', content: response.content });
       const results = await Promise.all(response.content.map((block) => this.use(block, tools)));

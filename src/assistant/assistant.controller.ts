@@ -6,7 +6,9 @@ import {
   HttpException,
   HttpStatus,
   Ip,
+  NotFoundException,
   Post,
+  Put,
   ServiceUnavailableException,
   UnprocessableEntityException,
   UploadedFile,
@@ -16,8 +18,24 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { createHash } from 'node:crypto';
 import { z } from 'zod';
-import { Accepts, Fails, Returns, ValidBody } from '../common/contract.js';
+import { StaffOnly } from '../auth/staff.guard.js';
 import {
+  Accepts,
+  AcceptsQuery,
+  Fails,
+  Returns,
+  ValidBody,
+  ValidParam,
+  ValidQuery,
+} from '../common/contract.js';
+import { AssistantLog } from './assistant-log.js';
+import {
+  assistantStatusAdminSchema,
+  assistantSwitchSchema,
+  assistantUsageSchema,
+  conversationSummarySchema,
+  exchangeSchema,
+  gapSchema,
   assistantPhotoSchema,
   assistantReplySchema,
   MAX_PHOTO_BYTES,
@@ -35,6 +53,8 @@ function visitorKey(forwarded: string | undefined, ip: string): string {
   return createHash('sha256').update(address).digest('hex').slice(0, 32);
 }
 
+const daysQuery = z.object({ days: z.coerce.number().int().min(1).max(90).default(30) });
+
 @ApiTags('store: assistant')
 @Controller('store/assistant')
 export class StoreAssistantController {
@@ -42,8 +62,8 @@ export class StoreAssistantController {
 
   @Get()
   @Returns(assistantStatusSchema)
-  status(): z.infer<typeof assistantStatusSchema> {
-    return { enabled: this.assistant.enabled };
+  async status(): Promise<z.infer<typeof assistantStatusSchema>> {
+    return { enabled: await this.assistant.isOn() };
   }
 
   @Post('messages')
@@ -87,8 +107,9 @@ export class StoreAssistantController {
     @Headers('x-visitor-ip') forwarded: string | undefined,
     @Ip() ip: string,
   ): Promise<z.infer<typeof assistantPhotoSchema>> {
-    if (!this.assistant.enabled)
+    if (!(await this.assistant.isOn())) {
       throw new ServiceUnavailableException('The assistant is switched off');
+    }
     if (!file) throw new UnprocessableEntityException('Choose a photo to send');
     const result = await this.assistant.savePhoto(file.buffer, visitorKey(forwarded, ip));
     if (result.ok) return { photoId: result.photoId };
@@ -96,5 +117,59 @@ export class StoreAssistantController {
       throw new HttpException('Too many photos for now', HttpStatus.TOO_MANY_REQUESTS);
     }
     throw new UnprocessableEntityException(result.problem);
+  }
+}
+
+@ApiTags('admin: assistant')
+@Controller('admin/assistant')
+@StaffOnly('enquiries')
+export class AdminAssistantController {
+  constructor(
+    private readonly assistant: AssistantService,
+    private readonly log: AssistantLog,
+  ) {}
+
+  @Get()
+  @Returns(assistantStatusAdminSchema)
+  status() {
+    return this.assistant.adminStatus();
+  }
+
+  @Put('switch')
+  @Accepts(assistantSwitchSchema)
+  @Returns(assistantStatusAdminSchema)
+  async switchTo(@ValidBody(assistantSwitchSchema) body: z.infer<typeof assistantSwitchSchema>) {
+    await this.assistant.switchTo(body.on);
+    return this.assistant.adminStatus();
+  }
+
+  @Get('usage')
+  @AcceptsQuery(daysQuery)
+  @Returns(assistantUsageSchema)
+  usage(@ValidQuery(daysQuery) query: z.infer<typeof daysQuery>) {
+    return this.log.usage(query.days);
+  }
+
+  @Get('conversations')
+  @AcceptsQuery(daysQuery)
+  @Returns(z.array(conversationSummarySchema))
+  conversations(@ValidQuery(daysQuery) query: z.infer<typeof daysQuery>) {
+    return this.log.conversations(query.days);
+  }
+
+  @Get('conversations/:id')
+  @Returns(z.array(exchangeSchema))
+  @Fails([404, 'No such conversation'])
+  async conversation(@ValidParam('id', z.uuid()) id: string) {
+    const exchanges = await this.log.conversation(id);
+    if (exchanges.length === 0) throw new NotFoundException('No such conversation');
+    return exchanges;
+  }
+
+  @Get('gaps')
+  @AcceptsQuery(daysQuery)
+  @Returns(z.array(gapSchema))
+  gaps(@ValidQuery(daysQuery) query: z.infer<typeof daysQuery>) {
+    return this.log.gaps(query.days);
   }
 }

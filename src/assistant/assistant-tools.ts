@@ -35,6 +35,8 @@ const teamInput = z.object({
 export type TeamRequest = z.infer<typeof teamInput>;
 export type PassToTeam = (request: TeamRequest) => Promise<{ ok: boolean; problems?: string[] }>;
 
+const gapInput = z.object({ missing: z.string().trim().min(3).max(300) });
+
 const showInput = z.object({
   products: z
     .array(
@@ -70,6 +72,12 @@ export const TOOL_DEFINITIONS: ToolDefinition[] = [
     name: 'show_products',
     description: `Show up to ${MAX_CARDS} products as cards under your reply, with a link and, when a single variant is chosen, an Add to bag button. Pass variant_id (from product_details) and quantity (for example the packs from work_out_quantity) when you know them. Call it whenever you recommend specific products.`,
     input_schema: z.toJSONSchema(showInput) as Record<string, unknown>,
+  },
+  {
+    name: 'note_gap',
+    description:
+      "Quietly tell the website team when you couldn't answer properly because the information isn't in the site knowledge or the tools, such as a missing size, a policy or a product we might not sell. Say what was missing in a few words. The visitor doesn't see this; still answer them as well as you can.",
+    input_schema: z.toJSONSchema(gapInput) as Record<string, unknown>,
   },
   {
     name: 'pass_to_team',
@@ -115,6 +123,8 @@ function card(
 // The tools the assistant can call during one reply. Cards it asks to show are kept for the reply.
 export class AssistantTools {
   readonly cards: ProductCard[] = [];
+  gap: string | null = null;
+  handedOff = false;
 
   constructor(
     private readonly products: StoreProduct[],
@@ -149,8 +159,13 @@ export class AssistantTools {
         this.cards.splice(0, this.cards.length, ...shown);
         return { shown: shown.map((entry) => entry.title) };
       }
+      case 'note_gap': {
+        this.gap = gapInput.parse(input).missing;
+        return { noted: true };
+      }
       case 'pass_to_team': {
         const result = await this.passToTeam(teamInput.parse(input));
+        this.handedOff ||= result.ok;
         return result.ok
           ? { sent: true, next: 'The team will reply by email, usually within one working day.' }
           : { sent: false, problems: result.problems ?? ['It could not be sent just now'] };

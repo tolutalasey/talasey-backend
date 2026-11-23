@@ -30,6 +30,11 @@ export const configSchema = z.object({
   ASSISTANT_KNOWLEDGE_URL: optional(z.url()),
   ASSISTANT_MESSAGES_PER_HOUR: z.coerce.number().int().positive().default(40),
   ASSISTANT_MESSAGES_PER_DAY: z.coerce.number().int().positive().default(3000),
+  // The model's price in US dollars per million tokens, from Anthropic's pricing page, so the
+  // admin can show what the chat costs. Leave empty to show token counts only.
+  ASSISTANT_USD_PER_MTOK_INPUT: optional(z.coerce.number().nonnegative()),
+  ASSISTANT_USD_PER_MTOK_CACHED: optional(z.coerce.number().nonnegative()),
+  ASSISTANT_USD_PER_MTOK_OUTPUT: optional(z.coerce.number().nonnegative()),
 });
 
 export type AppConfig = z.infer<typeof configSchema>;

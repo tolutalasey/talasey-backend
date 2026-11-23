@@ -25,9 +25,16 @@ export interface AnswerRequest {
   maxTokens: number;
 }
 
+export interface Usage {
+  input: number;
+  cached: number;
+  output: number;
+}
+
 export interface ModelResponse {
   content: ContentBlock[];
   wantsTools: boolean;
+  usage: Usage;
 }
 
 export interface AnswerModel {
@@ -44,6 +51,12 @@ const TIMEOUT_MS = 45_000;
 interface MessagesResponse {
   content?: ContentBlock[];
   stop_reason?: string;
+  usage?: {
+    input_tokens?: number;
+    output_tokens?: number;
+    cache_creation_input_tokens?: number;
+    cache_read_input_tokens?: number;
+  };
 }
 
 export class AnthropicAnswerModel implements AnswerModel {
@@ -77,7 +90,15 @@ export class AnthropicAnswerModel implements AnswerModel {
     });
     if (!response.ok) throw new Error(`The answer service replied ${response.status}`);
     const body = (await response.json()) as MessagesResponse;
-    return { content: body.content ?? [], wantsTools: body.stop_reason === 'tool_use' };
+    return {
+      content: body.content ?? [],
+      wantsTools: body.stop_reason === 'tool_use',
+      usage: {
+        input: (body.usage?.input_tokens ?? 0) + (body.usage?.cache_creation_input_tokens ?? 0),
+        cached: body.usage?.cache_read_input_tokens ?? 0,
+        output: body.usage?.output_tokens ?? 0,
+      },
+    };
   }
 }
 

@@ -8,3 +8,4 @@ export * from './samples.js';
 export * from './stock-alerts.js';
 export * from './promotions.js';
 export * from './enquiries.js';
+export * from './assistant.js';
