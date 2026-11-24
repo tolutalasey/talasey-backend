@@ -69,6 +69,22 @@ describe('productCatalogueProblems', () => {
     ).toEqual(['Made-to-order products need a lead time']);
   });
 
+  it('needs no lead time for an enquiry-only product', () => {
+    expect(
+      productCatalogueProblems(
+        {
+          ...product,
+          page_type: '3',
+          colour_rule: null,
+          images: [],
+          lead_time_min_days: null,
+          lead_time_max_days: null,
+        },
+        colours,
+      ),
+    ).toEqual([]);
+  });
+
   it('leaves products that have not been set up alone, so their old state can be restored', () => {
     expect(
       productCatalogueProblems(

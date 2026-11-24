@@ -11,4 +11,6 @@ export const PAGE_TYPE_LABELS: Record<PageType, string> = {
   '4': 'Build your own: several SKUs chosen step by step',
 };
 
+export const ENQUIRY_ONLY: PageType = '3';
+
 export const usesColourSet = (pageType: PageType | null) => pageType === '1B' || pageType === '2';

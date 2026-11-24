@@ -1,4 +1,4 @@
-import { usesColourSet } from './page-types.js';
+import { ENQUIRY_ONLY, usesColourSet } from './page-types.js';
 import type { ColourSetSnapshot, ProductCatalogueSnapshot } from './snapshots.js';
 
 const HEX = /^#[0-9A-F]{6}$/i;
@@ -31,8 +31,10 @@ export function productCatalogueProblems(
     problems.push('The lead time runs from a shorter number of days to a longer one');
   }
   // Products without a page type haven't been set up yet, so only their stock mode is kept.
+  // Enquiry-only products are never bought online, so they show no lead time.
   const setUp = product.page_type !== null;
-  if (setUp && product.stock_mode && product.stock_mode !== 'stocked' && min === null) {
+  const sold = product.page_type !== ENQUIRY_ONLY;
+  if (setUp && sold && product.stock_mode && product.stock_mode !== 'stocked' && min === null) {
     problems.push('Made-to-order products need a lead time');
   }
   if (rule && !usesColourSet(product.page_type)) {
