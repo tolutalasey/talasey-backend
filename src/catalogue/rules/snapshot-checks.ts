@@ -31,9 +31,9 @@ export function productCatalogueProblems(
     problems.push('The lead time runs from a shorter number of days to a longer one');
   }
   // Products without a page type haven't been set up yet, so only their stock mode is kept.
-  // Enquiry-only products are never bought online, so they show no lead time.
+  // Enquiry-only products, and any product not sold online, show no lead time.
   const setUp = product.page_type !== null;
-  const sold = product.page_type !== ENQUIRY_ONLY;
+  const sold = product.page_type !== ENQUIRY_ONLY && product.sell_online !== false;
   if (setUp && sold && product.stock_mode && product.stock_mode !== 'stocked' && min === null) {
     problems.push('Made-to-order products need a lead time');
   }

@@ -69,6 +69,15 @@ describe('productCatalogueProblems', () => {
     ).toEqual(['Made-to-order products need a lead time']);
   });
 
+  it('needs no lead time for a product that is not sold online', () => {
+    expect(
+      productCatalogueProblems(
+        { ...product, sell_online: false, lead_time_min_days: null, lead_time_max_days: null },
+        colours,
+      ),
+    ).toEqual([]);
+  });
+
   it('needs no lead time for an enquiry-only product', () => {
     expect(
       productCatalogueProblems(

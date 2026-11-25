@@ -17,6 +17,7 @@ export function productProblems(product: ProductState, colourIds: Set<string>): 
     ...productCatalogueProblems(
       {
         page_type: product.pageType,
+        sell_online: product.sellOnline,
         stock_mode: product.stockMode,
         lead_time_min_days: product.leadTimeMinDays,
         lead_time_max_days: product.leadTimeMaxDays,

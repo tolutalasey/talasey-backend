@@ -27,6 +27,8 @@ export interface ColourImageSnapshot {
 // page_type is null for a product with no Talasey settings yet; its stock mode still counts.
 export interface ProductCatalogueSnapshot {
   page_type: PageType | null;
+  // Products that aren't sold online are only shown, so they don't need a lead time.
+  sell_online?: boolean;
   stock_mode: StockMode | null;
   lead_time_min_days: number | null;
   lead_time_max_days: number | null;
