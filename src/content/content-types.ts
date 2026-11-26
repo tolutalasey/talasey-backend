@@ -162,6 +162,19 @@ export const DOCUMENT_RANGES = [
 const documentRanges = z
   .array(z.enum(DOCUMENT_RANGES, { error: `Use one of: ${DOCUMENT_RANGES.join(', ')}` }))
   .default([]);
+// The gallery's sections, as Amy set them out (Website Gallery sheet).
+const GALLERY_CATEGORIES = [
+  'Low Maintenance Spaces',
+  'Traditional Gardens',
+  'Contemporary Gardens',
+  'Stylish Entryways',
+  'Unique Features',
+  'Garden Structures',
+  'Finishing Touches',
+] as const;
+const galleryCategories = z
+  .array(z.enum(GALLERY_CATEGORIES, { error: `Use one of: ${GALLERY_CATEGORIES.join(', ')}` }))
+  .min(1, 'Choose at least one gallery section');
 const productsField: Field = {
   name: 'products',
   label: 'Show on these products',
@@ -1335,9 +1348,9 @@ export const CONTENT_TYPES: ContentType[] = [
       { name: 'space', label: 'Space', kind: 'text' },
       {
         name: 'categories',
-        label: 'Gallery categories',
+        label: 'Gallery sections',
         kind: 'list',
-        help: 'One per line, like Cottage gardens or Decking projects. Shoppers filter the gallery by these',
+        help: `One per line, from: ${GALLERY_CATEGORIES.join(', ')}`,
       },
       { name: 'colours', label: 'Colours', kind: 'list' },
       {
@@ -1358,7 +1371,7 @@ export const CONTENT_TYPES: ContentType[] = [
       town: optionalText,
       style: optionalText,
       space: optionalText,
-      categories: list,
+      categories: galleryCategories,
       colours: list,
       products: list,
       permission: z.literal(true, { error: 'Only publish photos the customer agreed we can use' }),
