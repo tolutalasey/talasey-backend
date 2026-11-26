@@ -119,7 +119,7 @@ describe('productCatalogueProblems', () => {
 
   it('keeps colour sets to page types 1B and 2', () => {
     expect(productCatalogueProblems({ ...product, page_type: '1A' }, colours)).toEqual([
-      'Only page types 1B and 2 use a colour set',
+      'Only Colour choice (1B) and Made to measure (2) products use a colour set',
     ]);
   });
 

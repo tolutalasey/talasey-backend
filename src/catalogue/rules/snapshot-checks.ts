@@ -38,7 +38,7 @@ export function productCatalogueProblems(
     problems.push('Made-to-order products need a lead time');
   }
   if (rule && !usesColourSet(product.page_type)) {
-    problems.push('Only page types 1B and 2 use a colour set');
+    problems.push('Only Colour choice (1B) and Made to measure (2) products use a colour set');
   }
   if (rule && (rule.option === null) !== (rule.value === null)) {
     problems.push('Say which option and value show the colours, or leave both empty');

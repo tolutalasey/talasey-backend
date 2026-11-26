@@ -77,7 +77,7 @@ describe('productProblems', () => {
     );
     expect(productProblems({ ...product, pageType: '2', bespoke: sienna }, new Set())).toEqual([]);
     expect(productProblems({ ...product, bespoke: sienna }, new Set())).toEqual([
-      'Only made-to-measure products (page type 2) have a price formula',
+      'Only Made to measure (2) products have a price formula',
     ]);
   });
 

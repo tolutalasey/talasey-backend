@@ -50,7 +50,7 @@ export function productProblems(product: ProductState, colourIds: Set<string>): 
     }
   }
   if (product.pageType !== '2' && product.bespoke) {
-    problems.push('Only made-to-measure products (page type 2) have a price formula');
+    problems.push('Only Made to measure (2) products have a price formula');
   }
 
   const optionValues = new Map(product.options.map((option) => [option.title, option.values]));
