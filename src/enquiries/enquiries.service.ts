@@ -14,6 +14,8 @@ import {
   type EnquiryDto,
   type EnquiryInput,
 } from './enquiries.schemas.js';
+import { ContentService } from '../content/content.service.js';
+import { inboxFor } from './inboxes.js';
 import { photoKind } from './photos.js';
 import { formatPostcode, postcodeProblem } from './postcodes.js';
 
@@ -90,6 +92,7 @@ export class EnquiriesService {
     @Inject(MAILER) private readonly mailer: Mailer,
     @Inject(FILE_STORAGE) private readonly storage: FileStorage,
     @Inject(APP_CONFIG) private readonly config: AppConfig,
+    private readonly content: ContentService,
   ) {}
 
   // Saved first, so a failed email never loses an enquiry; then the inbox and the customer are
@@ -214,7 +217,13 @@ export class EnquiriesService {
     ]
       .filter(Boolean)
       .join('');
-    await this.mailer.send({ to: this.config.ENQUIRIES_TO, subject, body: lines.join('\n') });
+    const to = inboxFor(
+      await this.content.published('enquiry-inbox'),
+      enquiry.kind,
+      enquiry.topic,
+      this.config.ENQUIRIES_TO,
+    );
+    await this.mailer.send({ to, subject, body: lines.join('\n') });
     await this.mailer.send({
       to: enquiry.email,
       subject: `We've received your ${wording.what}`,

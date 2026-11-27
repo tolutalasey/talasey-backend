@@ -7,6 +7,7 @@ import {
   slugCheck,
   type Check,
 } from './content-rules.js';
+import { ENQUIRY_FORMS } from '../enquiries/inboxes.js';
 
 // How an editor fills a field in /content. The form is drawn from these, so adding a field here
 // is all it takes to make it editable.
@@ -1710,6 +1711,26 @@ export const CONTENT_TYPES: ContentType[] = [
       email: z.enum(EMAILS, { error: 'Choose which email' }),
       subject: required('subject').max(120),
       body: required('message'),
+    }),
+  },
+  {
+    type: 'enquiry-inbox',
+    label: 'Where enquiries go',
+    singleton: false,
+    keyField: 'form',
+    locked: false,
+    fields: [
+      { name: 'form', label: 'Form', kind: 'select', options: ENQUIRY_FORMS },
+      {
+        name: 'email',
+        label: 'Send to',
+        kind: 'text',
+        help: 'One email address. Forms not listed here go to sales@talasey.co.uk',
+      },
+    ],
+    schema: z.object({
+      form: z.enum(ENQUIRY_FORMS, { error: 'Choose which form' }),
+      email: z.email('Add an email like sales@talasey.co.uk'),
     }),
   },
   wording('legal', 'Legal wording'),
