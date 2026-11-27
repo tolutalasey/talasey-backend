@@ -1111,6 +1111,12 @@ export const CONTENT_TYPES: ContentType[] = [
         ],
       },
       {
+        name: 'video',
+        label: 'Video',
+        kind: 'text',
+        help: 'A YouTube link, shown under the introduction',
+      },
+      {
         name: 'alsoNeed',
         label: 'You may also need',
         kind: 'list',
@@ -1159,6 +1165,7 @@ export const CONTENT_TYPES: ContentType[] = [
         photo: image.nullish(),
         gallery: z.array(z.object({ photo: image, caption: optionalText })).default([]),
         scope: z.object({ categories: list, titleIncludes: list }),
+        video: optionalText,
         alsoNeed: list,
         buyingGuide: optionalText,
         faqs: z.array(faqItem).default([]),
