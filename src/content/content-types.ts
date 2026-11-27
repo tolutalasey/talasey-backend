@@ -1111,6 +1111,12 @@ export const CONTENT_TYPES: ContentType[] = [
         ],
       },
       {
+        name: 'alsoNeed',
+        label: 'You may also need',
+        kind: 'list',
+        help: 'Web addresses of other ranges, one per line, like paving-jointing. Their products show on this range\'s product pages',
+      },
+      {
         name: 'buyingGuide',
         label: 'Buying guide',
         kind: 'textarea',
@@ -1153,6 +1159,7 @@ export const CONTENT_TYPES: ContentType[] = [
         photo: image.nullish(),
         gallery: z.array(z.object({ photo: image, caption: optionalText })).default([]),
         scope: z.object({ categories: list, titleIncludes: list }),
+        alsoNeed: list,
         buyingGuide: optionalText,
         faqs: z.array(faqItem).default([]),
         curated: z
