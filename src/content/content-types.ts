@@ -1117,6 +1117,12 @@ export const CONTENT_TYPES: ContentType[] = [
         help: 'A YouTube link, shown under the introduction',
       },
       {
+        name: 'sections',
+        label: 'Ranges this page introduces',
+        kind: 'list',
+        help: 'Web addresses of other ranges, one per line, like composite-fencing. Each shows as a card through to its page',
+      },
+      {
         name: 'alsoNeed',
         label: 'You may also need',
         kind: 'list',
@@ -1166,6 +1172,7 @@ export const CONTENT_TYPES: ContentType[] = [
         gallery: z.array(z.object({ photo: image, caption: optionalText })).default([]),
         scope: z.object({ categories: list, titleIncludes: list }),
         video: optionalText,
+        sections: list,
         alsoNeed: list,
         buyingGuide: optionalText,
         faqs: z.array(faqItem).default([]),
