@@ -115,7 +115,7 @@ export class EnquiriesService {
       const postcode = postcodeProblem(input.postcode ?? '');
       if (postcode) problems.push(postcode);
     }
-    if (input.kind === 'site-survey' && !productTitle) {
+    if (input.kind === 'site-survey' && !productTitle && !input.topic) {
       problems.push('That product is no longer available.');
     }
     if (input.kind === 'contact' && (!input.message || input.message.length < 10)) {
