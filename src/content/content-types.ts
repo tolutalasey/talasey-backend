@@ -1126,7 +1126,7 @@ export const CONTENT_TYPES: ContentType[] = [
         name: 'alsoNeed',
         label: 'You may also need',
         kind: 'list',
-        help: 'Web addresses of other ranges, one per line, like paving-jointing. Their products show on this range\'s product pages',
+        help: 'Web addresses of other ranges or their filtered pages, one per line, like cleaners-and-sealers or paving-installation/jointing. Their products show on this range\'s product pages',
       },
       {
         name: 'buyingGuide',
