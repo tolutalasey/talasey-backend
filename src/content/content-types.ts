@@ -1746,7 +1746,7 @@ export const CONTENT_TYPES: ContentType[] = [
         name: 'email',
         label: 'Send to',
         kind: 'text',
-        help: 'One email address. Forms not listed here go to sales@talasey.co.uk',
+        help: 'One email address. Forms not listed here go to dts@talasey.co.uk',
       },
     ],
     schema: z.object({
