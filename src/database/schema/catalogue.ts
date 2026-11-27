@@ -73,6 +73,8 @@ export const products = pgTable('product', {
   colourLabel: text('colour_label'),
   // Off: shown but can't be bought online; the page offers offlineAction instead.
   sellOnline: boolean('sell_online').notNull().default(true),
+  // Lower first in listings sorted by Recommended; ties stay in name order.
+  position: integer('position').notNull().default(0),
   offlineAction: text('offline_action').notNull().default('stockist'),
   bespoke: jsonb('bespoke'),
   attributes: jsonb('attributes').$type<Record<string, string>>().notNull().default({}),

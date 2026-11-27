@@ -43,6 +43,7 @@ export function toStoreProduct(product: CatalogueProduct): StoreProduct {
     pageType: product.pageType,
     madeToMeasure: product.pageType === '2' && Boolean(product.bespoke),
     sellOnline: product.sellOnline,
+    position: product.position,
     offlineAction: product.offlineAction,
     measurements: product.pageType === '2' ? measurementsOf(product.bespoke) : null,
     leadTime:

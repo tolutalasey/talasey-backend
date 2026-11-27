@@ -2276,6 +2276,12 @@
                       "sellOnline": {
                         "type": "boolean"
                       },
+                      "position": {
+                        "type": "integer",
+                        "minimum": -9007199254740991,
+                        "maximum": 9007199254740991,
+                        "description": "Lower first when sorted by Recommended"
+                      },
                       "offlineAction": {
                         "type": "string",
                         "enum": [
@@ -2546,6 +2552,7 @@
                       "pageType",
                       "madeToMeasure",
                       "sellOnline",
+                      "position",
                       "offlineAction",
                       "measurements",
                       "leadTime",
@@ -2682,6 +2689,12 @@
                     },
                     "sellOnline": {
                       "type": "boolean"
+                    },
+                    "position": {
+                      "type": "integer",
+                      "minimum": -9007199254740991,
+                      "maximum": 9007199254740991,
+                      "description": "Lower first when sorted by Recommended"
                     },
                     "offlineAction": {
                       "type": "string",
@@ -2953,6 +2966,7 @@
                     "pageType",
                     "madeToMeasure",
                     "sellOnline",
+                    "position",
                     "offlineAction",
                     "measurements",
                     "leadTime",
@@ -3386,6 +3400,12 @@
                       "default": true,
                       "type": "boolean"
                     },
+                    "position": {
+                      "default": 0,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9999
+                    },
                     "offlineAction": {
                       "default": "stockist",
                       "type": "string",
@@ -3631,6 +3651,7 @@
                     "colourRequired",
                     "colourLabel",
                     "sellOnline",
+                    "position",
                     "offlineAction",
                     "bespoke",
                     "variants",
@@ -3793,6 +3814,12 @@
                       "default": true,
                       "type": "boolean"
                     },
+                    "position": {
+                      "default": 0,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9999
+                    },
                     "offlineAction": {
                       "default": "stockist",
                       "type": "string",
@@ -4038,6 +4065,7 @@
                     "colourRequired",
                     "colourLabel",
                     "sellOnline",
+                    "position",
                     "offlineAction",
                     "bespoke",
                     "variants",
@@ -4195,6 +4223,12 @@
                   "sellOnline": {
                     "default": true,
                     "type": "boolean"
+                  },
+                  "position": {
+                    "default": 0,
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9999
                   },
                   "offlineAction": {
                     "default": "stockist",
@@ -4527,6 +4561,12 @@
                       "default": true,
                       "type": "boolean"
                     },
+                    "position": {
+                      "default": 0,
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 9999
+                    },
                     "offlineAction": {
                       "default": "stockist",
                       "type": "string",
@@ -4772,6 +4812,7 @@
                     "colourRequired",
                     "colourLabel",
                     "sellOnline",
+                    "position",
                     "offlineAction",
                     "bespoke",
                     "variants",

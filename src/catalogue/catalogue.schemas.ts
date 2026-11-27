@@ -57,6 +57,7 @@ export const storeProductSchema = z.object({
   pageType: z.enum(PAGE_TYPES).nullable(),
   madeToMeasure: z.boolean(),
   sellOnline: z.boolean(),
+  position: z.number().int().describe('Lower first when sorted by Recommended'),
   offlineAction: z.enum(OFFLINE_ACTIONS),
   measurements: measurementsSchema
     .nullable()
@@ -126,6 +127,7 @@ export const productInputSchema = z.object({
   colourRequired: z.boolean(),
   colourLabel: z.string().nullable(),
   sellOnline: z.boolean().default(true),
+  position: z.number().int().min(0).max(9999).default(0),
   offlineAction: z.enum(OFFLINE_ACTIONS).default('stockist'),
   bespoke: z.unknown().nullable(),
   variants: z.array(variantInput),

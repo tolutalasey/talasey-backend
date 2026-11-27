@@ -58,6 +58,7 @@ export interface ProductState {
   colourRequired: boolean;
   colourLabel: string | null;
   sellOnline: boolean;
+  position: number;
   offlineAction: OfflineAction;
   bespoke: unknown;
   attributes: Record<string, string>;

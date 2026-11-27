@@ -91,6 +91,7 @@ function newProduct(product: PimProduct, categoryId: string | null): ProductStat
     colourRequired: true,
     colourLabel: product.attributes.colour_label ?? null,
     sellOnline: true,
+    position: 0,
     offlineAction: 'stockist',
     bespoke: null,
     attributes: product.attributes,

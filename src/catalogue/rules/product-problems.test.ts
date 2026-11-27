@@ -22,6 +22,7 @@ const product: ProductState = {
   colourRequired: true,
   colourLabel: null,
   sellOnline: true,
+  position: 0,
   offlineAction: 'stockist',
   bespoke: null,
   attributes: {},
